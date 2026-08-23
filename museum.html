@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -80,6 +80,18 @@
         .lang-option:hover { background: var(--surface-hover); color: var(--text); }
         .lang-option.active { color: var(--accent); background: var(--accent-glow); }
         .lang-option .flag { font-size: 1rem; }
+        .lang-more {
+            width: 100%; margin-top: 5px; padding: 8px 0 2px;
+            background: none; border: none; border-top: 1px solid var(--border);
+            color: var(--text-muted); font-family: 'Unbounded', sans-serif;
+            font-size: 0.58rem; font-weight: 600; letter-spacing: 0.05em;
+            cursor: pointer; transition: color 0.15s; text-align: center;
+        }
+        .lang-more:hover { color: var(--accent); }
+        .lang-more .arrow { font-size: 0.5rem; display: inline-block; transition: transform 0.2s; }
+        .lang-switcher.more-open .lang-more .arrow { transform: rotate(180deg); }
+        .lang-extra { display: none; }
+        .lang-switcher.more-open .lang-extra { display: block; }
 
         /* HEADER */
         .header {
@@ -267,6 +279,15 @@
                     <button class="lang-option" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
                     <button class="lang-option" data-lang="be"><span class="flag">🇧🇾</span> Беларуская</button>
                     <button class="lang-option" data-lang="uk"><span class="flag">🇺🇦</span> Українська</button>
+                    <button class="lang-more" id="langMore"><span data-i18n="lang_more">Ещё языки</span> <span class="arrow">▾</span></button>
+                    <div class="lang-extra">
+                        <button class="lang-option" data-lang="zh"><span class="flag">🇨🇳</span> 中文</button>
+                        <button class="lang-option" data-lang="es"><span class="flag">🇪🇸</span> Español</button>
+                        <button class="lang-option" data-lang="ja"><span class="flag">🇯🇵</span> 日本語</button>
+                        <button class="lang-option" data-lang="fr"><span class="flag">🇫🇷</span> Français</button>
+                        <button class="lang-option" data-lang="pt"><span class="flag">🇵🇹</span> Português</button>
+                        <button class="lang-option" data-lang="pl"><span class="flag">🇵🇱</span> Polski</button>
+                    </div>
                 </div>
             </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -279,7 +300,7 @@
         <div class="hero">
             <h1 data-i18n="mu_title">Музей Евлампии</h1>
             <p class="tagline" data-i18n="mu_tagline">виртуальная коллекция артефактов веб-сериала</p>
-            <span class="est">Санкт-Петербург · осн. 2026</span>
+            <span class="est" data-i18n="est_line">Санкт-Петербург · осн. 2026</span>
         </div>
 
         <div class="plaque">
@@ -301,7 +322,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 01</span>
-                    <div class="ph"><span class="ico">🔮</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">🔮</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e1t">Хрустальный шар</h4>
@@ -311,7 +332,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 02</span>
-                    <div class="ph"><span class="ico">🃏</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">🃏</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e2t">Карты судьбы</h4>
@@ -321,7 +342,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 03</span>
-                    <div class="ph"><span class="ico">☎️</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">☎️</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e3t">Телефон доверия</h4>
@@ -331,7 +352,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 04</span>
-                    <div class="ph"><span class="ico">🕯️</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">🕯️</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e4t">Ритуальная свеча</h4>
@@ -350,7 +371,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 05</span>
-                    <div class="ph"><span class="ico">📜</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">📜</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e5t">Сертификат гадалки</h4>
@@ -360,7 +381,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 06</span>
-                    <div class="ph"><span class="ico">🎞️</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">🎞️</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e6t">Афиша первого сезона</h4>
@@ -370,7 +391,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 07</span>
-                    <div class="ph"><span class="ico">📖</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">📖</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e7t">Инвентарная книга фонда</h4>
@@ -389,7 +410,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 08</span>
-                    <div class="ph"><span class="ico">🐋</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">🐋</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e8t">Хвост кита</h4>
@@ -399,7 +420,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 09</span>
-                    <div class="ph"><span class="ico">💬</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">💬</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e9t">Стикерпак «Евлампия»</h4>
@@ -409,7 +430,7 @@
             <figure class="exhibit">
                 <div class="frame">
                     <span class="no">№ 10</span>
-                    <div class="ph"><span class="ico">🧣</span><span class="lbl">фото скоро</span></div>
+                    <div class="ph"><span class="ico">🧣</span><span class="lbl" data-i18n="ph_soon">фото скоро</span></div>
                 </div>
                 <figcaption>
                     <h4 data-i18n="e10t">Платок Евлампии</h4>
@@ -436,7 +457,7 @@
 
         <div class="footer">
             <p data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
-            <p>Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+            <p style="margin-top: 4px;" data-i18n="footer_eco">Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
         </div>
     </div>
 
@@ -444,6 +465,9 @@
     <script>
         const i18n = {
             ru: {
+                doc_title: "Музей Евлампии",
+                footer_eco: "Проект экосистемы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "Санкт-Петербург · осн. 2026", ph_soon: "фото скоро",
                 mu_title: "Музей Евлампии",
                 mu_tagline: "виртуальная коллекция артефактов веб-сериала",
                 q_text: "Вещи помнят то, что забыли люди.",
@@ -464,9 +488,13 @@
                 f_label: "Реальный фонд", f_title: "Записаться в фонд музея",
                 f_text: "Музей существует не только онлайн. В Санкт-Петербурге работает настоящий фонд — напишите нам, чтобы передать предметы с историей Евлампии. А для вас лично, по договорённости, можем организовать показ этих предметов. Пока что — только в Санкт-Петербурге.",
                 f_btn: "Написать в фонд", f_copy: "копировать", f_note: "Отвечаем лично, обычно в течение дня",
-                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>"
+                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>",
+                lang_more: "Ещё языки"
             },
             en: {
+                doc_title: "Evlampia Museum",
+                footer_eco: "A project of the <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> ecosystem · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "Saint Petersburg · est. 2026", ph_soon: "photo soon",
                 mu_title: "Evlampia Museum",
                 mu_tagline: "a virtual collection of artifacts from the web series",
                 q_text: "Things remember what people forget.",
@@ -487,9 +515,13 @@
                 f_label: "Real fund", f_title: "Join the museum fund",
                 f_text: "The museum doesn't exist only online. A real fund operates in Saint Petersburg — write to us to donate items connected to Evlampia's story. And just for you, by arrangement, we can organize a personal showing of these items. For now — in Saint Petersburg only.",
                 f_btn: "Write to the fund", f_copy: "copy", f_note: "We answer personally, usually within a day",
-                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>"
+                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>",
+                lang_more: "More languages"
             },
             de: {
+                doc_title: "Evlampia-Museum",
+                footer_eco: "Ein Projekt des <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a>-Ökosystems · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "Sankt Petersburg · gegr. 2026", ph_soon: "Foto folgt",
                 mu_title: "Evlampia-Museum",
                 mu_tagline: "eine virtuelle Sammlung von Artefakten der Webserie",
                 q_text: "Dinge erinnern sich an das, was Menschen vergessen.",
@@ -510,9 +542,13 @@
                 f_label: "Echter Fond", f_title: "Beim Museumsfond anmelden",
                 f_text: "Das Museum existiert nicht nur online. In Sankt Petersburg gibt es einen echten Fond — schreiben Sie uns, um Gegenstände rund um Evlampieas Geschichte zu übergeben. Und persönlich, nach Vereinbarung, organisieren wir Ihnen gern eine Vorführung dieser Exponate. Vorerst — nur in Sankt Petersburg.",
                 f_btn: "Dem Fond schreiben", f_copy: "kopieren", f_note: "Wir antworten persönlich, meist innerhalb eines Tages",
-                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>"
+                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>",
+                lang_more: "Weitere Sprachen"
             },
             be: {
+                doc_title: "Музей Еўлампіі",
+                footer_eco: "Праект экасістэмы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "Санкт-Пецярбург · засн. 2026", ph_soon: "фота хутка",
                 mu_title: "Музей Еўлампіі",
                 mu_tagline: "віртуальная калекцыя артэфактаў вэб-серыяла",
                 q_text: "Рэчы памятаюць тое, што забылі людзі.",
@@ -533,9 +569,13 @@
                 f_label: "Рэальны фонд", f_title: "Запісацца ў фонд музея",
                 f_text: "Музей існуе не толькі анлайн. У Санкт-Пецербургу працуе сапраўдны фонд — напішыце нам, каб перадаць прадметы з гісторыяй Еўлампіі. А для вас асабіста, па дамоўленасці, можам арганізаваць паказ гэтых прадметаў. Пакуль што — толькі ў Санкт-Пецербургу.",
                 f_btn: "Напісаць у фонд", f_copy: "скапіяваць", f_note: "Адказваем асабіста, звычайна на працягу дня",
-                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>"
+                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>",
+                lang_more: "Большэй моваў"
             },
             uk: {
+                doc_title: "Музей Євлампії",
+                footer_eco: "Проєкт екосистеми <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "Санкт-Петербург · засн. 2026", ph_soon: "фото скоро",
                 mu_title: "Музей Євлампії",
                 mu_tagline: "віртуальна колекція артефактів веб-серіалу",
                 q_text: "Речі пам'ятають те, що забули люди.",
@@ -556,7 +596,170 @@
                 f_label: "Реальний фонд", f_title: "Записатися до фонду музею",
                 f_text: "Музей існує не лише онлайн. У Санкт-Петербурзі працює справжній фонд — напишіть нам, щоб передати предмети з історією Євлампії. А для вас особисто, за домовленістю, можемо організувати показ цих предметів. Поки що — лише в Санкт-Петербурзі.",
                 f_btn: "Написати до фонду", f_copy: "копіювати", f_note: "Відповідаємо особисто, зазвичай протягом дня",
-                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>"
+                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>",
+                lang_more: "Більше мов"
+            },
+            zh: {
+                doc_title: "叶芙兰皮娅博物馆",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> 生态系统项目 · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "圣彼得堡 · 创立于2026年", ph_soon: "照片即将上线",
+                mu_title: "叶芙兰皮娅博物馆",
+                mu_tagline: "网络剧文物的虚拟收藏",
+                q_text: "物品记得人们所遗忘的。",
+                q_src: "摘自基金登记簿",
+                h1_no: "一号展厅", h1_title: "占卜师的道具", h1_sub: "参与剧集拍摄的物品",
+                h2_no: "二号展厅", h2_title: "文件与档案", h2_sub: "证明传奇的纸张",
+                h3_no: "三号展厅", h3_title: "文物与珍奇", h3_sub: "来历不凡的奇怪物品",
+                e1t: "水晶球", e1d: "预测的主要工具。叶芙兰皮娅透过它看见所有客户的未来。",
+                e2t: "命运之牌", e2d: "这副牌回答最大胆的问题。洗牌严格按逆时针方向进行。",
+                e3t: "信任热线电话", e3d: "人们曾打它来求预言。忙音至今仍能听到。",
+                e4t: "仪式蜡烛", e4d: "只在满月时点燃——且只为特别的客户。",
+                e5t: "占卜师证书", e5d: "正规格式的官方文件。从未验证过真伪——不敢。",
+                e6t: "第一季海报", e6d: "一切由此开始的海报。禁止撕下——贴得死死的。",
+                e7t: "基金登记簿", e7d: "每件展品都记录在册。还有几条无人能破译的条目。",
+                e8t: "鲸鱼尾巴", e8d: "纪念叶芙兰皮娅变成鲸鱼的那一天。展品略微潮湿。",
+                e9t: "「叶芙兰皮娅」贴纸包", e9d: "在 Telegram 中物质化的数字文物。同类首件展品。",
+                e10t: "叶芙兰皮娅的头巾", e10d: "就是那条。每隔一集出现一次——如影随形。",
+                f_label: "实体基金", f_title: "加入博物馆基金",
+                f_text: "博物馆不只存在于线上。圣彼得堡有一个实体基金——写信给我们即可移交与叶芙兰皮娅有关的物品。另外，经预约，我们还可以为您个人安排这些展品的展示。目前——仅在圣彼得堡。",
+                f_btn: "写信给基金", f_copy: "复制", f_note: "我们亲自回复，通常当天内",
+                footer_collab: "项目与<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. 工作室</a>及<a href=\"#\">Lokiq</a>合作创建",
+                lang_more: "更多语言"
+            },
+            es: {
+                doc_title: "Museo de Evlampia",
+                footer_eco: "Un proyecto del ecosistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "San Petersburgo · fundado en 2026", ph_soon: "foto pronto",
+                mu_title: "Museo de Evlampia",
+                mu_tagline: "una colección virtual de artefactos de la serie web",
+                q_text: "Las cosas recuerdan lo que la gente olvida.",
+                q_src: "del libro de inventario del fondo",
+                h1_no: "Sala 01", h1_title: "Utensilios de la adivina", h1_sub: "Objetos que participaron en el rodaje de la serie",
+                h2_no: "Sala 02", h2_title: "Documentos y archivo", h2_sub: "Papeles que prueban la leyenda",
+                h3_no: "Sala 03", h3_title: "Artefactos y curiosidades", h3_sub: "Objetos extraños con historias complicadas",
+                e1t: "Bola de cristal", e1d: "La principal herramienta de las predicciones. A través de ella, Evlampia veía el futuro de todos sus clientes.",
+                e2t: "Cartas del destino", e2d: "La baraja que responde a las preguntas más atrevidas. Se baraja estrictamente en sentido antihorario.",
+                e3t: "Teléfono de la confianza", e3d: "La gente llamaba para recibir predicciones. El tono aún se escucha.",
+                e4t: "Vela ritual", e4d: "Se enciende solo con luna llena y solo para clientes especiales.",
+                e5t: "Certificado de adivina", e5d: "Documento oficial del formato establecido. Nunca se verificó su autenticidad: por miedo.",
+                e6t: "Póster de la primera temporada", e6d: "El póster donde todo empezó. Prohibido despegarlo: está pegado para siempre.",
+                e7t: "Libro de inventario del fondo", e7d: "Aquí está registrado cada objeto. Y un par de entradas que nadie ha logrado descifrar.",
+                e8t: "Cola de ballena", e8d: "Recuerdo del día en que Evlampia se convirtió en ballena. La pieza está ligeramente húmeda.",
+                e9t: "Pack de stickers «Evlampia»", e9d: "Artefactos digitales materializados en Telegram. La primera pieza de este tipo.",
+                e10t: "Pañuelo de Evlampia", e10d: "El de siempre. Aparece uno de cada dos episodios, como una sombra.",
+                f_label: "Fondo real", f_title: "Únete al fondo del museo",
+                f_text: "El museo no existe solo en línea. En San Petersburgo funciona un fondo real al que se pueden entregar objetos con la historia de Evlampia. Escríbenos: te contaremos cómo donar tu pieza o visitar una exposición. Además, previo acuerdo, podemos organizar una presentación personal de estas piezas. Por ahora, solo en San Petersburgo.",
+                f_btn: "Escribir al fondo", f_copy: "copiar", f_note: "Respondemos personalmente, normalmente en el día",
+                footer_collab: "Proyecto creado junto al <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estudio і.</a> y <a href=\"#\">Lokiq</a>",
+                lang_more: "Más idiomas"
+            },
+            ja: {
+                doc_title: "エヴランピヤ博物館",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> エコシステムのプロジェクト · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "サンクトペテルブルク · 2026年設立", ph_soon: "写真は近日公開",
+                mu_title: "エヴランピヤ博物館",
+                mu_tagline: "ウェブシリーズのアーティファクト・バーチャルコレクション",
+                q_text: "物は、人が忘れたことを覚えている。",
+                q_src: "基金の台帳より",
+                h1_no: "第1室", h1_title: "占い師の小道具", h1_sub: "シリーズ撮影に使われた品々",
+                h2_no: "第2室", h2_title: "資料とアーカイブ", h2_sub: "伝説を証明する書類",
+                h3_no: "第3室", h3_title: "アーティファクトと珍品", h3_sub: "複雑な歴史を持つ奇妙な品々",
+                e1t: "水晶玉", e1d: "予言の主要ツール。エヴランピヤはこれを通して客たちの未来を見ていた。",
+                e2t: "運命のカード", e2d: "最も大胆な質問に答えるデッキ。シャッフルは厳密に反時計回りに行う。",
+                e3t: "相談電話", e3d: "予言を求めて人々がかけていた電話。呼び出し音は今も聞こえるという。",
+                e4t: "儀式のろうそく", e4d: "満月の夜だけ、特別な客のためだけ灯される。",
+                e5t: "占い師の証明書", e5d: "所定の様式による公式文書。真贋は確認されず——恐れて。",
+                e6t: "シーズン1のポスター", e6d: "すべてが始まったポスター。剥がすのは禁止——永久に接着済み。",
+                e7t: "基金の台帳", e7d: "すべての収蔵品がここに記録されている。誰にも解読できなかった記述も数件。",
+                e8t: "クジラの尻尾", e8d: "エヴランピヤがクジラになったあの日を伝える品。展示品は少し湿っている。",
+                e9t: "「エヴランピヤ」スタンプ", e9d: "Telegram で物質化したデジタル・アーティファクト。この種では初の収蔵品。",
+                e10t: "エヴランピヤのスカーフ", e10d: "例の一枚。2話おきに現れる——影のように。",
+                f_label: "実在の基金", f_title: "博物館の基金に参加する",
+                f_text: "博物館はオンラインだけに存在するわけではありません。サンクトペテルブルクには、エヴランピヤにまつわる品を受け入れる実在の基金があります。ご連絡いただければ、寄贈や見学の方法をご案内します。また、ご相談のうえ、これらの収蔵品を特別にご覧いただくことも可能です。現時点では——サンクトペテルブルクのみ。",
+                f_btn: "基金に書き送る", f_copy: "コピー", f_note: "私たちが直接返信します。通常は当日中に",
+                footer_collab: "プロジェクトは<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. スタジオ</a>および<a href=\"#\">Lokiq</a>との共同制作です",
+                lang_more: "その他の言語"
+            },
+            fr: {
+                doc_title: "Musée Evlampia",
+                footer_eco: "Un projet de l'écosystème <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "Saint-Pétersbourg · fondé en 2026", ph_soon: "photo bientôt",
+                mu_title: "Musée Evlampia",
+                mu_tagline: "une collection virtuelle d'artéfacts de la série web",
+                q_text: "Les choses se souviennent de ce que les gens oublient.",
+                q_src: "extrait du livre d'inventaire du fonds",
+                h1_no: "Salle 01", h1_title: "Accessoires de la voyante", h1_sub: "Objets ayant participé au tournage de la série",
+                h2_no: "Salle 02", h2_title: "Documents et archives", h2_sub: "Des papiers qui prouvent la légende",
+                h3_no: "Salle 03", h3_title: "Artéfacts et curiosités", h3_sub: "Des objets étranges à l'histoire mouvementée",
+                e1t: "Boule de cristal", e1d: "L'outil principal des prédictions. À travers elle, Evlampia voyait l'avenir de tous ses clients.",
+                e2t: "Cartes du destin", e2d: "Le jeu qui répond aux questions les plus audacieuses. Il se mélange strictement dans le sens antihoraire.",
+                e3t: "Téléphone de la confiance", e3d: "On l'appelait pour obtenir des prédictions. La tonalité résonne encore aujourd'hui.",
+                e4t: "Bougie rituelle", e4d: "Allumée uniquement à pleine lune et uniquement pour des clients spéciaux.",
+                e5t: "Certificat de voyante", e5d: "Document officiel au format établi. Son authenticité n'a jamais été vérifiée — par peur.",
+                e6t: "Affiche de la première saison", e6d: "L'affiche où tout a commencé. Interdite à décoller : collée pour de bon.",
+                e7t: "Livre d'inventaire du fonds", e7d: "Chaque pièce y est consignée. Et quelques entrées que personne n'a jamais pu déchiffrer.",
+                e8t: "Queue de baleine", e8d: "En souvenir du jour où Evlampia est devenue une baleine. La pièce est légèrement humide.",
+                e9t: "Pack de stickers « Evlampia »", e9d: "Des artéfacts numériques matérialisés sur Telegram. La première pièce du genre.",
+                e10t: "Foulard d'Evlampia", e10d: "Le fameux. Apparaît un épisode sur deux — comme une ombre.",
+                f_label: "Fonds réel", f_title: "Rejoindre le fonds du musée",
+                f_text: "Le musée n'existe pas qu'en ligne. À Saint-Pétersbourg fonctionne un vrai fonds qui accueille les objets liés à l'histoire d'Evlampia. Écrivez-nous : nous vous expliquerons comment remettre votre pièce ou participer à une visite. De plus, sur rendez-vous, nous pouvons organiser une présentation personnelle de ces objets. Pour l'instant — uniquement à Saint-Pétersbourg.",
+                f_btn: "Écrire au fonds", f_copy: "copier", f_note: "Nous répondons personnellement, généralement sous la journée",
+                footer_collab: "Projet créé en collaboration avec le <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> et <a href=\"#\">Lokiq</a>",
+                lang_more: "Plus de langues"
+            },
+            pt: {
+                doc_title: "Museu da Evlampia",
+                footer_eco: "Um projeto do ecossistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "São Petersburgo · fundado em 2026", ph_soon: "foto em breve",
+                mu_title: "Museu da Evlampia",
+                mu_tagline: "uma coleção virtual de artefatos da série web",
+                q_text: "As coisas lembram o que as pessoas esquecem.",
+                q_src: "do livro de inventário do fundo",
+                h1_no: "Galeria 01", h1_title: "Adereços da vidente", h1_sub: "Itens que participaram das filmagens da série",
+                h2_no: "Galeria 02", h2_title: "Documentos e arquivo", h2_sub: "Papéis que comprovam a lenda",
+                h3_no: "Galeria 03", h3_title: "Artefatos e curiosidades", h3_sub: "Itens estranhos com histórias complicadas",
+                e1t: "Bola de cristal", e1d: "O principal instrumento das previsões. Por meio dela, Evlampia via o futuro de todos os seus clientes.",
+                e2t: "Cartas do destino", e2d: "O baralho que responde às perguntas mais ousadas. Embaralhado estritamente no sentido anti-horário.",
+                e3t: "Telefone da confiança", e3d: "As pessoas ligavam para receber previsões. O sinal ainda pode ser ouvido.",
+                e4t: "Vela ritual", e4d: "Acende-se apenas em noite de lua cheia — e apenas para clientes especiais.",
+                e5t: "Certificado de vidente", e5d: "Documento oficial do formato estabelecido. A autenticidade nunca foi verificada: por medo.",
+                e6t: "Pôster da primeira temporada", e6d: "O pôster de onde tudo começou. Proibido arrancar: colado para sempre.",
+                e7t: "Livro de inventário do fundo", e7d: "Cada peça está registrada aqui. E algumas anotações que ninguém conseguiu decifrar.",
+                e8t: "Cauda de baleia", e8d: "Lembrete do dia em que Evlampia virou baleia. A peça está ligeiramente úmida.",
+                e9t: "Pacote de figurinhas «Evlampia»", e9d: "Artefatos digitais materializados no Telegram. A primeira peça desse tipo.",
+                e10t: "Lenço da Evlampia", e10d: "Aquele mesmo. Aparece a cada dois episódios — como uma sombra.",
+                f_label: "Fundo real", f_title: "Junte-se ao fundo do museu",
+                f_text: "O museu não existe apenas on-line. Em São Petersburgo funciona um fundo real que recebe itens ligados à história da Evlampia. Escreva para nós: explicaremos como doar sua peça ou participar de uma visita. Além disso, mediante combinação, podemos organizar uma exibição pessoal dessas peças só para você. Por enquanto — apenas em São Petersburgo.",
+                f_btn: "Escrever ao fundo", f_copy: "copiar", f_note: "Respondemos pessoalmente, geralmente dentro do dia",
+                footer_collab: "Projeto criado junto com o <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estúdio і.</a> e <a href=\"#\">Lokiq</a>",
+                lang_more: "Mais idiomas"
+            },
+            pl: {
+                doc_title: "Muzeum Evlampii",
+                footer_eco: "Projekt ekosystemy <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                est_line: "Sankt Petersburg · zał. 2026", ph_soon: "zdjęcie wkrótce",
+                mu_title: "Muzeum Evlampii",
+                mu_tagline: "wirtualna kolekcja artefaktów z serialu internetowego",
+                q_text: "Rzeczy pamiętają to, co ludzie zapominają.",
+                q_src: "z księgi inwentarzowej funduszu",
+                h1_no: "Sala 01", h1_title: "Rekwizyty wróżbitki", h1_sub: "Przedmioty, które wzięły udział w zdjęciach serialu",
+                h2_no: "Sala 02", h2_title: "Dokumenty i archiwum", h2_sub: "Papiery dowodzące legendy",
+                h3_no: "Sala 03", h3_title: "Artefakty i osobliwości", h3_sub: "Dziwne przedmioty z burzliwą historią",
+                e1t: "Kula kryształowa", e1d: "Główne narzędzie przepowiedni. Przez nią Evlampia widziała przyszłość wszystkich swoich klientów.",
+                e2t: "Karty przeznaczenia", e2d: "Talia, która odpowiada na najodważniejsze pytania. Tasowana wyłącznie przeciwnie do ruchu wskazówek zegara.",
+                e3t: "Telefon zaufania", e3d: "Ludzie dzwonili na ten numer po przepowiednie. Sygnał słychać do dziś.",
+                e4t: "Świeca rytualna", e4d: "Zapalana tylko w pełnię i tylko dla wyjątkowych klientów.",
+                e5t: "Certyfikat wróżbity", e5d: "Oficjalny dokument ustalonego wzoru. Autentyczności nigdy nie zweryfikowano — ze strachu.",
+                e6t: "Plakat pierwszego sezonu", e6d: "Plakat, od którego wszystko się zaczęło. Zakaz odklejania: przyklejony na dobre.",
+                e7t: "Księga inwentarzowa funduszu", e7d: "Każdy przedmiot jest tu zapisany. Jest też kilka wpisów, których nikt nie zdołał rozszyfrować.",
+                e8t: "Ogon wieloryba", e8d: "Na pamiątkę dnia, gdy Evlampia została wielorybem. Eksponat jest lekko wilgotny.",
+                e9t: "Pakiet naklejek „Evlampia”", e9d: "Cyfrowe artefakty zmaterializowane w Telegramie. Pierwszy eksponat tego typu.",
+                e10t: "Chustka Evlampii", e10d: "Ta sama. Pojawia się co drugi odcinek — jak cień.",
+                f_label: "Prawdziwy fundusz", f_title: "Dołącz do funduszu muzeum",
+                f_text: "Muzeum nie istnieje tylko w sieci. W Sankt Petersburgu działa prawdziwy fundusz, który przyjmuje przedmioty związane z historią Evlampii. Napisz do nas: opowiemy, jak przekazać swój przedmiot lub wziąć udział w zwiedzaniu. Ponadto po wcześniejszym umówieniu możemy dla Ciebie osobiście zorganizować prezentację tych przedmiotów. Na razie — tylko w Sankt Petersburgu.",
+                f_btn: "Napisz do funduszu", f_copy: "kopiuj", f_note: "Odpowiadamy osobiście, zwykle w ciągu dnia",
+                footer_collab: "Projekt stworzony we współpracy ze <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studiem і.</a> i <a href=\"#\">Lokiq</a>",
+                lang_more: "Więcej języków"
             }
         };
 
@@ -570,12 +773,17 @@
                 opt.classList.toggle('active', opt.dataset.lang === lang);
             });
             document.documentElement.setAttribute('lang', lang);
+            if (i18n[lang] && i18n[lang].doc_title) document.title = i18n[lang].doc_title;
             localStorage.setItem('i-lang', lang);
         }
 
         document.getElementById('langBtn').addEventListener('click', e => {
             e.stopPropagation();
             document.getElementById('langSwitcher').classList.toggle('open');
+        });
+        document.getElementById('langMore').addEventListener('click', e => {
+            e.stopPropagation();
+            document.getElementById('langSwitcher').classList.toggle('more-open');
         });
         document.addEventListener('click', () => document.getElementById('langSwitcher').classList.remove('open'));
         document.querySelectorAll('.lang-option').forEach(opt => {

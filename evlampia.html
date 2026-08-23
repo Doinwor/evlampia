@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -96,6 +96,18 @@
         .lang-option:hover { background: var(--surface-hover); color: var(--text); }
         .lang-option.active { color: var(--accent); background: var(--accent-glow); }
         .lang-option .flag { font-size: 1rem; }
+        .lang-more {
+            width: 100%; margin-top: 5px; padding: 8px 0 2px;
+            background: none; border: none; border-top: 1px solid var(--border);
+            color: var(--text-muted); font-family: 'Unbounded', sans-serif;
+            font-size: 0.58rem; font-weight: 600; letter-spacing: 0.05em;
+            cursor: pointer; transition: color 0.15s; text-align: center;
+        }
+        .lang-more:hover { color: var(--accent); }
+        .lang-more .arrow { font-size: 0.5rem; display: inline-block; transition: transform 0.2s; }
+        .lang-switcher.more-open .lang-more .arrow { transform: rotate(180deg); }
+        .lang-extra { display: none; }
+        .lang-switcher.more-open .lang-extra { display: block; }
 
         /* HEADER */
         .header {
@@ -424,6 +436,15 @@
                     <button class="lang-option" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
                     <button class="lang-option" data-lang="be"><span class="flag">🇧🇾</span> Беларуская</button>
                     <button class="lang-option" data-lang="uk"><span class="flag">🇺🇦</span> Українська</button>
+                    <button class="lang-more" id="langMore"><span data-i18n="lang_more">Ещё языки</span> <span class="arrow">▾</span></button>
+                    <div class="lang-extra">
+                        <button class="lang-option" data-lang="zh"><span class="flag">🇨🇳</span> 中文</button>
+                        <button class="lang-option" data-lang="es"><span class="flag">🇪🇸</span> Español</button>
+                        <button class="lang-option" data-lang="ja"><span class="flag">🇯🇵</span> 日本語</button>
+                        <button class="lang-option" data-lang="fr"><span class="flag">🇫🇷</span> Français</button>
+                        <button class="lang-option" data-lang="pt"><span class="flag">🇵🇹</span> Português</button>
+                        <button class="lang-option" data-lang="pl"><span class="flag">🇵🇱</span> Polski</button>
+                    </div>
                 </div>
             </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -445,11 +466,11 @@
             </div>
         </div>
 
-        <p class="section-label" data-i18n="label_new">Новые серии</p>
+        <p class="section-label" data-i18n="label_new">Новые видео</p>
         <div class="episode-banner">
-            <span class="badge" data-i18n="badge_new">Новинка</span>
-            <h3 data-i18n="episode_title">Новая серия — 15 апреля 2024</h3>
-            <p data-i18n="episode_desc">Свежий выпуск уже доступен на RUTUBE</p>
+            <span class="badge" data-i18n="badge_new">Анонс</span>
+            <h3 data-i18n="episode_title">Скоро — новый выпуск</h3>
+            <p data-i18n="episode_desc">Готовим новый видеоматериал в классическом формате. Подробностей и спойлеров — ноль. А пока пересмотрите последнюю серию от 15 апреля 2024</p>
             <a href="https://rutube.ru/video/c3390b6a11940ebc8a3c6f9bbae5111f/" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;padding:12px 28px;border-radius:10px;font-size:0.82rem;font-weight:600;text-decoration:none;" target="_blank" data-i18n="btn_watch">Смотреть →</a>
         </div>
 
@@ -483,7 +504,7 @@
             <div class="icon">⚠️</div>
             <div class="text">
                 <h4 data-i18n="warn_title">Серии временно недоступны</h4>
-                <p data-i18n="warn_desc">Часть серий скрыта для прохождения модерации в связи с требованиями Федерального закона №48-ФЗ. Отдельные сцены подлежат цензуре и будут удалены. Следите за обновлениями в <a href="https://t.me/evlampia1327">Telegram</a>.</p>
+                <p data-i18n="warn_desc">Часть серий скрыта для прохождения модерации в связи с требованиями ст. 6.21 КоАП РФ, ст. 230.3 УК РФ. Отдельные сцены подлежат цензуре и будут удалены. Следите за обновлениями в <a href="https://t.me/evlampia1327">Telegram</a>.</p>
             </div>
         </div>
 
@@ -581,7 +602,7 @@
         <div class="footer">
             <p data-i18n="footer_disclaimer">Проект имеет пометку 18+. Все гадания и советы персонажа являются вымышленными и носят исключительно развлекательный характер.</p>
             <p style="margin-top: 12px;" data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
-            <p style="margin-top: 4px;">Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+            <p style="margin-top: 4px;" data-i18n="footer_eco">Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
         </div>
 
     </div>
@@ -589,21 +610,23 @@
     <script>
         const i18n = {
             ru: {
+                doc_title: "Евлампия — добрая и злая гадалка",
+                footer_eco: "Проект экосистемы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 hero_title: "Евлампия",
                 hero_tagline: "добрая и злая гадалка",
                 hero_desc: "Веб-сериал о гадалке Евлампии — предсказания, сезоны и архивные серии. Предсказывает будущее по шару, картам и телефону. Кто-то ей верит, кто-то смеётся, но равнодушным её не оставляет никто.",
                 btn_rutube: "▶ Смотреть на RUTUBE",
                 btn_official: "Официальный сайт",
-                label_new: "Новые серии",
-                badge_new: "Новинка",
-                episode_title: "Новая серия — 15 апреля 2024",
-                episode_desc: "Свежий выпуск уже доступен на RUTUBE",
+                label_new: "Новые видео",
+                badge_new: "Анонс",
+                episode_title: "Скоро — новый выпуск",
+                episode_desc: "Готовим новый видеоматериал в классическом формате. Подробностей и спойлеров — ноль. А пока пересмотрите последнюю серию от 15 апреля 2024",
                 btn_watch: "Смотреть →",
                 browse_title: "Серии и сезоны",
                 browse_desc: "Все классические серии — три сезона, архивные выпуски и интервью. 30+ серий оригинального формата с предсказаниями, картами и шаром",
                 label_about: "О проекте",
                 warn_title: "Серии временно недоступны",
-                warn_desc: "Часть серий скрыта для прохождения модерации в связи с требованиями Федерального закона №48-ФЗ. Отдельные сцены подлежат цензуре и будут удалены. Следите за обновлениями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_desc: "Часть серий скрыта для прохождения модерации в связи с требованиями ст. 6.21 КоАП РФ, ст. 230.3 УК РФ. Отдельные сцены подлежат цензуре и будут удалены. Следите за обновлениями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 info1_title: "Гадалка",
                 info1_desc: "Евлампия предсказывает будущее по шару, картам и телефону",
                 info2_title: "3 сезона",
@@ -632,19 +655,24 @@
                 contact_tg_sub: "Пишите в ЛС канала Евлампии",
                 contact_studio: "Студия і.",
                 contact_studio_sub: "Как с нами связаться",
+                mu_block_title: "Музей Евлампии",
+                mu_block_desc: "Виртуальная коллекция артефактов из сериала. У музея есть и реальный фонд в Санкт-Петербурге — чисто теоретически, по договорённости, можно попасть на личный показ предметов",
                 footer_disclaimer: "Проект имеет пометку 18+. Все гадания и советы персонажа являются вымышленными и носят исключительно развлекательный характер.",
-                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>"
+                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>",
+                lang_more: "Ещё языки"
             },
             en: {
+                doc_title: "Evlampia — a good and evil fortune teller",
+                footer_eco: "A project of the <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> ecosystem · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 hero_title: "Evlampia",
                 hero_tagline: "good and evil fortune teller",
                 hero_desc: "A web series about fortune teller Evlampia — predictions, seasons and archive episodes. She predicts the future with a ball, cards and phone. Some believe her, some laugh, but no one stays indifferent.",
                 btn_rutube: "▶ Watch on RUTUBE",
                 btn_official: "Official website",
-                label_new: "New episodes",
-                badge_new: "New",
-                episode_title: "New episode — April 15, 2024",
-                episode_desc: "Fresh episode already available on RUTUBE",
+                label_new: "New videos",
+                badge_new: "Coming soon",
+                episode_title: "Soon — a new release",
+                episode_desc: "A new video in the classic format is in the works. No details, no spoilers. Meanwhile, rewatch the last episode from April 15, 2024",
                 btn_watch: "Watch →",
                 browse_title: "Episodes & Seasons",
                 browse_desc: "All classic episodes — three seasons, archive releases and interviews. 30+ episodes of the original format with predictions, cards and crystal ball",
@@ -652,7 +680,7 @@
                 mu_block_desc: "A virtual collection of artifacts from the series. The museum also has a real fund in Saint Petersburg — purely theoretically, by arrangement, you can visit a personal showing of the items",
                 label_about: "About the project",
                 warn_title: "Episodes temporarily unavailable",
-                warn_desc: "Part of the episodes are hidden for moderation per Federal Law No. 48-FZ. Some scenes are subject to censorship and will be removed. Follow updates on <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_desc: "Part of the episodes are hidden for moderation per Art. 6.21 of the Administrative Code and Art. 230.3 of the Criminal Code of the Russian Federation. Some scenes are subject to censorship and will be removed. Follow updates on <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 info1_title: "Fortune teller",
                 info1_desc: "Evlampia predicts the future with a ball, cards and phone",
                 info2_title: "3 seasons",
@@ -682,18 +710,21 @@
                 contact_studio: "Studio і.",
                 contact_studio_sub: "How to reach us",
                 footer_disclaimer: "The project is rated 18+. All fortunes and advice from the character are fictional and exclusively for entertainment purposes.",
-                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>"
+                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>",
+                lang_more: "More languages"
             },
             de: {
+                doc_title: "Evlampia — gute und böse Wahrsagerin",
+                footer_eco: "Ein Projekt des <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a>-Ökosystems · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 hero_title: "Evlampia",
                 hero_tagline: "gute und böse Hellseherin",
                 hero_desc: "Eine Web-Serie über die Hellseherin Evlampia — Vorhersagen, Staffeln und Archivfolgen. Sie sagt die Zukunft mit einer Kugel, Karten und Telefon vorher. Manche glauben ihr, manche lachen, aber niemand bleibt gleichgültig.",
                 btn_rutube: "▶ Auf RUTUBE ansehen",
                 btn_official: "Offizielle Webseite",
-                label_new: "Neue Folgen",
-                badge_new: "Neu",
-                episode_title: "Neue Folge — 15. April 2024",
-                episode_desc: "Neue Folge bereits auf RUTUBE verfügbar",
+                label_new: "Neue Videos",
+                badge_new: "Ankündigung",
+                episode_title: "Bald — eine neue Folge",
+                episode_desc: "Ein neues Video im klassischen Format ist in Arbeit. Keine Details, keine Spoiler. Bis dahin: Sehen Sie sich die letzte Folge vom 15. April 2024 noch einmal an",
                 btn_watch: "Ansehen →",
                 browse_title: "Folgen & Staffeln",
                 browse_desc: "Alle klassischen Folgen — drei Staffeln, Archivfolgen und Interviews. 30+ Folgen im Originalformat mit Vorhersagen, Karten und Kristallkugel",
@@ -701,7 +732,7 @@
                 mu_block_desc: "Eine virtuelle Sammlung von Artefakten aus der Serie. Das Museum hat auch einen echten Fond in Sankt Petersburg — rein theoretisch, nach Vereinbarung, ist eine persönliche Besichtigung der Exponate möglich",
                 label_about: "Über das Projekt",
                 warn_title: "Folgen vorübergehend nicht verfügbar",
-                warn_desc: "Teil der Folgen wurde wegen Moderation gemäß Bundesgesetz Nr. 48-FZ ausgeblendet. Einige Szenen unterliegen der Zensur und werden entfernt. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_desc: "Teil der Folgen wurde wegen Moderation gemäß Art. 6.21 KoAP RF und Art. 230.3 UK RF ausgeblendet. Einige Szenen unterliegen der Zensur und werden entfernt. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 info1_title: "Hellseherin",
                 info1_desc: "Evlampia sagt die Zukunft mit einer Kugel, Karten und Telefon vorher",
                 info2_title: "3 Staffeln",
@@ -731,18 +762,21 @@
                 contact_studio: "Studio і.",
                 contact_studio_sub: "So erreichen Sie uns",
                 footer_disclaimer: "Das Projekt ist ab 18 Jahren. Alle Wahrsagungen und Ratschläge der Figur sind fiktiv und ausschließlich als Unterhaltung gedacht.",
-                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>"
+                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>",
+                lang_more: "Weitere Sprachen"
             },
             be: {
+                doc_title: "Еўлампія — добрая і злая прадказальніца",
+                footer_eco: "Праект экасістэмы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 hero_title: "Еўлампія",
                 hero_tagline: "добрая і злая гадалка",
                 hero_desc: "Вэб-серыял пра гадалку Еўлампію — прадказанні, сезоны і архіўныя серыі. Прадказвае будучыню па шары, картах і тэлефоне. Нхто ёй верыць, хтось смяецца, але раўнадушным яе не пакідае ніхто.",
                 btn_rutube: "▶ Глядзець на RUTUBE",
                 btn_official: "Афіцыйны сайт",
-                label_new: "Новыя серыі",
-                badge_new: "Навіна",
-                episode_title: "Новая серыя — 15 красавіка 2024",
-                episode_desc: "Свежы выпуск ужо даступны на RUTUBE",
+                label_new: "Новыя відэа",
+                badge_new: "Анонс",
+                episode_title: "Хутка — новы выпуск",
+                episode_desc: "Рыхтуем новы відэаматэрыял у класічным фармаце. Падрабязнасцей і спойлераў — нуль. А пакуль пераглядзіце апошнюю серыю ад 15 красавіка 2024",
                 btn_watch: "Глядзець →",
                 browse_title: "Серыі і сезоны",
                 browse_desc: "Усе класічныя серыі — тры сезоны, архіўныя выпускі і інтэрвью. 30+ серый арыгінальнага фармату з прадказаннямі, картамі і шарам",
@@ -750,7 +784,7 @@
                 mu_block_desc: "Віртуальная калекцыя артэфактаў з серыяла. У музея ёсць і рэальны фонд у Санкт-Пецербургу — чыста тэарэтычна, па дамоўленасці, можна трапіць на асабісты паказ прадметаў",
                 label_about: "Пра праект",
                 warn_title: "Серыі часова недаступныя",
-                warn_desc: "Частка серый схавана для мадэрацыі паводле Федэральнага закона №48-ФЗ. Асобныя сцэны падлягаюць цэнзуры і будуць выдалены. Сачыце за абнаўленнямі ў <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_desc: "Частка серый схавана для мадэрацыі паводле арт. 6.21 КаАП РФ, арт. 230.3 КК РФ. Асобныя сцэны падлягаюць цэнзуры і будуць выдалены. Сачыце за абнаўленнямі ў <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 info1_title: "Гадалка",
                 info1_desc: "Еўлампія прадказвае будучыню па шары, картах і тэлефоне",
                 info2_title: "3 сезоны",
@@ -780,18 +814,21 @@
                 contact_studio: "Студыя і.",
                 contact_studio_sub: "Як з намі звязацца",
                 footer_disclaimer: "Праект мае адзнаку 18+. Усе прадказанні і парады персанажа з'яўляюцца выдуманымі і носяць выключна забаўляльны характар.",
-                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>"
+                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>",
+                lang_more: "Большэй моваў"
             },
             uk: {
+                doc_title: "Євлампія — добра і зла віщунка",
+                footer_eco: "Проєкт екосистеми <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 hero_title: "Євлампія",
                 hero_tagline: "добра і зла ворожка",
                 hero_desc: "Веб-серіал про ворожку Євлампію — передбачення, сезони та архівні серії. Передбачає майбутнє по кулі, картах і телефону. Хтось їй вірить, хтось сміється, але байдужою її не залишає ніхто.",
                 btn_rutube: "▶ Дивитися на RUTUBE",
                 btn_official: "Офіційний сайт",
-                label_new: "Нові серії",
-                badge_new: "Новинка",
-                episode_title: "Нова серія — 15 квітня 2024",
-                episode_desc: "Свіжий випуск вже доступний на RUTUBE",
+                label_new: "Нові відео",
+                badge_new: "Анонс",
+                episode_title: "Незабаром — новий випуск",
+                episode_desc: "Готуємо новий відеоматеріал у класичному форматі. Подробиць і спойлерів — нуль. А поки перегляньте останню серію від 15 квітня 2024",
                 btn_watch: "Дивитися →",
                 browse_title: "Серії та сезони",
                 browse_desc: "Усі класичні серії — три сезони, архівні випуски та інтерв'ю. 30+ серій оригінального формату з передбаченнями, картами та кулею",
@@ -799,7 +836,7 @@
                 mu_block_desc: "Віртуальна колекція артефактів із серіалу. У музею є й реальний фонд у Санкт-Петербурзі — суто теоретично, за домовленістю, можна потрапити на особистий показ предметів",
                 label_about: "Про проєкт",
                 warn_title: "Серії тимчасово недоступні",
-                warn_desc: "Частка серій приховано для модерації відповідно до Федерального закону №48-ФЗ. Окремі сцени підлягають цензурі та будуть видалені. Слідкуйте за оновленнями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_desc: "Частка серій приховано для модерації відповідно до ст. 6.21 КпАП РФ, ст. 230.3 КК РФ. Окремі сцени підлягають цензурі та будуть видалені. Слідкуйте за оновленнями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 info1_title: "Ворожка",
                 info1_desc: "Євлампія передбачає майбутнє по кулі, картах і телефону",
                 info2_title: "3 сезони",
@@ -829,7 +866,320 @@
                 contact_studio: "Студія і.",
                 contact_studio_sub: "Як з нами зв'язатися",
                 footer_disclaimer: "Проєкт має позначку 18+. Усі ворожіння та поради персонажа є вигаданими і носять виключно розважальний характер.",
-                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>"
+                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>",
+                lang_more: "Більше мов"
+            },
+            zh: {
+                doc_title: "叶芙兰皮娅——善良又邪恶的占卜师",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> 生态系统项目 · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                hero_title: "叶芙兰皮娅",
+                hero_tagline: "善良又邪恶的占卜师",
+                hero_desc: "关于占卜师叶芙兰皮娅的网络剧——预言、季数和档案剧集。她用水晶球、纸牌和电话预测未来。有人信她，有人笑她，但没有人对她无动于衷。",
+                btn_rutube: "▶ 在 RUTUBE 上观看",
+                btn_official: "官方网站",
+                label_new: "新视频",
+                badge_new: "预告",
+                episode_title: "即将推出——新一期",
+                episode_desc: "我们正在以经典格式制作新的视频。细节和剧透——零。在此期间，欢迎重温2024年4月15日的最后一集",
+                btn_watch: "观看 →",
+                browse_title: "剧集与季数",
+                browse_desc: "所有经典剧集——三个季度、档案节目和访谈。30多集原创格式的视频：预言、纸牌和水晶球",
+                mu_block_title: "叶芙兰皮娅博物馆",
+                mu_block_desc: "剧集文物的虚拟收藏。博物馆在圣彼得堡还设有实体基金——纯理论上，经预约可为您安排展品的私人展示",
+                warn_title: "剧集暂时不可用",
+                warn_desc: "部分剧集因须按俄罗斯联邦行政违法法典第6.21条、俄罗斯联邦刑法典第230.3条的要求进行审核而暂时隐藏。个别场景将被审查并删除。请在 <a href=\"https://t.me/evlampia1327\">Telegram</a> 关注更新。",
+                label_about: "关于项目",
+                info1_title: "占卜师",
+                info1_desc: "叶芙兰皮娅用水晶球、纸牌和电话预测未来",
+                info2_title: "3个季度",
+                info2_desc: "所有剧集都汇集在 RUTUBE 播放列表中——主频道",
+                info3_title: "Telegram",
+                info3_desc: "新剧集和新闻都会在 Telegram 频道中分享",
+                sticker_title: "Telegram 贴纸",
+                sticker_desc: "叶芙兰皮娅有自己的贴纸包",
+                btn_stickers: "获取 →",
+                label_stickers: "贴纸",
+                placeholder_soon: "即将推出",
+                placeholder_stickers: "贴纸图片稍后会添加",
+                placeholder_img1: "「是的，叶芙兰皮娅就是这样」",
+                placeholder_img2: "占卜师证书",
+                label_gallery: "图库",
+                label_faq: "常见问题",
+                faq1_q: "为什么剧集消失了？",
+                faq1_a: "我们暂时隐藏了部分剧集，以便检查是否存在违禁内容。一旦删除相关片段，视频将重新可用。请在 <a href=\"https://t.me/evlampia1327\">Telegram</a> 关注消息。",
+                faq2_q: "为什么第一集不在 RUTUBE 上？",
+                faq2_a: "最初我们只想在 Dzen 上发布剧集，后来出现了 RUTUBE（现在是主要频道），而第一集一直没有重新上传。",
+                faq3_q: "为什么第二季没有完整播完？",
+                faq3_a: "主编导「休假」去了，演员只能自己「想办法」。该季的全部4集都已剪辑完成。后来主编导回归，第三季随即开拍。",
+                label_contact: "联系方式",
+                contact_title: "反馈",
+                contact_desc: "项目由 і. 工作室创建。有任何问题——请写信，我们会在一天内回复",
+                contact_tg_sub: "在项目频道留言",
+                contact_studio: "і. 工作室",
+                contact_studio_sub: "如何与我们联系",
+                footer_disclaimer: "本项目含18+内容。角色的所有占卜和建议均为虚构，纯属娱乐性质。",
+                footer_collab: "项目与<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. 工作室</a>及<a href=\"#\">Lokiq</a>合作创建",
+                lang_more: "更多语言"
+            },
+            es: {
+                doc_title: "Evlampia — adivina buena y mala",
+                footer_eco: "Un proyecto del ecosistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                hero_title: "Evlampia",
+                hero_tagline: "la adivina buena y mala",
+                hero_desc: "Serie web sobre la adivina Evlampia: predicciones, temporadas y episodios de archivo. Predice el futuro con la bola, las cartas y el teléfono. Hay quien le cree, hay quien se ríe, pero a nadie deja indiferente.",
+                btn_rutube: "▶ Ver en RUTUBE",
+                btn_official: "Sitio oficial",
+                label_new: "Vídeos nuevos",
+                badge_new: "Próximamente",
+                episode_title: "Muy pronto: un nuevo vídeo",
+                episode_desc: "Estamos preparando un nuevo vídeo en el formato clásico. Cero detalles, cero spoilers. Mientras tanto, vuelve a ver el último episodio del 15 de abril de 2024",
+                btn_watch: "Ver →",
+                browse_title: "Episodios y temporadas",
+                browse_desc: "Todos los episodios clásicos: tres temporadas, emisiones de archivo y entrevistas. Más de 30 episodios del formato original con predicciones, cartas y bola de cristal",
+                mu_block_title: "Museo de Evlampia",
+                mu_block_desc: "Colección virtual de artefactos de la serie. El museo también tiene un fondo real en San Petersburgo: puramente en teoría, previo acuerdo, se puede organizar una visita personal a los objetos",
+                warn_title: "Episodios temporalmente no disponibles",
+                warn_desc: "Parte de los episodios está oculta para moderación según el art. 6.21 del Código Administrativo y el art. 230.3 del Código Penal de la Federación de Rusia. Algunas escenas se censurarán y se eliminarán. Sigue las novedades en <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_about: "Sobre el proyecto",
+                info1_title: "Adivina",
+                info1_desc: "Evlampia predice el futuro con la bola, las cartas y el teléfono",
+                info2_title: "3 temporadas",
+                info2_desc: "Todos los episodios están en las playlists de RUTUBE, el canal principal",
+                info3_title: "Telegram",
+                info3_desc: "Los nuevos episodios y las noticias se comparten en el canal de Telegram",
+                sticker_title: "Stickers para Telegram",
+                sticker_desc: "Evlampia tiene sus propios stickers",
+                btn_stickers: "Conseguir →",
+                label_stickers: "Stickers",
+                placeholder_soon: "Próximamente",
+                placeholder_stickers: "La imagen de los stickers se añadirá más tarde",
+                placeholder_img1: "«Sí, sí, Evlampia es así»",
+                placeholder_img2: "Certificado de adivina",
+                label_gallery: "Galería",
+                label_faq: "Preguntas",
+                faq1_q: "¿Por qué desaparecieron los episodios?",
+                faq1_a: "Ocultamos temporalmente los episodios para revisar si había contenido prohibido. En cuanto eliminemos algunas escenas, los vídeos volverán a estar disponibles. Sigue las noticias en <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                faq2_q: "¿Por qué el primer episodio no está en RUTUBE?",
+                faq2_a: "Al principio queríamos publicar solo en Dzen, pero luego apareció RUTUBE (ahora es el canal principal) y el primer episodio nunca se volvió a subir.",
+                faq3_q: "¿Por qué la 2ª temporada no terminó por completo?",
+                faq3_a: "El montador principal se fue «de vacaciones» y el actor tuvo que apañárselas solo. Se montaron los 4 episodios de la temporada. Luego volvió el montador principal y empezó directamente la tercera temporada.",
+                label_contact: "Contacto",
+                contact_title: "Comentarios",
+                contact_desc: "Proyecto creado por el estudio і. Para cualquier duda, escríbenos: respondemos en el día",
+                contact_tg_sub: "Escribe al canal de proyectos",
+                contact_studio: "Estudio і.",
+                contact_studio_sub: "Cómo contactarnos",
+                footer_disclaimer: "El proyecto contiene contenido para mayores de 18 años. Todos los rituales y consejos del personaje son ficticios y tienen un carácter exclusivamente entretenido.",
+                footer_collab: "Proyecto creado junto al <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estudio і.</a> y <a href=\"#\">Lokiq</a>",
+                lang_more: "Más idiomas"
+            },
+            ja: {
+                doc_title: "エヴランピヤ — 優しくて悪い占い師",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> エコシステムのプロジェクト · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                hero_title: "エヴランピヤ",
+                hero_tagline: "優しくて悪い占い師",
+                hero_desc: "占い師エヴランピヤのウェブシリーズ——予言、シーズン、アーカイブ配信。水晶玉とカードと電話で未来を占う。信じる人もいれば、笑う人もいる——でも誰も無関心ではいられない。",
+                btn_rutube: "▶ RUTUBEで見る",
+                btn_official: "公式サイト",
+                label_new: "新しい動画",
+                badge_new: "予告",
+                episode_title: "近日公開——新作動画",
+                episode_desc: "クラシックなフォーマットの新作動画を制作中。詳細もネタバレもゼロ。それまでの間、2024年4月15日の最後のエピソードを見返してみて",
+                btn_watch: "見る →",
+                browse_title: "エピソードとシーズン",
+                browse_desc: "クラシックなエピソードをすべて——3シーズン、アーカイブ配信、インタビュー。予言、カード、水晶玉のオリジナルフォーマットで30以上のエピソード",
+                mu_block_title: "エヴランピヤ博物館",
+                mu_block_desc: "シリーズのアーティファクトを集めたバーチャルコレクション。博物館にはサンクトペテルブルクに実物の基金も——あくまで理論上、相談のうえ、品々の個人鑑賞会も可能です",
+                warn_title: "エピソードは一時的に利用できません",
+                warn_desc: "一部のエピソードは、ロシア連邦行政違反法第6.21条およびロシア連邦刑法第230.3条の要件に基づくモデレーションのため非表示になっています。一部のシーンは検閲され削除される予定です。最新情報は<a href=\"https://t.me/evlampia1327\">Telegram</a>で。",
+                label_about: "プロジェクトについて",
+                info1_title: "占い師",
+                info1_desc: "エヴランピヤは水晶玉、カード、電話で未来を占います",
+                info2_title: "3シーズン",
+                info2_desc: "全エピソードはRUTUBEのプレイリストに——メインチャンネル",
+                info3_title: "Telegram",
+                info3_desc: "新作やお知らせはTelegramチャンネルで発信中",
+                sticker_title: "Telegramスタンプ",
+                sticker_desc: "エヴランピヤには専用スタンプがあります",
+                btn_stickers: "入手 →",
+                label_stickers: "スタンプ",
+                placeholder_soon: "近日公開",
+                placeholder_stickers: "スタンプの画像は後日追加されます",
+                placeholder_img1: "「そう、エヴランピヤはそんな奴」",
+                placeholder_img2: "占い師の証明書",
+                label_gallery: "ギャラリー",
+                label_faq: "よくある質問",
+                faq1_q: "なぜエピソードが消えたの？",
+                faq1_a: "禁止コンテンツがないか確認するため、一時的にエピソードを非表示にしています。該当シーンを削除し次第、動画は再び視聴できるようになります。最新情報は<a href=\"https://t.me/evlampia1327\">Telegram</a>で。",
+                faq2_q: "なぜ最初のエピソードはRUTUBEにないの？",
+                faq2_a: "当初はDzenだけで公開する予定でしたが、その後RUTUBE（現在のメインチャンネル）が登場し、最初のエピソードは結局再アップロードされませんでした。",
+                faq3_q: "なぜシーズン2は完結しなかったの？",
+                faq3_a: "メインの編集者が「休暇」に行ってしまい、俳優は自力で切り抜けるしかありませんでした。シーズンの全4話は編集済み。その後メイン編集者が戻り、すぐにシーズン3が始まりました。",
+                label_contact: "お問い合わせ",
+                contact_title: "フィードバック",
+                contact_desc: "プロジェクトは і. スタジオが制作しています。ご質問はメッセージをどうぞ——通常1日以内に返信します",
+                contact_tg_sub: "プロジェクトチャンネルへメッセージ",
+                contact_studio: "і. スタジオ",
+                contact_studio_sub: "連絡方法",
+                footer_disclaimer: "本プロジェクトには18歳以上向けのコンテンツが含まれます。キャラクターのすべての占いと助言は架空のもので、娯楽目的に限られます。",
+                footer_collab: "プロジェクトは<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. スタジオ</a>および<a href=\"#\">Lokiq</a>との共同制作です",
+                lang_more: "その他の言語"
+            },
+            fr: {
+                doc_title: "Evlampia — voyante bonne et méchante",
+                footer_eco: "Un projet de l'écosystème <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                hero_title: "Evlampia",
+                hero_tagline: "la voyante bonne et méchante",
+                hero_desc: "Série web sur la voyante Evlampia : prédictions, saisons et épisodes d'archives. Elle lit l'avenir dans le ballon, les cartes et le téléphone. Certains la croient, d'autres rient — mais personne ne reste indifférent.",
+                btn_rutube: "▶ Regarder sur RUTUBE",
+                btn_official: "Site officiel",
+                label_new: "Nouvelles vidéos",
+                badge_new: "Annonce",
+                episode_title: "Bientôt : une nouvelle vidéo",
+                episode_desc: "Nous préparons une nouvelle vidéo au format classique. Zéro détails, zéro spoilers. En attendant, revisionnez le dernier épisode du 15 avril 2024",
+                btn_watch: "Regarder →",
+                browse_title: "Épisodes et saisons",
+                browse_desc: "Tous les épisodes classiques : trois saisons, émissions d'archives et interviews. Plus de 30 épisodes du format original avec prédictions, cartes et boule de cristal",
+                mu_block_title: "Musée Evlampia",
+                mu_block_desc: "Collection virtuelle d'artéfacts de la série. Le musée possède aussi un vrai fonds à Saint-Pétersbourg : purement théoriquement, sur rendez-vous, une présentation personnelle des objets est possible",
+                warn_title: "Épisodes temporairement indisponibles",
+                warn_desc: "Une partie des épisodes est masquée pour modération conformément à l'art. 6.21 du Code administratif et à l'art. 230.3 du Code pénal de la Fédération de Russie. Certaines scènes seront censurées et supprimées. Suivez les actualités sur <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_about: "À propos du projet",
+                info1_title: "Voyante",
+                info1_desc: "Evlampia lit l'avenir dans le ballon, les cartes et le téléphone",
+                info2_title: "3 saisons",
+                info2_desc: "Tous les épisodes sont réunis dans les playlists RUTUBE — la chaîne principale",
+                info3_title: "Telegram",
+                info3_desc: "Les nouveaux épisodes et les actualités sont partagés sur le canal Telegram",
+                sticker_title: "Stickers pour Telegram",
+                sticker_desc: "Evlampia a ses propres stickers",
+                btn_stickers: "Obtenir →",
+                label_stickers: "Stickers",
+                placeholder_soon: "Bientôt disponible",
+                placeholder_stickers: "L'image des stickers sera ajoutée plus tard",
+                placeholder_img1: "« Oui, oui, Evlampia est comme ça »",
+                placeholder_img2: "Certificat de voyante",
+                label_gallery: "Galerie",
+                label_faq: "Questions",
+                faq1_q: "Pourquoi les épisodes ont-ils disparu ?",
+                faq1_a: "Nous avons masqué temporairement les épisodes pour vérifier l'absence de contenu interdit. Dès que nous aurons supprimé certaines scènes, les vidéos redeviendront disponibles. Suivez les nouvelles sur <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                faq2_q: "Pourquoi le tout premier épisode n'est pas sur RUTUBE ?",
+                faq2_a: "Au début, on voulait publier uniquement sur Dzen, puis RUTUBE est apparu (c'est aujourd'hui la chaîne principale) et le premier épisode n'a jamais été republié.",
+                faq3_q: "Pourquoi la saison 2 ne s'est pas terminée complètement ?",
+                faq3_a: "Le monteur principal est parti « en vacances » et l'acteur a dû se débrouiller seul. Les 4 épisodes de la saison ont été montés. Puis le monteur est revenu et la troisième saison a commencé aussitôt.",
+                label_contact: "Contact",
+                contact_title: "Retours",
+                contact_desc: "Projet créé par le studio і. Pour toute question — écrivez-nous, nous répondons dans la journée",
+                contact_tg_sub: "Écrivez sur le canal des projets",
+                contact_studio: "Studio і.",
+                contact_studio_sub: "Comment nous contacter",
+                footer_disclaimer: "Le projet est marqué 18+. Tous les rituels et conseils du personnage sont fictifs et purement divertissants.",
+                footer_collab: "Projet créé en collaboration avec le <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> et <a href=\"#\">Lokiq</a>",
+                lang_more: "Plus de langues"
+            },
+            pt: {
+                doc_title: "Evlampia — vidente boa e má",
+                footer_eco: "Um projeto do ecossistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                hero_title: "Evlampia",
+                hero_tagline: "a vidente boa e má",
+                hero_desc: "Série web sobre a vidente Evlampia: previsões, temporadas e episódios de arquivo. Ela vê o futuro pela bola, pelas cartas e pelo telefone. Tem quem acredite nela, tem quem ria — mas ninguém fica indiferente.",
+                btn_rutube: "▶ Assistir no RUTUBE",
+                btn_official: "Site oficial",
+                label_new: "Novos vídeos",
+                badge_new: "Anúncio",
+                episode_title: "Em breve: um novo vídeo",
+                episode_desc: "Estamos preparando um novo vídeo no formato clássico. Zero detalhes, zero spoilers. Enquanto isso, reveja o último episódio de 15 de abril de 2024",
+                btn_watch: "Assistir →",
+                browse_title: "Episódios e temporadas",
+                browse_desc: "Todos os episódios clássicos: três temporadas, lançamentos de arquivo e entrevistas. Mais de 30 episódios do formato original com previsões, cartas e bola de cristal",
+                mu_block_title: "Museu da Evlampia",
+                mu_block_desc: "Coleção virtual de artefatos da série. O museu também tem um fundo real em São Petersburgo: puramente na teoria, mediante combinação, é possível organizar uma exibição pessoal dos objetos",
+                warn_title: "Episódios temporariamente indisponíveis",
+                warn_desc: "Parte dos episódios está oculta para moderação conforme o art. 6.21 do Código Administrativo e o art. 230.3 do Código Penal da Federação Russa. Algumas cenas serão censuradas e removidas. Acompanhe as novidades no <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_about: "Sobre o projeto",
+                info1_title: "Vidente",
+                info1_desc: "Evlampia vê o futuro pela bola, pelas cartas e pelo telefone",
+                info2_title: "3 temporadas",
+                info2_desc: "Todos os episódios estão nas playlists do RUTUBE — o canal principal",
+                info3_title: "Telegram",
+                info3_desc: "Os novos episódios e as notícias são compartilhados no canal do Telegram",
+                sticker_title: "Figurinhas para Telegram",
+                sticker_desc: "A Evlampia tem suas próprias figurinhas",
+                btn_stickers: "Pegar →",
+                label_stickers: "Figurinhas",
+                placeholder_soon: "Em breve",
+                placeholder_stickers: "A imagem das figurinhas será adicionada mais tarde",
+                placeholder_img1: "«Sim, sim, a Evlampia é assim»",
+                placeholder_img2: "Certificado de vidente",
+                label_gallery: "Galeria",
+                label_faq: "Perguntas",
+                faq1_q: "Por que os episódios sumiram?",
+                faq1_a: "Ocultamos temporariamente os episódios para verificar conteúdo proibido. Assim que removermos algumas cenas, os vídeos voltarão a ficar disponíveis. Acompanhe as notícias no <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                faq2_q: "Por que o primeiro episódio não está no RUTUBE?",
+                faq2_a: "No início queríamos publicar apenas no Dzen, mas depois apareceu o RUTUBE (hoje é o canal principal) e o primeiro episódio nunca foi republicado.",
+                faq3_q: "Por que a 2ª temporada não terminou por completo?",
+                faq3_a: "O editor principal foi «de férias» e o ator teve que se virar sozinho. Os 4 episódios da temporada foram montados. Depois o editor voltou e a terceira temporada começou logo em seguida.",
+                label_contact: "Contato",
+                contact_title: "Feedback",
+                contact_desc: "Projeto criado pelo estúdio і. Para qualquer dúvida — escreva, respondemos em até um dia",
+                contact_tg_sub: "Escreva no canal dos projetos",
+                contact_studio: "Estúdio і.",
+                contact_studio_sub: "Como falar conosco",
+                footer_disclaimer: "O projeto possui classificação 18+. Todas as adivinhações e conselhos da personagem são fictícios e têm caráter exclusivamente recreativo.",
+                footer_collab: "Projeto criado junto com o <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estúdio і.</a> e <a href=\"#\">Lokiq</a>",
+                lang_more: "Mais idiomas"
+            },
+            pl: {
+                doc_title: "Evlampia — dobra i zła wróżbitka",
+                footer_eco: "Projekt ekosystemy <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                hero_title: "Evlampia",
+                hero_tagline: "dobra i zła wróżbitka",
+                hero_desc: "Serial internetowy o wróżbitce Evlampii — przepowiednie, sezony i odcinki archiwalne. Przewiduje przyszłość za pomocą kuli, kart i telefonu. Jedni w nią wierzą, inni się śmieją, ale nikt nie pozostaje obojętny.",
+                btn_rutube: "▶ Oglądaj na RUTUBE",
+                btn_official: "Oficjalna strona",
+                label_new: "Nowe filmy",
+                badge_new: "Zapowiedź",
+                episode_title: "Wkrótce nowy odcinek",
+                episode_desc: "Przygotowujemy nowy materiał w klasycznym formacie. Zero szczegółów i spoilerów. A tymczasem obejrzyj ponownie ostatni odcinek z 15 kwietnia 2024",
+                btn_watch: "Oglądaj →",
+                browse_title: "Seriale i sezony",
+                browse_desc: "Wszystkie klasyczne odcinki — trzy sezony, odcinki archiwalne i wywiady. Ponad 30 odcinków oryginalnego formatu z przepowiedniami, kartami i kulą",
+                mu_block_title: "Muzeum Evlampii",
+                mu_block_desc: "Wirtualna kolekcja artefaktów z serialu. Muzeum ma też prawdziwy fundusz w Sankt Petersburgu — czysto teoretycznie, po wcześniejszym umówieniu, można trafić na prywatną prezentację przedmiotów",
+                label_about: "O projekcie",
+                warn_title: "Odcinki tymczasowo niedostępne",
+                warn_desc: "Część odcinków ukryto do czasu moderacji zgodnie z wymogami art. 6.21 Kodeksu wykroczeń Federacji Rosyjskiej oraz art. 230.3 Kodeksu karnego Federacji Rosyjskiej. Niektóre sceny podlegają cenzurze i zostaną usunięte. Śledź aktualności na <a href=\"https://t.me/evlampia1327\">Telegramie</a>.",
+                info1_title: "Wróżbitka",
+                info1_desc: "Evlampia przewiduje przyszłość za pomocą kuli, kart i telefonu",
+                info2_title: "3 sezony",
+                info2_desc: "Wszystkie odcinki zebrane w playlistach na RUTUBE — głównym kanale",
+                info3_title: "Telegram",
+                info3_desc: "Nowe odcinki i nowości publikują w kanale Telegram",
+                sticker_title: "Naklejki do Telegrama",
+                sticker_desc: "Evlampia ma własne naklejki",
+                btn_stickers: "Pobierz →",
+                label_stickers: "Naklejki",
+                placeholder_soon: "Wkrótce",
+                placeholder_stickers: "Obrazek z naklejkami pojawi się później",
+                label_gallery: "Galeria",
+                placeholder_img1: "„Tak, tak, taka jest Evlampia”",
+                placeholder_img2: "Certyfikat wróżbity",
+                label_faq: "Pytania",
+                faq1_q: "Dlaczego zniknęły odcinki?",
+                faq1_a: "Tymczasowo ukryliśmy odcinki do czasu sprawdzenia pod kątem zakazanych treści. Gdy usuniemy niektóre momenty, filmy znów będą dostępne. Śledź wiadomości na <a href=\"https://t.me/evlampia1327\">Telegramie</a>.",
+                faq2_q: "Dlaczego pierwszego odcinka nie ma na RUTUBE?",
+                faq2_a: "Początkowo odcinki miały być publikowane tylko na Dzen, ale potem pojawił się RUTUBE (obecnie główny kanał), a pierwszego odcinka nigdy nie wgrano ponownie.",
+                faq3_q: "Dlaczego drugi sezon nie zakończył się w pełni?",
+                faq3_a: "Główny montażysta poszedł „na urlop” i aktor musiał radzić sobie sam. Zmontowano wszystkie 4 odcinki sezonu. Później główny montażysta wrócił i od razu zaczął się trzeci sezon.",
+                label_contact: "Kontakt",
+                contact_title: "Napisz do nas",
+                contact_desc: "Projekt stworzyło studio і. We wszystkich sprawach — piszcie, odpowiemy w ciągu dnia",
+                contact_tg_sub: "Piszcie w wiadomościach prywatnych kanału Evlampii",
+                contact_studio: "Studio і.",
+                contact_studio_sub: "Jak się z nami skontaktować",
+                footer_disclaimer: "Projekt ma oznaczenie 18+. Wszystkie wróżby i porady postaci są fikcyjne i mają charakter wyłącznie rozrywkowy.",
+                footer_collab: "Projekt stworzony we współpracy ze <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studiem і.</a> i <a href=\"#\">Lokiq</a>",
+                lang_more: "Więcej języków"
             }
         };
 
@@ -845,6 +1195,7 @@
                 opt.classList.toggle('active', opt.dataset.lang === lang);
             });
             document.documentElement.setAttribute('lang', lang);
+            if (i18n[lang] && i18n[lang].doc_title) document.title = i18n[lang].doc_title;
             localStorage.setItem('i-lang', lang);
         }
 
@@ -855,6 +1206,12 @@
         langBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             langSwitcher.classList.toggle('open');
+        });
+
+        const langMore = document.getElementById('langMore');
+        langMore.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langSwitcher.classList.toggle('more-open');
         });
 
         document.addEventListener('click', () => langSwitcher.classList.remove('open'));

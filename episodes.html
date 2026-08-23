@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -68,6 +68,18 @@
         .lang-option:hover { background: var(--surface-hover); color: var(--text); }
         .lang-option.active { color: var(--accent); background: var(--accent-glow); }
         .lang-option .flag { font-size: 1rem; }
+        .lang-more {
+            width: 100%; margin-top: 5px; padding: 8px 0 2px;
+            background: none; border: none; border-top: 1px solid var(--border);
+            color: var(--text-muted); font-family: 'Unbounded', sans-serif;
+            font-size: 0.58rem; font-weight: 600; letter-spacing: 0.05em;
+            cursor: pointer; transition: color 0.15s; text-align: center;
+        }
+        .lang-more:hover { color: var(--accent); }
+        .lang-more .arrow { font-size: 0.5rem; display: inline-block; transition: transform 0.2s; }
+        .lang-switcher.more-open .lang-more .arrow { transform: rotate(180deg); }
+        .lang-extra { display: none; }
+        .lang-switcher.more-open .lang-extra { display: block; }
 
         .header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -386,6 +398,15 @@
                     <button class="lang-option" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
                     <button class="lang-option" data-lang="be"><span class="flag">🇧🇾</span> Беларуская</button>
                     <button class="lang-option" data-lang="uk"><span class="flag">🇺🇦</span> Українська</button>
+                    <button class="lang-more" id="langMore"><span data-i18n="lang_more">Ещё языки</span> <span class="arrow">▾</span></button>
+                    <div class="lang-extra">
+                        <button class="lang-option" data-lang="zh"><span class="flag">🇨🇳</span> 中文</button>
+                        <button class="lang-option" data-lang="es"><span class="flag">🇪🇸</span> Español</button>
+                        <button class="lang-option" data-lang="ja"><span class="flag">🇯🇵</span> 日本語</button>
+                        <button class="lang-option" data-lang="fr"><span class="flag">🇫🇷</span> Français</button>
+                        <button class="lang-option" data-lang="pt"><span class="flag">🇵🇹</span> Português</button>
+                        <button class="lang-option" data-lang="pl"><span class="flag">🇵🇱</span> Polski</button>
+                    </div>
                 </div>
             </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -411,7 +432,7 @@
             <div class="w-icon">⚠️</div>
             <div class="text">
                 <h4 data-i18n="warn_title">Серии временно недоступны</h4>
-                <p data-i18n="warn_desc">Часть серий скрыта для прохождения модерации в связи с требованиями Федерального закона №48-ФЗ. Следите за обновлениями в <a href="https://t.me/evlampia1327">Telegram</a>.</p>
+                <p data-i18n="warn_desc">Часть серий скрыта для прохождения модерации в связи с требованиями ст. 6.21 КоАП РФ, ст. 230.3 УК РФ. Следите за обновлениями в <a href="https://t.me/evlampia1327">Telegram</a>.</p>
             </div>
         </div>
 
@@ -568,15 +589,19 @@
 
         <div class="footer">
             <p data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
-            <p>Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+            <p style="margin-top: 4px;" data-i18n="footer_eco">Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
         </div>
     </div>
 
     <script>
         const i18n = {
             ru: {
+                doc_title: "Серии и сезоны — Евлампия",
+                footer_eco: "Проект экосистемы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "Пролог", r_first: "Первая серия",
+                r_s1: "Сезон 1", r_s2: "Сезон 2", r_s3: "Сезон 3",
                 ep_title: "Серии и сезоны", ep_tagline: "Все выпуски Евлампии в одном месте",
-                warn_title: "Серии временно недоступны", warn_desc: "Часть серий скрыта для прохождения модерации в связи с требованиями Федерального закона №48-ФЗ. Следите за обновлениями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_title: "Серии временно недоступны", warn_desc: "Часть серий скрыта для прохождения модерации в связи с требованиями ст. 6.21 КоАП РФ, ст. 230.3 УК РФ. Следите за обновлениями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 label_classic: "Обычные серии", classic_title: "Классические серии", classic_sub: "Оригинальный формат — предсказания, карты, шар и телефон",
                 s0_badge: "Пролог", s0_title: "Самая первая серия",
                 ep_first: "Самая первая серия",
@@ -599,11 +624,16 @@
                 beta_btn: "Попробовать →",
                 roulette_title: "Рулетка серий", roulette_desc: "Не можете выбрать? Крутите — Евлампия решит за вас",
                 roulette_btn: "🎲 Крутить", roulette_watch: "Смотреть на RUTUBE →",
-                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>"
+                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>",
+                lang_more: "Ещё языки"
             },
             en: {
+                doc_title: "Episodes & Seasons — Evlampia",
+                footer_eco: "A project of the <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> ecosystem · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "Prologue", r_first: "First episode",
+                r_s1: "Season 1", r_s2: "Season 2", r_s3: "Season 3",
                 ep_title: "Episodes & Seasons", ep_tagline: "All Evlampia episodes in one place",
-                warn_title: "Episodes temporarily unavailable", warn_desc: "Part of the episodes are hidden for moderation per Federal Law No. 48-FZ. Follow updates on <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_title: "Episodes temporarily unavailable", warn_desc: "Part of the episodes are hidden for moderation per Art. 6.21 of the Administrative Code and Art. 230.3 of the Criminal Code of the Russian Federation. Follow updates on <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 label_classic: "Regular episodes", classic_title: "Classic episodes", classic_sub: "Original format — predictions, cards, ball and phone",
                 s0_badge: "Prologue", s0_title: "The very first episode",
                 ep_first: "The very first episode",
@@ -626,11 +656,16 @@
                 beta_btn: "Try it →",
                 roulette_title: "Episode Roulette", roulette_desc: "Can't choose? Spin it — Evlampia will decide for you",
                 roulette_btn: "🎲 Spin", roulette_watch: "Watch on RUTUBE →",
-                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>"
+                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>",
+                lang_more: "More languages"
             },
             de: {
+                doc_title: "Folgen & Staffeln — Evlampia",
+                footer_eco: "Ein Projekt des <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a>-Ökosystems · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "Prolog", r_first: "Erste Folge",
+                r_s1: "Staffel 1", r_s2: "Staffel 2", r_s3: "Staffel 3",
                 ep_title: "Folgen & Staffeln", ep_tagline: "Alle Evlampia-Folgen an einem Ort",
-                warn_title: "Folgen vorübergehend nicht verfügbar", warn_desc: "Teil der Folgen wurde wegen Moderation gemäß Bundesgesetz Nr. 48-FZ ausgeblendet. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_title: "Folgen vorübergehend nicht verfügbar", warn_desc: "Teil der Folgen wurde wegen Moderation gemäß Art. 6.21 KoAP RF und Art. 230.3 UK RF ausgeblendet. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 label_classic: "Reguläre Folgen", classic_title: "Klassische Folgen", classic_sub: "Originalformat — Vorhersagen, Karten, Kugel und Telefon",
                 s0_badge: "Prolog", s0_title: "Die allererste Folge",
                 ep_first: "Die allererste Folge",
@@ -653,11 +688,16 @@
                 beta_btn: "Ausprobieren →",
                 roulette_title: "Folgen-Roulette", roulette_desc: "Können Sie sich nicht entscheiden? Drehen Sie — Evlampia entscheidet für Sie",
                 roulette_btn: "🎲 Drehen", roulette_watch: "Auf RUTUBE ansehen →",
-                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>"
+                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>",
+                lang_more: "Weitere Sprachen"
             },
             be: {
+                doc_title: "Серыі і сезоны — Еўлампія",
+                footer_eco: "Праект экасістэмы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "Пралог", r_first: "Першая серыя",
+                r_s1: "Сезон 1", r_s2: "Сезон 2", r_s3: "Сезон 3",
                 ep_title: "Серыі і сезоны", ep_tagline: "Усе выпускі Еўлампіі ў адным месцы",
-                warn_title: "Серыі часова недаступныя", warn_desc: "Частка серый схавана для мадэрацыі паводле Федэральнага закона №48-ФЗ. Сачыце за абнаўленнямі ў <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_title: "Серыі часова недаступныя", warn_desc: "Частка серый схавана для мадэрацыі паводле арт. 6.21 КаАП РФ, арт. 230.3 КК РФ. Сачыце за абнаўленнямі ў <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 label_classic: "Звычайныя серыі", classic_title: "Класічныя серыі", classic_sub: "Арыгінальны фармат — прадказанні, карты, шар і тэлефон",
                 s0_badge: "Пралог", s0_title: "Самая першая серыя",
                 ep_first: "Самая першая серыя",
@@ -680,11 +720,16 @@
                 beta_btn: "Паспрабаваць →",
                 roulette_title: "Рулетка серый", roulette_desc: "Не можаце выбраць? Круціце — Еўлампія вырашыць за вас",
                 roulette_btn: "🎲 Круціць", roulette_watch: "Глядзець на RUTUBE →",
-                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>"
+                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>",
+                lang_more: "Большэй моваў"
             },
             uk: {
+                doc_title: "Серії та сезони — Євлампія",
+                footer_eco: "Проєкт екосистеми <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "Пролог", r_first: "Перша серія",
+                r_s1: "Сезон 1", r_s2: "Сезон 2", r_s3: "Сезон 3",
                 ep_title: "Серії та сезони", ep_tagline: "Усі випуски Євлампії в одному місці",
-                warn_title: "Серії тимчасово недоступні", warn_desc: "Частка серій приховано для модерації відповідно до Федерального закону №48-ФЗ. Слідкуйте за оновленнями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                warn_title: "Серії тимчасово недоступні", warn_desc: "Частка серій приховано для модерації відповідно до ст. 6.21 КпАП РФ, ст. 230.3 КК РФ. Слідкуйте за оновленнями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
                 label_classic: "Звичайні серії", classic_title: "Класичні серії", classic_sub: "Оригінальний формат — передбачення, карти, куля і телефон",
                 s0_badge: "Пролог", s0_title: "Сама перша серія",
                 ep_first: "Сама перша серія",
@@ -707,7 +752,200 @@
                 beta_btn: "Спробувати →",
                 roulette_title: "Рулетка серій", roulette_desc: "Не можете обрати? Крутіть — Євлампія вирішить за вас",
                 roulette_btn: "🎲 Крутити", roulette_watch: "Дивитися на RUTUBE →",
-                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>"
+                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>",
+                lang_more: "Більше мов"
+            },
+            zh: {
+                doc_title: "剧集与季数 — 叶芙兰皮娅",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> 生态系统项目 · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "序章", r_first: "第1集",
+                r_s1: "第1季", r_s2: "第2季", r_s3: "第3季",
+                ep_title: "剧集与季数", ep_tagline: "叶芙兰皮娅的所有节目都在一个地方",
+                warn_title: "剧集暂时不可用", warn_desc: "部分剧集因须按俄罗斯联邦行政违法法典第6.21条、俄罗斯联邦刑法典第230.3条的要求进行审核而暂时隐藏。请在 <a href=\"https://t.me/evlampia1327\">Telegram</a> 关注更新。",
+                label_classic: "常规剧集", classic_title: "经典剧集", classic_sub: "原创格式——预言、纸牌、水晶球和电话",
+                s0_badge: "序章", s0_title: "有史以来第一集",
+                ep_first: "有史以来第一集",
+                s1_title: "第一季", s2_title: "第二季", s3_title: "第三季",
+                hidden: "已隐藏",
+                s1e1:"第1集",s1e2:"第2集",s1e3:"第3集",s1e4:"第4集",s1e5:"第5集",
+                s1e6:"第6集",s1e7:"第7集",s1e8:"第8集",s1e9:"第9集",s1e10:"第10集",
+                s2e1:"第1集",s2e2:"第2集",s2e3:"第3集",s2e4:"第4集",s2e5:"第5集",
+                s2e6:"第6集",s2e7:"第7集",s2e8:"第8集",s2e9:"第9集",s2e10:"第10集",
+                s3e1:"第1集",s3e2:"第2集",s3e3:"第3集",s3e4:"第4集",s3e5:"第5集",
+                s3e6:"第6集",s3e7:"第7集",s3e8:"第8集",s3e9:"第9集",s3e10:"第10集",
+                open_playlist: "打开播放列表",
+                archive_badge: "档案", archive_title: "更多视频",
+                ep_archive: "档案剧集", ep_interview: "档案访谈",
+                label_newformat: "新格式", new_title: "其他视频", new_sub: "不止占卜——其他格式与类型",
+                cs_title: "敬请期待", cs_desc: "我们正在为您拍摄新内容，上传后会第一时间出现在这里。请在 <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a> 关注更新。",
+                beta_badge: "测试版",
+                beta_title: "і. 工作室的新技术——「播放器」",
+                beta_desc: "直接在网站上观看剧集：і. 工作室的新播放器可直接播放项目仓库中的视频。功能处于测试阶段——如有问题请在 Telegram 反馈。",
+                beta_btn: "试试 →",
+                roulette_title: "剧集轮盘", roulette_desc: "选不出来？转一下——让叶芙兰皮娅替你决定",
+                roulette_btn: "🎲 转动", roulette_watch: "在 RUTUBE 上观看 →",
+                footer_collab: "项目与<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. 工作室</a>及<a href=\"#\">Lokiq</a>合作创建",
+                lang_more: "更多语言"
+            },
+            es: {
+                doc_title: "Episodios y temporadas — Evlampia",
+                footer_eco: "Un proyecto del ecosistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "Prólogo", r_first: "Primer episodio",
+                r_s1: "Temporada 1", r_s2: "Temporada 2", r_s3: "Temporada 3",
+                ep_title: "Episodios y temporadas", ep_tagline: "Todos los episodios de Evlampia en un solo lugar",
+                warn_title: "Episodios temporalmente no disponibles", warn_desc: "Parte de los episodios está oculta para moderación según el art. 6.21 del Código Administrativo y el art. 230.3 del Código Penal de la Federación de Rusia. Sigue las novedades en <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_classic: "Episodios regulares", classic_title: "Episodios clásicos", classic_sub: "Formato original: predicciones, cartas, bola y teléfono",
+                s0_badge: "Prólogo", s0_title: "El primer episodio de todos",
+                ep_first: "El primer episodio de todos",
+                s1_title: "Temporada 1", s2_title: "Temporada 2", s3_title: "Temporada 3",
+                hidden: "Oculto",
+                s1e1:"Episodio 1",s1e2:"Episodio 2",s1e3:"Episodio 3",s1e4:"Episodio 4",s1e5:"Episodio 5",
+                s1e6:"Episodio 6",s1e7:"Episodio 7",s1e8:"Episodio 8",s1e9:"Episodio 9",s1e10:"Episodio 10",
+                s2e1:"Episodio 1",s2e2:"Episodio 2",s2e3:"Episodio 3",s2e4:"Episodio 4",s2e5:"Episodio 5",
+                s2e6:"Episodio 6",s2e7:"Episodio 7",s2e8:"Episodio 8",s2e9:"Episodio 9",s2e10:"Episodio 10",
+                s3e1:"Episodio 1",s3e2:"Episodio 2",s3e3:"Episodio 3",s3e4:"Episodio 4",s3e5:"Episodio 5",
+                s3e6:"Episodio 6",s3e7:"Episodio 7",s3e8:"Episodio 8",s3e9:"Episodio 9",s3e10:"Episodio 10",
+                open_playlist: "Abrir playlist",
+                archive_badge: "Archivo", archive_title: "Vídeos adicionales",
+                ep_archive: "Episodio de archivo", ep_interview: "Entrevista de archivo",
+                label_newformat: "Nuevos formatos", new_title: "Otros vídeos", new_sub: "No solo adivinación: otros formatos y géneros",
+                cs_title: "Muy pronto", cs_desc: "Estamos trabajando y grabando contenido nuevo para ti. Todo aparecerá aquí cuando lo publiquemos. Sigue las novedades en <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a>.",
+                beta_badge: "Beta",
+                beta_title: "Nueva tecnología del estudio і.: «Player»",
+                beta_desc: "Mira los episodios directamente en la web: el nuevo reproductor del estudio і. reproduce los vídeos desde el repositorio del proyecto. La función está en beta: informa de los fallos en Telegram.",
+                beta_btn: "Pruébalo →",
+                roulette_title: "Ruleta de episodios", roulette_desc: "¿No puedes elegir? Gírala: Evlampia decidirá por ti",
+                roulette_btn: "🎲 Girar", roulette_watch: "Ver en RUTUBE →",
+                footer_collab: "Proyecto creado junto al <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estudio і.</a> y <a href=\"#\">Lokiq</a>",
+                lang_more: "Más idiomas"
+            },
+            ja: {
+                doc_title: "エピソードとシーズン — エヴランピヤ",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> エコシステムのプロジェクト · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "プロローグ", r_first: "第1話",
+                r_s1: "シーズン1", r_s2: "シーズン2", r_s3: "シーズン3",
+                ep_title: "エピソードとシーズン", ep_tagline: "エヴランピヤの全エピソードをここに",
+                warn_title: "エピソードは一時的に利用できません", warn_desc: "一部のエピソードは、ロシア連邦行政違反法第6.21条およびロシア連邦刑法第230.3条の要件に基づくモデレーションのため非表示になっています。最新情報は<a href=\"https://t.me/evlampia1327\">Telegram</a>で。",
+                label_classic: "レギュラー配信", classic_title: "クラシックなエピソード", classic_sub: "オリジナルフォーマット——予言、カード、水晶玉、電話",
+                s0_badge: "プロローグ", s0_title: "最初のエピソード",
+                ep_first: "最初のエピソード",
+                s1_title: "シーズン1", s2_title: "シーズン2", s3_title: "シーズン3",
+                hidden: "非公開",
+                s1e1:"第1話",s1e2:"第2話",s1e3:"第3話",s1e4:"第4話",s1e5:"第5話",
+                s1e6:"第6話",s1e7:"第7話",s1e8:"第8話",s1e9:"第9話",s1e10:"第10話",
+                s2e1:"第1話",s2e2:"第2話",s2e3:"第3話",s2e4:"第4話",s2e5:"第5話",
+                s2e6:"第6話",s2e7:"第7話",s2e8:"第8話",s2e9:"第9話",s2e10:"第10話",
+                s3e1:"第1話",s3e2:"第2話",s3e3:"第3話",s3e4:"第4話",s3e5:"第5話",
+                s3e6:"第6話",s3e7:"第7話",s3e8:"第8話",s3e9:"第9話",s3e10:"第10話",
+                open_playlist: "プレイリストを開く",
+                archive_badge: "アーカイブ", archive_title: "追加の動画",
+                ep_archive: "アーカイブ・エピソード", ep_interview: "アーカイブ・インタビュー",
+                label_newformat: "新しいフォーマット", new_title: "その他の動画", new_sub: "占いだけじゃない——別のフォーマットとジャンル",
+                cs_title: "近日公開", cs_desc: "新しいコンテンツを撮影中です。公開され次第、ここに掲載します。最新情報は<a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a>で。",
+                beta_badge: "ベータテスト",
+                beta_title: "і. スタジオの新技術——「プレイヤー」",
+                beta_desc: "ウェブサイト上で直接エピソードを視聴： і. スタジオの新プレイヤーがプロジェクトのリポジトリから動画を再生します。ベータテスト中の機能です——不具合はTelegramまで。",
+                beta_btn: "使ってみる →",
+                roulette_title: "エピソードルーレット", roulette_desc: "選べない？回して——エヴランピヤが代わりに決めてくれる",
+                roulette_btn: "🎲 回す", roulette_watch: "RUTUBEで見る →",
+                footer_collab: "プロジェクトは<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. スタジオ</a>および<a href=\"#\">Lokiq</a>との共同制作です",
+                lang_more: "その他の言語"
+            },
+            fr: {
+                doc_title: "Épisodes et saisons — Evlampia",
+                footer_eco: "Un projet de l'écosystème <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "Prologue", r_first: "Premier épisode",
+                r_s1: "Saison 1", r_s2: "Saison 2", r_s3: "Saison 3",
+                ep_title: "Épisodes et saisons", ep_tagline: "Tous les épisodes d'Evlampia au même endroit",
+                warn_title: "Épisodes temporairement indisponibles", warn_desc: "Une partie des épisodes est masquée pour modération conformément à l'art. 6.21 du Code administratif et à l'art. 230.3 du Code pénal de la Fédération de Russie. Suivez les actualités sur <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_classic: "Épisodes réguliers", classic_title: "Épisodes classiques", classic_sub: "Format original : prédictions, cartes, boule et téléphone",
+                s0_badge: "Prologue", s0_title: "Le tout premier épisode",
+                ep_first: "Le tout premier épisode",
+                s1_title: "Saison 1", s2_title: "Saison 2", s3_title: "Saison 3",
+                hidden: "Masqué",
+                s1e1:"Épisode 1",s1e2:"Épisode 2",s1e3:"Épisode 3",s1e4:"Épisode 4",s1e5:"Épisode 5",
+                s1e6:"Épisode 6",s1e7:"Épisode 7",s1e8:"Épisode 8",s1e9:"Épisode 9",s1e10:"Épisode 10",
+                s2e1:"Épisode 1",s2e2:"Épisode 2",s2e3:"Épisode 3",s2e4:"Épisode 4",s2e5:"Épisode 5",
+                s2e6:"Épisode 6",s2e7:"Épisode 7",s2e8:"Épisode 8",s2e9:"Épisode 9",s2e10:"Épisode 10",
+                s3e1:"Épisode 1",s3e2:"Épisode 2",s3e3:"Épisode 3",s3e4:"Épisode 4",s3e5:"Épisode 5",
+                s3e6:"Épisode 6",s3e7:"Épisode 7",s3e8:"Épisode 8",s3e9:"Épisode 9",s3e10:"Épisode 10",
+                open_playlist: "Ouvrir la playlist",
+                archive_badge: "Archives", archive_title: "Vidéos supplémentaires",
+                ep_archive: "Épisode d'archives", ep_interview: "Interview d'archives",
+                label_newformat: "Nouveaux formats", new_title: "Autres vidéos", new_sub: "Pas seulement la voyance : d'autres formats et genres",
+                cs_title: "Bientôt disponible", cs_desc: "Nous travaillons et tournons du nouveau contenu pour vous. Tout apparaîtra ici dès sa publication. Suivez les actualités sur <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a>.",
+                beta_badge: "Bêta-test",
+                beta_title: "Nouvelle technologie du studio і. — « Player »",
+                beta_desc: "Regardez les épisodes directement sur le site : le nouveau lecteur du studio і. diffuse les vidéos depuis le dépôt du projet. Fonctionnalité en bêta-test — signalez les bugs sur Telegram.",
+                beta_btn: "Essayer →",
+                roulette_title: "Roulette d'épisodes", roulette_desc: "Vous hésitez ? Lancez-la : Evlampia décidera pour vous",
+                roulette_btn: "🎲 Lancer", roulette_watch: "Regarder sur RUTUBE →",
+                footer_collab: "Projet créé en collaboration avec le <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> et <a href=\"#\">Lokiq</a>",
+                lang_more: "Plus de langues"
+            },
+            pt: {
+                doc_title: "Episódios e temporadas — Evlampia",
+                footer_eco: "Um projeto do ecossistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "Prólogo", r_first: "Primeiro episódio",
+                r_s1: "Temporada 1", r_s2: "Temporada 2", r_s3: "Temporada 3",
+                ep_title: "Episódios e temporadas", ep_tagline: "Todos os episódios da Evlampia em um só lugar",
+                warn_title: "Episódios temporariamente indisponíveis", warn_desc: "Parte dos episódios está oculta para moderação conforme o art. 6.21 do Código Administrativo e o art. 230.3 do Código Penal da Federação Russa. Acompanhe as novidades no <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_classic: "Episódios regulares", classic_title: "Episódios clássicos", classic_sub: "Formato original: previsões, cartas, bola e telefone",
+                s0_badge: "Prólogo", s0_title: "O primeiro episódio de todos",
+                ep_first: "O primeiro episódio de todos",
+                s1_title: "Temporada 1", s2_title: "Temporada 2", s3_title: "Temporada 3",
+                hidden: "Oculto",
+                s1e1:"Episódio 1",s1e2:"Episódio 2",s1e3:"Episódio 3",s1e4:"Episódio 4",s1e5:"Episódio 5",
+                s1e6:"Episódio 6",s1e7:"Episódio 7",s1e8:"Episódio 8",s1e9:"Episódio 9",s1e10:"Episódio 10",
+                s2e1:"Episódio 1",s2e2:"Episódio 2",s2e3:"Episódio 3",s2e4:"Episódio 4",s2e5:"Episódio 5",
+                s2e6:"Episódio 6",s2e7:"Episódio 7",s2e8:"Episódio 8",s2e9:"Episódio 9",s2e10:"Episódio 10",
+                s3e1:"Episódio 1",s3e2:"Episódio 2",s3e3:"Episódio 3",s3e4:"Episódio 4",s3e5:"Episódio 5",
+                s3e6:"Episódio 6",s3e7:"Episódio 7",s3e8:"Episódio 8",s3e9:"Episódio 9",s3e10:"Episódio 10",
+                open_playlist: "Abrir playlist",
+                archive_badge: "Arquivo", archive_title: "Vídeos adicionais",
+                ep_archive: "Episódio de arquivo", ep_interview: "Entrevista de arquivo",
+                label_newformat: "Novos formatos", new_title: "Outros vídeos", new_sub: "Não só adivinhação: outros formatos e gêneros",
+                cs_title: "Em breve", cs_desc: "Estamos trabalhando e gravando conteúdo novo para você. Tudo aparecerá aqui quando publicarmos. Acompanhe as novidades em <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a>.",
+                beta_badge: "Teste beta",
+                beta_title: "Nova tecnologia do estúdio і. — «Player»",
+                beta_desc: "Assista aos episódios direto no site: o novo reprodutor do estúdio і. reproduz os vídeos do repositório do projeto. O recurso está em teste beta — reporte erros no Telegram.",
+                beta_btn: "Experimentar →",
+                roulette_title: "Roleta de episódios", roulette_desc: "Não consegue escolher? Gire: a Evlampia decide por você",
+                roulette_btn: "🎲 Girar", roulette_watch: "Assistir no RUTUBE →",
+                footer_collab: "Projeto criado junto com o <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estúdio і.</a> e <a href=\"#\">Lokiq</a>",
+                lang_more: "Mais idiomas"
+            },
+            pl: {
+                doc_title: "Odcinki i sezony — Evlampia",
+                footer_eco: "Projekt ekosystemy <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                r_prolog: "Prolog", r_first: "Pierwszy odcinek",
+                r_s1: "Sezon 1", r_s2: "Sezon 2", r_s3: "Sezon 3",
+                ep_title: "Odcinki i sezony", ep_tagline: "Wszystkie odcinki Evlampii w jednym miejscu",
+                warn_title: "Odcinki tymczasowo niedostępne", warn_desc: "Część odcinków została ukryta do czasu moderacji zgodnie z wymogami art. 6.21 Kodeksu wykroczeń Federacji Rosyjskiej oraz art. 230.3 Kodeksu karnego Federacji Rosyjskiej. Śledź aktualności na <a href=\"https://t.me/evlampia1327\">Telegramie</a>.",
+                label_classic: "Zwykłe odcinki", classic_title: "Klasyczne odcinki", classic_sub: "Format oryginalny — przepowiednie, karty, kula i telefon",
+                s0_badge: "Prolog", s0_title: "Sam pierwszy odcinek",
+                ep_first: "Sam pierwszy odcinek",
+                s1_title: "Sezon 1", s2_title: "Sezon 2", s3_title: "Sezon 3",
+                hidden: "Ukryty",
+                s1e1:"Odcinek 1",s1e2:"Odcinek 2",s1e3:"Odcinek 3",s1e4:"Odcinek 4",s1e5:"Odcinek 5",
+                s1e6:"Odcinek 6",s1e7:"Odcinek 7",s1e8:"Odcinek 8",s1e9:"Odcinek 9",s1e10:"Odcinek 10",
+                s2e1:"Odcinek 1",s2e2:"Odcinek 2",s2e3:"Odcinek 3",s2e4:"Odcinek 4",s2e5:"Odcinek 5",
+                s2e6:"Odcinek 6",s2e7:"Odcinek 7",s2e8:"Odcinek 8",s2e9:"Odcinek 9",s2e10:"Odcinek 10",
+                s3e1:"Odcinek 1",s3e2:"Odcinek 2",s3e3:"Odcinek 3",s3e4:"Odcinek 4",s3e5:"Odcinek 5",
+                s3e6:"Odcinek 6",s3e7:"Odcinek 7",s3e8:"Odcinek 8",s3e9:"Odcinek 9",s3e10:"Odcinek 10",
+                open_playlist: "Otwórz playlistę",
+                archive_badge: "Archiwum", archive_title: "Dodatkowe filmy",
+                ep_archive: "Odcinek archiwalny", ep_interview: "Wywiad archiwalny",
+                label_newformat: "Nowe formaty", new_title: "Inne filmy", new_sub: "Nie tylko wróżby — inne formaty i gatunki",
+                cs_title: "Już wkrótce", cs_desc: "Pracujemy i kręcimy dla Was nowe materiały. Wszystko pojawi się tutaj, gdy to opublikujemy. Śledź aktualności na <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegramie</a>.",
+                beta_badge: "Test beta",
+                beta_title: "Nowa technologia studia і. — „Odtwarzacz”",
+                beta_desc: "Oglądaj odcinki prosto na stronie: nowy odtwarzacz studia і. odtwarza wideo z repozytorium projektu. Funkcja jest w teście beta — błędy zgłaszaj na Telegramie.",
+                beta_btn: "Wypróbuj →",
+                roulette_title: "Ruletka odcinków", roulette_desc: "Nie możesz wybrać? Zakręć — Evlampia zdecyduje za Ciebie",
+                roulette_btn: "🎲 Zakręć", roulette_watch: "Oglądaj na RUTUBE →",
+                footer_collab: "Projekt stworzony we współpracy ze <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studiem і.</a> i <a href=\"#\">Lokiq</a>",
+                lang_more: "Więcej języków"
             }
         };
 
@@ -721,12 +959,19 @@
                 opt.classList.toggle('active', opt.dataset.lang === lang);
             });
             document.documentElement.setAttribute('lang', lang);
+            if (i18n[lang] && i18n[lang].doc_title) document.title = i18n[lang].doc_title;
             localStorage.setItem('i-lang', lang);
+            CUR_LANG = lang;
+            try { seq = buildTrack(); } catch (e) {}
         }
 
         document.getElementById('langBtn').addEventListener('click', e => {
             e.stopPropagation();
             document.getElementById('langSwitcher').classList.toggle('open');
+        });
+        document.getElementById('langMore').addEventListener('click', e => {
+            e.stopPropagation();
+            document.getElementById('langSwitcher').classList.toggle('more-open');
         });
         document.addEventListener('click', () => document.getElementById('langSwitcher').classList.remove('open'));
         document.querySelectorAll('.lang-option').forEach(opt => {
@@ -736,7 +981,6 @@
                 document.getElementById('langSwitcher').classList.remove('open');
             });
         });
-        setLang(localStorage.getItem('i-lang') || 'ru');
 
         const toggle = document.getElementById('themeToggle');
         const root = document.documentElement;
@@ -749,38 +993,40 @@
         });
 
         /* ROULETTE - CS STYLE */
+        let CUR_LANG = 'ru';
+
         const episodes = [
-            { season: 'Пролог', num: '✦', title: 'Первая серия', url: 'https://dzen.ru/video/watch/625c5363ec82197fe4eee8fe', color: '#fbbf24' },
-            { season: 'Сезон 1', num: '01', title: 'Серия 1', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 1', num: '02', title: 'Серия 2', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 1', num: '03', title: 'Серия 3', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 1', num: '04', title: 'Серия 4', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 1', num: '05', title: 'Серия 5', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 1', num: '06', title: 'Серия 6', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 1', num: '07', title: 'Серия 7', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 1', num: '08', title: 'Серия 8', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 1', num: '09', title: 'Серия 9', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 1', num: '10', title: 'Серия 10', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
-            { season: 'Сезон 2', num: '01', title: 'Серия 1', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 2', num: '02', title: 'Серия 2', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 2', num: '03', title: 'Серия 3', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 2', num: '04', title: 'Серия 4', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 2', num: '05', title: 'Серия 5', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 2', num: '06', title: 'Серия 6', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 2', num: '07', title: 'Серия 7', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 2', num: '08', title: 'Серия 8', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 2', num: '09', title: 'Серия 9', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 2', num: '10', title: 'Серия 10', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
-            { season: 'Сезон 3', num: '01', title: 'Серия 1', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
-            { season: 'Сезон 3', num: '02', title: 'Серия 2', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
-            { season: 'Сезон 3', num: '03', title: 'Серия 3', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
-            { season: 'Сезон 3', num: '04', title: 'Серия 4', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
-            { season: 'Сезон 3', num: '05', title: 'Серия 5', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
-            { season: 'Сезон 3', num: '06', title: 'Серия 6', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
-            { season: 'Сезон 3', num: '07', title: 'Серия 7', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
-            { season: 'Сезон 3', num: '08', title: 'Серия 8', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
-            { season: 'Сезон 3', num: '09', title: 'Серия 9', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
-            { season: 'Сезон 3', num: '10', title: 'Серия 10', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_prolog', num: '✦', tk: 'r_first', url: 'https://dzen.ru/video/watch/625c5363ec82197fe4eee8fe', color: '#fbbf24' },
+            { sk: 'r_s1', num: '01', tk: 's1e1', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s1', num: '02', tk: 's1e2', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s1', num: '03', tk: 's1e3', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s1', num: '04', tk: 's1e4', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s1', num: '05', tk: 's1e5', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s1', num: '06', tk: 's1e6', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s1', num: '07', tk: 's1e7', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s1', num: '08', tk: 's1e8', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s1', num: '09', tk: 's1e9', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s1', num: '10', tk: 's1e10', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { sk: 'r_s2', num: '01', tk: 's2e1', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s2', num: '02', tk: 's2e2', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s2', num: '03', tk: 's2e3', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s2', num: '04', tk: 's2e4', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s2', num: '05', tk: 's2e5', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s2', num: '06', tk: 's2e6', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s2', num: '07', tk: 's2e7', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s2', num: '08', tk: 's2e8', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s2', num: '09', tk: 's2e9', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s2', num: '10', tk: 's2e10', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { sk: 'r_s3', num: '01', tk: 's3e1', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_s3', num: '02', tk: 's3e2', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_s3', num: '03', tk: 's3e3', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_s3', num: '04', tk: 's3e4', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_s3', num: '05', tk: 's3e5', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_s3', num: '06', tk: 's3e6', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_s3', num: '07', tk: 's3e7', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_s3', num: '08', tk: 's3e8', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_s3', num: '09', tk: 's3e9', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { sk: 'r_s3', num: '10', tk: 's3e10', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
         ];
 
         const track = document.getElementById('rouletteTrack');
@@ -789,6 +1035,11 @@
         const link = document.getElementById('rouletteLink');
         const wrap = document.getElementById('rouletteWrap');
         const COPIES = 6;
+
+        function tr(k) {
+            const d = i18n[CUR_LANG] || i18n.ru;
+            return (d && d[k]) || k;
+        }
 
         function getCardWidth() {
             const card = track.querySelector('.roulette-card');
@@ -807,7 +1058,7 @@
             seq.forEach(ep => {
                 const card = document.createElement('div');
                 card.className = 'roulette-card';
-                card.innerHTML = '<div class="rc-season" style="color:' + ep.color + '">' + ep.season + '</div><div class="rc-num" style="color:' + ep.color + '">' + ep.num + '</div><div class="rc-title">' + ep.title + '</div>';
+                card.innerHTML = '<div class="rc-season" style="color:' + ep.color + '">' + tr(ep.sk) + '</div><div class="rc-num" style="color:' + ep.color + '">' + ep.num + '</div><div class="rc-title">' + tr(ep.tk) + '</div>';
                 track.appendChild(card);
             });
             return seq;
@@ -857,6 +1108,8 @@
                 });
             });
         });
+
+        setLang(localStorage.getItem('i-lang') || 'ru');
     </script>
 </body>
 </html>

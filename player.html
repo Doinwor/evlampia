@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
     <meta charset="UTF-8">
@@ -80,6 +80,18 @@
         .lang-option:hover { background: var(--surface-hover); color: var(--text); }
         .lang-option.active { color: var(--accent); background: var(--accent-glow); }
         .lang-option .flag { font-size: 1rem; }
+        .lang-more {
+            width: 100%; margin-top: 5px; padding: 8px 0 2px;
+            background: none; border: none; border-top: 1px solid var(--border);
+            color: var(--text-muted); font-family: 'Unbounded', sans-serif;
+            font-size: 0.58rem; font-weight: 600; letter-spacing: 0.05em;
+            cursor: pointer; transition: color 0.15s; text-align: center;
+        }
+        .lang-more:hover { color: var(--accent); }
+        .lang-more .arrow { font-size: 0.5rem; display: inline-block; transition: transform 0.2s; }
+        .lang-switcher.more-open .lang-more .arrow { transform: rotate(180deg); }
+        .lang-extra { display: none; }
+        .lang-switcher.more-open .lang-extra { display: block; }
 
         /* HEADER */
         .header {
@@ -207,6 +219,7 @@
             transition: all 0.2s; flex-shrink: 0; font-family: 'Unbounded', sans-serif;
         }
         .cbtn:hover { border-color: var(--accent); color: var(--accent); }
+        .cbtn svg { display: block; width: 16px; height: 16px; }
         .cbtn.wide { width: auto; padding: 0 13px; font-size: 0.68rem; font-weight: 600; }
         .time {
             font-size: 0.66rem; color: var(--text-muted); font-variant-numeric: tabular-nums;
@@ -321,6 +334,15 @@
                     <button class="lang-option" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
                     <button class="lang-option" data-lang="be"><span class="flag">🇧🇾</span> Беларуская</button>
                     <button class="lang-option" data-lang="uk"><span class="flag">🇺🇦</span> Українська</button>
+                    <button class="lang-more" id="langMore"><span data-i18n="lang_more">Ещё языки</span> <span class="arrow">▾</span></button>
+                    <div class="lang-extra">
+                        <button class="lang-option" data-lang="zh"><span class="flag">🇨🇳</span> 中文</button>
+                        <button class="lang-option" data-lang="es"><span class="flag">🇪🇸</span> Español</button>
+                        <button class="lang-option" data-lang="ja"><span class="flag">🇯🇵</span> 日本語</button>
+                        <button class="lang-option" data-lang="fr"><span class="flag">🇫🇷</span> Français</button>
+                        <button class="lang-option" data-lang="pt"><span class="flag">🇵🇹</span> Português</button>
+                        <button class="lang-option" data-lang="pl"><span class="flag">🇵🇱</span> Polski</button>
+                    </div>
                 </div>
             </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -358,7 +380,7 @@
                     <button class="cbtn" id="btnPlay" aria-label="Play/Pause">▶</button>
                     <span class="time" id="timeEl">0:00 / 0:00</span>
                     <input type="range" class="seek" id="seek" min="0" max="100" value="0" step="0.1" aria-label="Seek">
-                    <button class="cbtn" id="btnMute" aria-label="Mute">🔊</button>
+                    <button class="cbtn" id="btnMute" aria-label="Mute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
                     <input type="range" class="vol" id="vol" min="0" max="1" step="0.05" value="1" aria-label="Volume">
                     <button class="cbtn wide" id="btnSpeed">1×</button>
                     <button class="cbtn" id="btnFull" aria-label="Fullscreen">⛶</button>
@@ -379,7 +401,7 @@
 
         <div class="footer">
             <p data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
-            <p>Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+            <p style="margin-top: 4px;" data-i18n="footer_eco">Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
         </div>
     </div>
 
@@ -387,6 +409,8 @@
     <script>
         const i18n = {
             ru: {
+                doc_title: "Плеер — Евлампия",
+                footer_eco: "Проект экосистемы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 pl_title: "Плеер",
                 pl_loading: "Загружаем видео…",
                 pl_empty_label: "Видео скоро появятся",
@@ -395,9 +419,12 @@
                 pl_error: "Файл не найден",
                 pl_watch: "Смотреть",
                 pl_sub_tg: "Подписаться на Telegram",
-                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>"
+                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>",
+                lang_more: "Ещё языки"
             },
             en: {
+                doc_title: "Player — Evlampia",
+                footer_eco: "A project of the <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> ecosystem · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 pl_title: "Player",
                 pl_loading: "Loading videos…",
                 pl_empty_label: "Videos are coming soon",
@@ -406,9 +433,12 @@
                 pl_error: "File not found",
                 pl_watch: "Watch",
                 pl_sub_tg: "Subscribe on Telegram",
-                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>"
+                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>",
+                lang_more: "More languages"
             },
             de: {
+                doc_title: "Player — Evlampia",
+                footer_eco: "Ein Projekt des <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a>-Ökosystems · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 pl_title: "Player",
                 pl_loading: "Videos werden geladen…",
                 pl_empty_label: "Videos bald verfügbar",
@@ -417,9 +447,12 @@
                 pl_error: "Datei nicht gefunden",
                 pl_watch: "Ansehen",
                 pl_sub_tg: "Auf Telegram abonnieren",
-                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>"
+                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>",
+                lang_more: "Weitere Sprachen"
             },
             be: {
+                doc_title: "Плеер — Еўлампія",
+                footer_eco: "Праект экасістэмы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 pl_title: "Плеер",
                 pl_loading: "Загружаем відэа…",
                 pl_empty_label: "Відэа хутка з'явяцца",
@@ -428,9 +461,12 @@
                 pl_error: "Файл не знойдзены",
                 pl_watch: "Глядзець",
                 pl_sub_tg: "Падпісацца на Telegram",
-                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>"
+                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>",
+                lang_more: "Большэй моваў"
             },
             uk: {
+                doc_title: "Плеєр — Євлампія",
+                footer_eco: "Проєкт екосистеми <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
                 pl_title: "Плеєр",
                 pl_loading: "Завантажуємо відео…",
                 pl_empty_label: "Відео незабаром з'являться",
@@ -439,7 +475,92 @@
                 pl_error: "Файл не знайдено",
                 pl_watch: "Дивитися",
                 pl_sub_tg: "Підписатися на Telegram",
-                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>"
+                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>",
+                lang_more: "Більше мов"
+            },
+            zh: {
+                doc_title: "播放器 — 叶芙兰皮娅",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> 生态系统项目 · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                pl_title: "播放器",
+                pl_loading: "正在加载视频…",
+                pl_empty_label: "视频即将上线",
+                pl_empty_sub: "列表暂为空。请将视频文件放入 videos 文件夹，并在 <code>videos/manifest.js</code> 中列出。",
+                pl_playlist: "看看这些",
+                pl_error: "文件未找到",
+                pl_watch: "观看",
+                pl_sub_tg: "在 Telegram 订阅",
+                footer_collab: "项目与<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. 工作室</a>及<a href=\"#\">Lokiq</a>合作创建",
+                lang_more: "更多语言"
+            },
+            es: {
+                doc_title: "Reproductor — Evlampia",
+                footer_eco: "Un proyecto del ecosistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                pl_title: "Reproductor",
+                pl_loading: "Cargando vídeos…",
+                pl_empty_label: "Los vídeos llegarán pronto",
+                pl_empty_sub: "La lista está vacía por ahora. Sube archivos de vídeo a la carpeta videos y añádelos a <code>videos/manifest.js</code>.",
+                pl_playlist: "Ver ahora",
+                pl_error: "Archivo no encontrado",
+                pl_watch: "Ver",
+                pl_sub_tg: "Suscribirse en Telegram",
+                footer_collab: "Proyecto creado junto al <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estudio і.</a> y <a href=\"#\">Lokiq</a>",
+                lang_more: "Más idiomas"
+            },
+            ja: {
+                doc_title: "プレイヤー — エヴランピヤ",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> エコシステムのプロジェクト · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                pl_title: "プレイヤー",
+                pl_loading: "動画を読み込み中…",
+                pl_empty_label: "動画はもうすぐ届きます",
+                pl_empty_sub: "リストはまだ空です。videos フォルダに動画ファイルを入れ、<code>videos/manifest.js</code> に追加してください。",
+                pl_playlist: "こちらもどうぞ",
+                pl_error: "ファイルが見つかりません",
+                pl_watch: "視聴",
+                pl_sub_tg: "Telegramで購読する",
+                footer_collab: "プロジェクトは<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. スタジオ</a>および<a href=\"#\">Lokiq</a>との共同制作です",
+                lang_more: "その他の言語"
+            },
+            fr: {
+                doc_title: "Lecteur — Evlampia",
+                footer_eco: "Un projet de l'écosystème <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                pl_title: "Lecteur",
+                pl_loading: "Chargement des vidéos…",
+                pl_empty_label: "Des vidéos arrivent bientôt",
+                pl_empty_sub: "La liste est vide pour l'instant. Ajoutez des fichiers vidéo au dossier videos et inscrivez-les dans <code>videos/manifest.js</code>.",
+                pl_playlist: "À regarder",
+                pl_error: "Fichier introuvable",
+                pl_watch: "Regarder",
+                pl_sub_tg: "S'abonner sur Telegram",
+                footer_collab: "Projet créé en collaboration avec le <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> et <a href=\"#\">Lokiq</a>",
+                lang_more: "Plus de langues"
+            },
+            pt: {
+                doc_title: "Reprodutor — Evlampia",
+                footer_eco: "Um projeto do ecossistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                pl_title: "Reprodutor",
+                pl_loading: "Carregando vídeos…",
+                pl_empty_label: "Os vídeos chegam em breve",
+                pl_empty_sub: "A lista está vazia por enquanto. Envie arquivos de vídeo para a pasta videos e adicione-os ao <code>videos/manifest.js</code>.",
+                pl_playlist: "Assista agora",
+                pl_error: "Arquivo não encontrado",
+                pl_watch: "Assistir",
+                pl_sub_tg: "Inscrever-se no Telegram",
+                footer_collab: "Projeto criado junto com o <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estúdio і.</a> e <a href=\"#\">Lokiq</a>",
+                lang_more: "Mais idiomas"
+            },
+            pl: {
+                doc_title: "Odtwarzacz — Evlampia",
+                footer_eco: "Projekt ekosystemy <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                pl_title: "Odtwarzacz",
+                pl_loading: "Wczytywanie filmów…",
+                pl_empty_label: "Filmy już wkrótce",
+                pl_empty_sub: "Lista jest na razie pusta. Wrzuć pliki wideo do folderu videos i dopisz je w <code>videos/manifest.js</code>.",
+                pl_playlist: "Zobacz również",
+                pl_error: "Nie znaleziono pliku",
+                pl_watch: "Oglądaj",
+                pl_sub_tg: "Subskrybuj na Telegramie",
+                footer_collab: "Projekt stworzony we współpracy ze <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studiem і.</a> i <a href=\"#\">Lokiq</a>",
+                lang_more: "Więcej języków"
             }
         };
 
@@ -453,18 +574,22 @@
                 opt.classList.toggle('active', opt.dataset.lang === lang);
             });
             document.documentElement.setAttribute('lang', lang);
+            if (i18n[lang] && i18n[lang].doc_title) document.title = i18n[lang].doc_title;
             localStorage.setItem('i-lang', lang);
             LANG = lang;
             try {
-                if (!(list && list.length)) {
-                    document.getElementById('npTitle').innerHTML = i18n[lang].pl_title;
-                }
+                if (list && list.length) refreshTexts();
+                else npTitle.innerHTML = i18n[lang].pl_title;
             } catch (e) {}
         }
 
         document.getElementById('langBtn').addEventListener('click', e => {
             e.stopPropagation();
             document.getElementById('langSwitcher').classList.toggle('open');
+        });
+        document.getElementById('langMore').addEventListener('click', e => {
+            e.stopPropagation();
+            document.getElementById('langSwitcher').classList.toggle('more-open');
         });
         document.addEventListener('click', () => document.getElementById('langSwitcher').classList.remove('open'));
         document.querySelectorAll('.lang-option').forEach(opt => {
@@ -490,6 +615,8 @@
         /* PLAYER */
         const SPEEDS = [1, 1.25, 1.5, 2, 0.75];
         const NUM_COLORS = ['purple', 'pink', 'blue', 'amber'];
+        const ICON_VOL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+        const ICON_MUTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
         var list = [], cur = -1, speedIdx = 0;
 
         const $ = id => document.getElementById(id);
@@ -521,6 +648,20 @@
 
         function srcUrl(f) { return encodeURI('videos/' + f); }
 
+        function vTitle(it) { return (it.titles && it.titles[LANG]) || it.title || it.file; }
+        function vDesc(it) { return (it.descs && it.descs[LANG]) || it.desc || ''; }
+
+        function refreshTexts() {
+            if (!list.length) return;
+            buildPlaylist();
+            const it = list[cur >= 0 ? cur : 0];
+            npTitle.textContent = vTitle(it);
+            const d = String(vDesc(it)).trim();
+            const nd = $('npDesc');
+            nd.textContent = d;
+            nd.style.display = d ? 'block' : 'none';
+        }
+
         function buildPlaylist() {
             plList.innerHTML = '';
             list.forEach((item, i) => {
@@ -531,7 +672,7 @@
                 b.innerHTML =
                     '<div class="ep-num ' + NUM_COLORS[i % NUM_COLORS.length] + '">' + String(i + 1).padStart(2, '0') + '</div>' +
                     '<div class="ep-info"><div class="ep-title"></div><div class="ep-meta">' + ext + '</div></div>';
-                b.querySelector('.ep-title').textContent = item.title || item.file;
+                b.querySelector('.ep-title').textContent = vTitle(item);
                 b.addEventListener('click', () => select(i, true));
                 plList.appendChild(b);
             });
@@ -541,8 +682,8 @@
             cur = i;
             const item = list[i];
             vid.src = srcUrl(item.file);
-            npTitle.textContent = item.title || item.file;
-            const d = String(item.desc || '').trim();
+            npTitle.textContent = vTitle(item);
+            const d = String(vDesc(item)).trim();
             $('npDesc').textContent = d;
             $('npDesc').style.display = d ? 'block' : 'none';
             document.querySelectorAll('#plList .ep-card').forEach((c, ci) => c.classList.toggle('active', ci === i));
@@ -563,7 +704,7 @@
         }
 
         function syncVolUI() {
-            btnMute.textContent = (vid.muted || vid.volume === 0) ? '🔇' : '🔊';
+            btnMute.innerHTML = (vid.muted || vid.volume === 0) ? ICON_MUTE : ICON_VOL;
             if (!vid.muted) vol.value = vid.volume;
         }
 
@@ -609,6 +750,7 @@
         const savedVol = parseFloat(localStorage.getItem('i-vol'));
         if (!isNaN(savedVol)) vid.volume = Math.min(1, Math.max(0, savedVol));
         vol.value = vid.volume;
+        syncVolUI();
 
         vol.addEventListener('input', () => {
             vid.muted = false;

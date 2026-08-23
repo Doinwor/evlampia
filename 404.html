@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>404 — Евлампия</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
+    <script>try{var t=localStorage.getItem('i-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+    <style>
+        :root {
+            --bg: #050508; --surface: #0f0f14; --surface-hover: #1a1a24;
+            --border: #1e1e2a; --text: #f0f0f5; --text-muted: #8888a0;
+            --accent: #a78bfa; --accent-glow: rgba(167,139,250,0.25);
+            --pink: #f472b6; --amber: #fbbf24; --blue: #60a5fa;
+            --card-shadow: rgba(0,0,0,0.3);
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f7; --surface: #ffffff; --surface-hover: #eaeaef;
+            --border: #dddde5; --text: #111118; --text-muted: #6b6b80;
+            --accent: #7c5ce0; --accent-glow: rgba(124,92,224,0.15);
+            --pink: #d946a8; --amber: #d4990a; --blue: #3b82f6;
+            --card-shadow: rgba(0,0,0,0.06);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Unbounded', sans-serif; background: var(--bg); color: var(--text);
+            min-height: 100vh; display: flex; flex-direction: column;
+            -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+        .glow {
+            position: fixed; top: -180px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 600px; pointer-events: none; z-index: 0;
+            background: radial-gradient(ellipse, rgba(167,139,250,0.09) 0%, transparent 70%);
+        }
+        [data-theme="light"] .glow { background: radial-gradient(ellipse, rgba(124,92,224,0.07) 0%, transparent 70%); }
+
+        main {
+            position: relative; z-index: 1; flex: 1;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 60px 20px 40px;
+        }
+
+        .orb {
+            font-size: 2.6rem; margin-bottom: 10px; display: inline-block;
+            filter: drop-shadow(0 0 18px rgba(167,139,250,0.55));
+            animation: floaty 4s ease-in-out infinite;
+        }
+        @keyframes floaty {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .code {
+            font-size: clamp(110px, 24vw, 220px); font-weight: 900; line-height: 1;
+            letter-spacing: -0.05em; user-select: none;
+            background: linear-gradient(135deg, #f472b6 0%, #a78bfa 45%, #60a5fa 80%, #fbbf24 100%);
+            background-size: 220% 220%;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shimmer 7s ease-in-out infinite, breathe 3.2s ease-in-out infinite;
+            margin-bottom: 18px;
+        }
+        [data-theme="light"] .code {
+            background-image: linear-gradient(135deg, #d946a8 0%, #7c5ce0 45%, #3b82f6 80%, #d4990a 100%);
+            background-size: 220% 220%;
+        }
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        @keyframes breathe {
+            0%, 100% { filter: drop-shadow(0 0 0 rgba(167,139,250,0)); }
+            50% { filter: drop-shadow(0 0 34px rgba(167,139,250,0.35)); }
+        }
+
+        .tagline {
+            font-size: clamp(0.95rem, 2.6vw, 1.25rem); font-weight: 700; letter-spacing: -0.01em;
+            margin-bottom: 14px;
+        }
+        .desc {
+            font-size: 0.78rem; color: var(--text-muted); font-weight: 300;
+            line-height: 1.9; max-width: 520px; margin-bottom: 34px;
+        }
+        .desc b { color: var(--text); font-weight: 500; }
+
+        .btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 46px; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 26px; border-radius: 12px; text-decoration: none;
+            font-family: 'Unbounded', sans-serif; font-size: 0.72rem; font-weight: 600;
+            transition: all 0.25s ease; border: 1px solid var(--border);
+        }
+        .btn.primary {
+            background: linear-gradient(135deg, var(--pink), var(--accent));
+            border-color: transparent; color: #fff;
+            box-shadow: 0 4px 20px rgba(167,139,250,0.3);
+        }
+        .btn.primary:hover {
+            transform: translateY(-2px); color: #fff; filter: brightness(1.1);
+            box-shadow: 0 8px 32px rgba(167,139,250,0.5);
+        }
+        .btn.ghost { color: var(--text); background: var(--surface); }
+        .btn.ghost:hover {
+            border-color: var(--accent); color: var(--accent);
+            transform: translateY(-2px); box-shadow: 0 4px 16px var(--card-shadow);
+        }
+
+        .spread { position: relative; height: 64px; width: min(420px, 86vw); opacity: 0.9; }
+        .card {
+            position: absolute; top: 0; left: 50%;
+            width: 44px; height: 62px; border-radius: 7px;
+            border: 1px solid var(--border); background: var(--surface);
+            box-shadow: 0 6px 18px var(--card-shadow);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.15rem; animation: sway 5s ease-in-out infinite;
+        }
+        .card:nth-child(1) { transform: translateX(-50%) translateX(-84px) rotate(-14deg); animation-delay: 0s; }
+        .card:nth-child(2) { transform: translateX(-50%) translateX(-28px) rotate(-5deg); animation-delay: 0.6s; z-index: 1; }
+        .card:nth-child(3) { transform: translateX(-50%) translateX(28px) rotate(5deg); animation-delay: 1.2s; z-index: 1; }
+        .card:nth-child(4) { transform: translateX(-50%) translateX(84px) rotate(14deg); animation-delay: 1.8s; }
+        @keyframes sway {
+            0%, 100% { margin-top: 0; }
+            50% { margin-top: -9px; }
+        }
+
+        footer {
+            position: relative; z-index: 1; text-align: center;
+            padding: 22px 20px 30px; border-top: 1px solid var(--border);
+        }
+        footer p { font-size: 0.66rem; color: var(--text-muted); line-height: 2; font-weight: 300; }
+        footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
+        footer a:hover { color: var(--text); }
+
+        @media (max-width: 480px) {
+            .tagline { font-size: 0.88rem; padding: 0 10px; }
+            .desc { font-size: 0.72rem; }
+            .btn { padding: 11px 20px; font-size: 0.66rem; }
+            .card { width: 38px; height: 54px; font-size: 1rem; }
+            .card:nth-child(1) { transform: translateX(-50%) translateX(-66px) rotate(-14deg); }
+            .card:nth-child(2) { transform: translateX(-50%) translateX(-22px) rotate(-5deg); }
+            .card:nth-child(3) { transform: translateX(-50%) translateX(22px) rotate(5deg); }
+            .card:nth-child(4) { transform: translateX(-50%) translateX(66px) rotate(14deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+
+    <main>
+        <span class="orb">🔮</span>
+        <div class="code">404</div>
+        <h1 class="tagline">Даже Евлампия такого не предсказывала</h1>
+        <p class="desc">Хрустальный шар молчит, карты легли криво, а телефон доверия гудит вхолостую.
+        Такой страницы <b>не существует</b> — или её временно скрыли для модерации.</p>
+
+        <div class="btns">
+            <a href="evlampia.html" class="btn primary">← На главную</a>
+            <a href="episodes.html" class="btn ghost">Серии и сезоны</a>
+            <a href="museum.html" class="btn ghost">Музей</a>
+        </div>
+
+        <div class="spread" aria-hidden="true">
+            <div class="card">🃏</div>
+            <div class="card">🎴</div>
+            <div class="card">🃏</div>
+            <div class="card">🎴</div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+    </footer>
+</body>
+</html>
