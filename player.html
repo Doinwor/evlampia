@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Плеер — Евлампия</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
+    <script>try{var t=localStorage.getItem('i-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+    <style>
+        :root {
+            --bg: #050508; --surface: #0f0f14; --surface-hover: #1a1a24;
+            --border: #1e1e2a; --text: #f0f0f5; --text-muted: #8888a0;
+            --accent: #a78bfa; --accent-glow: rgba(167,139,250,0.25);
+            --pink: #f472b6; --amber: #fbbf24; --blue: #60a5fa;
+            --card-shadow: rgba(0,0,0,0.3); --toggle-bg: #1e1e2a; --toggle-knob: #050508;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f7; --surface: #ffffff; --surface-hover: #eaeaef;
+            --border: #dddde5; --text: #111118; --text-muted: #6b6b80;
+            --accent: #7c5ce0; --accent-glow: rgba(124,92,224,0.15);
+            --pink: #d946a8; --amber: #d4990a; --blue: #3b82f6;
+            --card-shadow: rgba(0,0,0,0.06); --toggle-bg: #dddde5; --toggle-knob: #f5f5f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Unbounded', sans-serif; background: var(--bg); color: var(--text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s;
+        }
+
+        .glow-bg {
+            position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 600px;
+            background: radial-gradient(ellipse, rgba(96,165,250,0.07) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        [data-theme="light"] .glow-bg {
+            background: radial-gradient(ellipse, rgba(59,130,246,0.05) 0%, transparent 70%);
+        }
+
+        /* TOGGLE */
+        .theme-toggle {
+            background: var(--toggle-bg); border: none; cursor: pointer; padding: 0;
+            border-radius: 100px; width: 42px; height: 22px; display: flex;
+            align-items: center; transition: background 0.3s; flex-shrink: 0;
+        }
+        .theme-toggle:hover { opacity: 0.8; }
+        .theme-toggle__knob {
+            width: 16px; height: 16px; border-radius: 50%; background: var(--toggle-knob);
+            transition: transform 0.3s, background 0.3s; margin: 0 3px;
+        }
+        [data-theme="dark"] .theme-toggle__knob { transform: translateX(20px); }
+
+        /* LANG */
+        .lang-switcher { position: relative; z-index: 200; }
+        .lang-btn {
+            background: var(--toggle-bg); border: none; cursor: pointer;
+            padding: 6px 12px; border-radius: 8px; font-family: 'Unbounded', sans-serif;
+            font-size: 0.7rem; font-weight: 600; color: var(--text);
+            letter-spacing: 0.04em; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .lang-btn:hover { background: var(--surface-hover); }
+        .lang-btn .arrow { font-size: 0.5rem; transition: transform 0.2s; }
+        .lang-switcher.open .lang-btn .arrow { transform: rotate(180deg); }
+        .lang-dropdown {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 6px; min-width: 160px; display: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        [data-theme="light"] .lang-dropdown { box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+        .lang-switcher.open .lang-dropdown { display: block; }
+        .lang-option {
+            display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-weight: 500;
+            color: var(--text-muted); transition: all 0.15s; border: none; background: none;
+            width: 100%; font-family: 'Unbounded', sans-serif; text-align: left;
+        }
+        .lang-option:hover { background: var(--surface-hover); color: var(--text); }
+        .lang-option.active { color: var(--accent); background: var(--accent-glow); }
+        .lang-option .flag { font-size: 1rem; }
+
+        /* HEADER */
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+            backdrop-filter: blur(12px); background: rgba(5,5,8,0.6); border-bottom: 1px solid var(--border);
+        }
+        [data-theme="light"] .header { background: rgba(245,245,247,0.7); }
+        .header .back { color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 500; transition: color 0.2s; }
+        .header .back:hover { color: var(--text); }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+
+        .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 120px 40px 100px; }
+
+        /* BRAND + TITLE */
+        .brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .brand-name {
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+            text-transform: uppercase; color: var(--text-muted);
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .beta-pill {
+            display: inline-block; font-size: 0.58rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--blue); background: rgba(96,165,250,0.1);
+            padding: 4px 11px; border-radius: 7px;
+        }
+        [data-theme="light"] .beta-pill { background: rgba(59,130,246,0.08); }
+
+        .video-title {
+            font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.25;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff 0%, #60a5fa 55%, #fbbf24 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        [data-theme="light"] .video-title {
+            background: linear-gradient(135deg, #111118 0%, #3b82f6 55%, #d4990a 100%);
+            -webkit-background-clip: text; background-clip: text;
+        }
+
+        .section-label {
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 18px;
+        }
+
+        /* PLAYER */
+        .player-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 20px; margin-bottom: 12px; position: relative; overflow: hidden;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .player-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--amber), var(--blue));
+        }
+        [data-theme="light"] .player-card { box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .desc-block {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+            padding: 20px 24px; margin-bottom: 44px; transition: background 0.3s, border-color 0.3s;
+        }
+        [data-theme="light"] .desc-block { box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .desc-block p {
+            font-size: 0.78rem; color: var(--text-muted); line-height: 1.8;
+            font-weight: 300; margin-bottom: 16px; overflow-wrap: anywhere;
+        }
+        .desc-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .link-chip {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 9px 18px; border-radius: 10px;
+            background: var(--bg); border: 1px solid var(--border);
+            color: var(--text); font-size: 0.7rem; font-weight: 600; text-decoration: none;
+            transition: all 0.25s ease;
+        }
+        [data-theme="light"] .link-chip { background: var(--surface-hover); }
+        .link-chip:hover { border-color: var(--accent); transform: translateY(-1px); color: var(--accent); }
+        .desc-links .link-chip.primary {
+            background: linear-gradient(135deg, var(--pink), var(--accent));
+            border-color: transparent; color: #fff;
+            box-shadow: 0 4px 20px rgba(167,139,250,0.3);
+        }
+        .desc-links .link-chip.primary:hover {
+            transform: translateY(-1px); color: #fff;
+            filter: brightness(1.12);
+            box-shadow: 0 8px 32px rgba(167,139,250,0.5);
+        }
+        .video-shell { position: relative; background: #000; border-radius: 14px; overflow: hidden; aspect-ratio: 16 / 9; }
+        .video-shell video { width: 100%; height: 100%; display: block; object-fit: contain; cursor: pointer; }
+        .big-play {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 96px; height: 96px; border-radius: 22px; cursor: pointer;
+            background: rgba(10,10,16,0.5);
+            -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+            border: 1px solid rgba(167,139,250,0.35);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px;
+            transition: all 0.25s ease;
+            animation: bpPulse 2.6s ease-out infinite;
+        }
+        .big-play:hover {
+            transform: translate(-50%, -50%) scale(1.06);
+            border-color: rgba(167,139,250,0.75);
+            background: rgba(10,10,16,0.68);
+        }
+        .big-play .bp-icon {
+            font-size: 1.45rem; line-height: 1; padding-left: 4px;
+            background: linear-gradient(135deg, #f472b6, #a78bfa);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 14px rgba(167,139,250,0.65));
+        }
+        .big-play .bp-label {
+            font-size: 0.52rem; font-weight: 700; letter-spacing: 0.14em;
+            text-transform: uppercase; color: #cfc9ea;
+        }
+        .big-play.hidden { opacity: 0; pointer-events: none; }
+        @keyframes bpPulse {
+            0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.35), 0 8px 40px rgba(0,0,0,0.35); }
+            70% { box-shadow: 0 0 0 26px rgba(167,139,250,0), 0 8px 40px rgba(0,0,0,0.35); }
+            100% { box-shadow: 0 0 0 0 rgba(167,139,250,0), 0 8px 40px rgba(0,0,0,0.35); }
+        }
+
+        .controls { display: flex; align-items: center; gap: 10px; padding-top: 14px; flex-wrap: wrap; }
+        .cbtn {
+            background: var(--surface-hover); border: 1px solid var(--border); color: var(--text);
+            width: 38px; height: 38px; border-radius: 10px; cursor: pointer;
+            font-size: 0.9rem; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; flex-shrink: 0; font-family: 'Unbounded', sans-serif;
+        }
+        .cbtn:hover { border-color: var(--accent); color: var(--accent); }
+        .cbtn.wide { width: auto; padding: 0 13px; font-size: 0.68rem; font-weight: 600; }
+        .time {
+            font-size: 0.66rem; color: var(--text-muted); font-variant-numeric: tabular-nums;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        input[type="range"] { accent-color: var(--accent); cursor: pointer; height: 4px; }
+        input[type="range"]:focus { outline: none; }
+        .seek { flex: 1 1 160px; min-width: 120px; }
+        .vol { width: 82px; flex-shrink: 0; }
+
+        /* LOADING / EMPTY */
+        .loading-block { text-align: center; padding: 70px 20px; color: var(--text-muted); font-size: 0.78rem; animation: pulse 1.4s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+        .coming-soon {
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            padding: 60px 20px; border-radius: 16px; position: relative; overflow: hidden;
+            border: 1px dashed var(--border); background: var(--bg);
+        }
+        .coming-soon.show { display: flex; }
+        .coming-soon::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(251,191,36,0.04) 0%, rgba(96,165,250,0.04) 100%);
+        }
+        [data-theme="light"] .coming-soon::before {
+            background: linear-gradient(135deg, rgba(212,153,10,0.03) 0%, rgba(59,130,246,0.03) 100%);
+        }
+        .coming-soon .cs-icon { font-size: 2.5rem; margin-bottom: 16px; opacity: 0.5; position: relative; z-index: 1; }
+        .coming-soon h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; position: relative; z-index: 1; }
+        .coming-soon p {
+            font-size: 0.75rem; color: var(--text-muted); text-align: center;
+            max-width: 500px; line-height: 1.8; font-weight: 300; position: relative; z-index: 1;
+        }
+        .coming-soon code {
+            font-family: Consolas, monospace; font-size: 0.68rem;
+            background: var(--surface-hover); border: 1px solid var(--border);
+            padding: 2px 8px; border-radius: 6px; color: var(--accent); white-space: nowrap;
+        }
+
+        /* PLAYLIST */
+        .ep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .ep-card {
+            display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+            text-decoration: none; color: var(--text); transition: all 0.25s;
+            cursor: pointer; width: 100%; text-align: left; font-family: 'Unbounded', sans-serif;
+        }
+        [data-theme="light"] .ep-card { background: var(--surface-hover); }
+        .ep-card:hover {
+            border-color: var(--accent); transform: translateY(-1px);
+            box-shadow: 0 4px 16px var(--card-shadow);
+        }
+        .ep-card.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 4px 16px var(--card-shadow); }
+        .ep-num {
+            width: 32px; height: 32px; border-radius: 8px; display: flex;
+            align-items: center; justify-content: center; font-size: 0.7rem;
+            font-weight: 700; flex-shrink: 0;
+        }
+        .ep-num.purple { background: rgba(167,139,250,0.1); color: var(--accent); }
+        .ep-num.pink { background: rgba(244,114,182,0.1); color: var(--pink); }
+        .ep-num.blue { background: rgba(96,165,250,0.1); color: var(--blue); }
+        .ep-num.amber { background: rgba(251,191,36,0.1); color: var(--amber); }
+        .ep-info { min-width: 0; }
+        .ep-info .ep-title { font-size: 0.75rem; font-weight: 600; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ep-info .ep-meta { font-size: 0.62rem; color: var(--text-muted); margin-top: 2px; }
+
+        .footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); }
+        .footer p { font-size: 0.68rem; color: var(--text-muted); line-height: 2; font-weight: 300; }
+        .footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
+        .footer a:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+            .wrap { padding: 100px 20px 60px; }
+            .header { padding: 16px 20px; }
+            .video-title { font-size: 1.35rem; }
+            .player-card { padding: 14px; border-radius: 16px; }
+            .big-play { width: 78px; height: 78px; border-radius: 18px; gap: 5px; }
+            .big-play .bp-icon { font-size: 1.25rem; }
+            .vol { width: 66px; }
+            .ep-grid { grid-template-columns: 1fr; }
+            .controls { gap: 8px; }
+        }
+        @media (max-width: 480px) {
+            .video-title { font-size: 1.15rem; margin-bottom: 18px; }
+            .cbtn { width: 34px; height: 34px; font-size: 0.82rem; }
+            .cbtn.wide { padding: 0 10px; font-size: 0.62rem; }
+            .time { font-size: 0.58rem; }
+            .vol { width: 54px; }
+            .big-play { width: 64px; height: 64px; border-radius: 15px; gap: 4px; }
+            .big-play .bp-icon { font-size: 1.05rem; }
+            .big-play .bp-label { font-size: 0.44rem; letter-spacing: 0.1em; }
+            .ep-card { padding: 10px 12px; gap: 10px; }
+            .ep-num { width: 28px; height: 28px; font-size: 0.62rem; }
+            .ep-info .ep-title { font-size: 0.65rem; }
+            .footer p { font-size: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg"></div>
+
+    <div class="header">
+        <a href="episodes.html" class="back">← Евлампия</a>
+        <div class="header-right">
+            <div class="lang-switcher" id="langSwitcher">
+                <button class="lang-btn" id="langBtn">
+                    <span id="currentLang">RU</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option active" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+                    <button class="lang-option" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+                    <button class="lang-option" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
+                    <button class="lang-option" data-lang="be"><span class="flag">🇧🇾</span> Беларуская</button>
+                    <button class="lang-option" data-lang="uk"><span class="flag">🇺🇦</span> Українська</button>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span class="theme-toggle__knob"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <div class="brand-row">
+            <span class="brand-name">▶ <span data-i18n="pl_title">Плеер</span></span>
+            <span class="beta-pill">BETA</span>
+        </div>
+
+        <h1 class="video-title" id="npTitle">…</h1>
+
+        <div class="loading-block" id="plLoading"><span data-i18n="pl_loading">Загружаем видео…</span></div>
+
+        <div class="coming-soon" id="plEmpty">
+            <div class="cs-icon">📼</div>
+            <h3 data-i18n="pl_empty_label">Видео скоро появятся</h3>
+            <p data-i18n="pl_empty_sub">Пока список пуст. Загрузите видеофайлы в папку videos и перечислите их в <code>videos/manifest.js</code>.</p>
+        </div>
+
+        <div id="playerArea" style="display:none;">
+            <div class="player-card">
+                <div class="video-shell" id="shell">
+                    <video id="vid" preload="metadata"></video>
+                    <button class="big-play" id="bigPlay" aria-label="Play">
+                        <span class="bp-icon">▶</span>
+                        <span class="bp-label" data-i18n="pl_watch">Смотреть</span>
+                    </button>
+                </div>
+                <div class="controls">
+                    <button class="cbtn" id="btnPlay" aria-label="Play/Pause">▶</button>
+                    <span class="time" id="timeEl">0:00 / 0:00</span>
+                    <input type="range" class="seek" id="seek" min="0" max="100" value="0" step="0.1" aria-label="Seek">
+                    <button class="cbtn" id="btnMute" aria-label="Mute">🔊</button>
+                    <input type="range" class="vol" id="vol" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+                    <button class="cbtn wide" id="btnSpeed">1×</button>
+                    <button class="cbtn" id="btnFull" aria-label="Fullscreen">⛶</button>
+                </div>
+            </div>
+
+            <div class="desc-block" id="descBlock">
+                <p id="npDesc"></p>
+                <div class="desc-links">
+                    <a href="https://t.me/evlampia1327" class="link-chip primary" target="_blank">✈ <span data-i18n="pl_sub_tg">Подписаться на Telegram</span></a>
+                    <a href="https://rutube.ru/channel/26017091/" class="link-chip" target="_blank">▶ RUTUBE</a>
+                </div>
+            </div>
+
+            <p class="section-label" data-i18n="pl_playlist">Что посмотреть</p>
+            <div class="ep-grid" id="plList"></div>
+        </div>
+
+        <div class="footer">
+            <p data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
+            <p>Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+        </div>
+    </div>
+
+    <script src="videos/manifest.js"></script>
+    <script>
+        const i18n = {
+            ru: {
+                pl_title: "Плеер",
+                pl_loading: "Загружаем видео…",
+                pl_empty_label: "Видео скоро появятся",
+                pl_empty_sub: "Пока список пуст. Загрузите видеофайлы в папку videos и перечислите их в <code>videos/manifest.js</code>.",
+                pl_playlist: "Что посмотреть",
+                pl_error: "Файл не найден",
+                pl_watch: "Смотреть",
+                pl_sub_tg: "Подписаться на Telegram",
+                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>"
+            },
+            en: {
+                pl_title: "Player",
+                pl_loading: "Loading videos…",
+                pl_empty_label: "Videos are coming soon",
+                pl_empty_sub: "The list is empty for now. Upload files to the videos folder and add them to <code>videos/manifest.js</code>.",
+                pl_playlist: "Watch now",
+                pl_error: "File not found",
+                pl_watch: "Watch",
+                pl_sub_tg: "Subscribe on Telegram",
+                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>"
+            },
+            de: {
+                pl_title: "Player",
+                pl_loading: "Videos werden geladen…",
+                pl_empty_label: "Videos bald verfügbar",
+                pl_empty_sub: "Die Liste ist noch leer. Lade Videodateien in den Ordner videos hoch und trage sie in <code>videos/manifest.js</code> ein.",
+                pl_playlist: "Jetzt ansehen",
+                pl_error: "Datei nicht gefunden",
+                pl_watch: "Ansehen",
+                pl_sub_tg: "Auf Telegram abonnieren",
+                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>"
+            },
+            be: {
+                pl_title: "Плеер",
+                pl_loading: "Загружаем відэа…",
+                pl_empty_label: "Відэа хутка з'явяцца",
+                pl_empty_sub: "Пакуль список пусты. Загрузіце відэафайлы ў папку videos і пералічыце іх у <code>videos/manifest.js</code>.",
+                pl_playlist: "Што паглядзець",
+                pl_error: "Файл не знойдзены",
+                pl_watch: "Глядзець",
+                pl_sub_tg: "Падпісацца на Telegram",
+                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>"
+            },
+            uk: {
+                pl_title: "Плеєр",
+                pl_loading: "Завантажуємо відео…",
+                pl_empty_label: "Відео незабаром з'являться",
+                pl_empty_sub: "Поки список порожній. Завантажте відеофайли в папку videos та перелічіть їх у <code>videos/manifest.js</code>.",
+                pl_playlist: "Що подивитися",
+                pl_error: "Файл не знайдено",
+                pl_watch: "Дивитися",
+                pl_sub_tg: "Підписатися на Telegram",
+                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>"
+            }
+        };
+
+        function setLang(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) el.innerHTML = i18n[lang][key];
+            });
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+            document.documentElement.setAttribute('lang', lang);
+            localStorage.setItem('i-lang', lang);
+            LANG = lang;
+            try {
+                if (!(list && list.length)) {
+                    document.getElementById('npTitle').innerHTML = i18n[lang].pl_title;
+                }
+            } catch (e) {}
+        }
+
+        document.getElementById('langBtn').addEventListener('click', e => {
+            e.stopPropagation();
+            document.getElementById('langSwitcher').classList.toggle('open');
+        });
+        document.addEventListener('click', () => document.getElementById('langSwitcher').classList.remove('open'));
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', e => {
+                e.stopPropagation();
+                setLang(opt.dataset.lang);
+                document.getElementById('langSwitcher').classList.remove('open');
+            });
+        });
+
+        const toggleBtn = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const storedTheme = localStorage.getItem('i-theme');
+        if (storedTheme) root.setAttribute('data-theme', storedTheme);
+        toggleBtn.addEventListener('click', () => {
+            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('i-theme', next);
+        });
+
+        let LANG = localStorage.getItem('i-lang') || 'ru';
+
+        /* PLAYER */
+        const SPEEDS = [1, 1.25, 1.5, 2, 0.75];
+        const NUM_COLORS = ['purple', 'pink', 'blue', 'amber'];
+        var list = [], cur = -1, speedIdx = 0;
+
+        const $ = id => document.getElementById(id);
+        const vid = $('vid'), shell = $('shell'), seek = $('seek'), vol = $('vol'),
+              timeEl = $('timeEl'), npTitle = $('npTitle'), plList = $('plList'),
+              btnPlay = $('btnPlay'), bigPlay = $('bigPlay'), btnMute = $('btnMute'),
+              btnSpeed = $('btnSpeed'), btnFull = $('btnFull');
+
+        function fmt(s) {
+            if (!isFinite(s)) return '0:00';
+            s = Math.max(0, Math.floor(s));
+            return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+        }
+
+        function loadManifest() {
+            let data = null;
+            try { data = window.EVLAMPIA_VIDEOS; } catch (e) {}
+            list = Array.isArray(data) ? data.filter(v => v && v.file) : [];
+            $('plLoading').style.display = 'none';
+            if (list.length) {
+                $('playerArea').style.display = 'block';
+                buildPlaylist();
+                select(0, false);
+            } else {
+                $('npTitle').textContent = i18n[LANG].pl_title;
+                $('plEmpty').classList.add('show');
+            }
+        }
+
+        function srcUrl(f) { return encodeURI('videos/' + f); }
+
+        function buildPlaylist() {
+            plList.innerHTML = '';
+            list.forEach((item, i) => {
+                const b = document.createElement('button');
+                b.className = 'ep-card';
+                b.type = 'button';
+                const ext = (String(item.file).split('.').pop() || '').toUpperCase();
+                b.innerHTML =
+                    '<div class="ep-num ' + NUM_COLORS[i % NUM_COLORS.length] + '">' + String(i + 1).padStart(2, '0') + '</div>' +
+                    '<div class="ep-info"><div class="ep-title"></div><div class="ep-meta">' + ext + '</div></div>';
+                b.querySelector('.ep-title').textContent = item.title || item.file;
+                b.addEventListener('click', () => select(i, true));
+                plList.appendChild(b);
+            });
+        }
+
+        function select(i, autoplay) {
+            cur = i;
+            const item = list[i];
+            vid.src = srcUrl(item.file);
+            npTitle.textContent = item.title || item.file;
+            const d = String(item.desc || '').trim();
+            $('npDesc').textContent = d;
+            $('npDesc').style.display = d ? 'block' : 'none';
+            document.querySelectorAll('#plList .ep-card').forEach((c, ci) => c.classList.toggle('active', ci === i));
+            seek.value = 0;
+            seek.max = 0;
+            timeEl.textContent = '0:00 / 0:00';
+            if (autoplay) vid.play().catch(() => {});
+        }
+
+        function updTime() {
+            timeEl.textContent = fmt(vid.currentTime) + ' / ' + fmt(vid.duration);
+        }
+
+        function syncPlayUI() {
+            const playing = !vid.paused && !vid.ended;
+            btnPlay.textContent = playing ? '❚❚' : '▶';
+            bigPlay.classList.toggle('hidden', playing);
+        }
+
+        function syncVolUI() {
+            btnMute.textContent = (vid.muted || vid.volume === 0) ? '🔇' : '🔊';
+            if (!vid.muted) vol.value = vid.volume;
+        }
+
+        function togglePlay() {
+            if (!vid.src) return;
+            if (vid.paused) vid.play().catch(() => {});
+            else vid.pause();
+        }
+
+        vid.addEventListener('loadedmetadata', () => {
+            seek.max = vid.duration || 0;
+            updTime();
+        });
+        vid.addEventListener('timeupdate', () => {
+            if (!isFinite(vid.duration)) return;
+            if (document.activeElement !== seek) seek.value = vid.currentTime;
+            updTime();
+        });
+        vid.addEventListener('progress', () => {});
+        vid.addEventListener('play', syncPlayUI);
+        vid.addEventListener('pause', syncPlayUI);
+        vid.addEventListener('ended', () => {
+            if (cur >= 0 && cur < list.length - 1) select(cur + 1, true);
+            else syncPlayUI();
+        });
+        vid.addEventListener('error', () => {
+            if (cur >= 0 && list[cur]) {
+                $('npDesc').textContent = (i18n[LANG] && i18n[LANG].pl_error) || 'error';
+                $('npDesc').style.display = 'block';
+            }
+        });
+        vid.addEventListener('volumechange', syncVolUI);
+
+        btnPlay.addEventListener('click', togglePlay);
+        bigPlay.addEventListener('click', togglePlay);
+        vid.addEventListener('click', togglePlay);
+
+        seek.addEventListener('input', () => {
+            if (!isFinite(vid.duration)) return;
+            vid.currentTime = parseFloat(seek.value) || 0;
+        });
+
+        const savedVol = parseFloat(localStorage.getItem('i-vol'));
+        if (!isNaN(savedVol)) vid.volume = Math.min(1, Math.max(0, savedVol));
+        vol.value = vid.volume;
+
+        vol.addEventListener('input', () => {
+            vid.muted = false;
+            vid.volume = parseFloat(vol.value);
+            try { localStorage.setItem('i-vol', vol.value); } catch (e) {}
+        });
+        btnMute.addEventListener('click', () => { vid.muted = !vid.muted; });
+
+        btnSpeed.addEventListener('click', () => {
+            speedIdx = (speedIdx + 1) % SPEEDS.length;
+            vid.playbackRate = SPEEDS[speedIdx];
+            btnSpeed.textContent = SPEEDS[speedIdx] + '×';
+        });
+
+        btnFull.addEventListener('click', () => {
+            if (document.fullscreenElement) document.exitFullscreen();
+            else if (shell.requestFullscreen) shell.requestFullscreen().catch(() => {});
+        });
+        document.addEventListener('fullscreenchange', () => {
+            btnFull.textContent = document.fullscreenElement ? '✕' : '⛶';
+        });
+
+        document.addEventListener('keydown', e => {
+            const t = e.target.tagName;
+            if (t === 'INPUT' || t === 'SELECT' || t === 'TEXTAREA' || t === 'BUTTON') return;
+            switch (e.key) {
+                case ' ': case 'k':
+                    e.preventDefault(); togglePlay(); break;
+                case 'ArrowLeft': case 'j':
+                    if (isFinite(vid.duration)) vid.currentTime = Math.max(0, vid.currentTime - 5);
+                    break;
+                case 'ArrowRight': case 'l':
+                    if (isFinite(vid.duration)) vid.currentTime = Math.min(vid.duration, vid.currentTime + 5);
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    vid.muted = false;
+                    vid.volume = Math.min(1, vid.volume + 0.05);
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    vid.volume = Math.max(0, vid.volume - 0.05);
+                    break;
+                case 'm':
+                    vid.muted = !vid.muted; break;
+                case 'f':
+                    btnFull.click(); break;
+            }
+        });
+
+        setLang(LANG);
+        loadManifest();
+    </script>
+</body>
+</html>

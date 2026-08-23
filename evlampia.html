@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Евлампия — добрая и злая гадалка</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
+    <script>try{var t=localStorage.getItem('i-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+    <style>
+        :root {
+            --bg: #050508;
+            --surface: #0f0f14;
+            --surface-hover: #1a1a24;
+            --border: #1e1e2a;
+            --text: #f0f0f5;
+            --text-muted: #8888a0;
+            --accent: #a78bfa;
+            --accent-glow: rgba(167, 139, 250, 0.25);
+            --pink: #f472b6;
+            --pink-glow: rgba(244, 114, 182, 0.25);
+            --amber: #fbbf24;
+            --amber-glow: rgba(251, 191, 36, 0.25);
+            --blue: #60a5fa;
+            --card-shadow: rgba(0,0,0,0.3);
+            --toggle-bg: #1e1e2a;
+            --toggle-knob: #050508;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f7;
+            --surface: #ffffff;
+            --surface-hover: #eaeaef;
+            --border: #dddde5;
+            --text: #111118;
+            --text-muted: #6b6b80;
+            --accent: #7c5ce0;
+            --accent-glow: rgba(124, 92, 224, 0.15);
+            --pink: #d946a8;
+            --pink-glow: rgba(217, 70, 168, 0.15);
+            --amber: #d4990a;
+            --amber-glow: rgba(212, 153, 10, 0.15);
+            --blue: #3b82f6;
+            --card-shadow: rgba(0,0,0,0.06);
+            --toggle-bg: #dddde5;
+            --toggle-knob: #f5f5f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Unbounded', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* TOGGLE */
+        .theme-toggle {
+            background: var(--toggle-bg); border: none; cursor: pointer; padding: 0;
+            border-radius: 100px; width: 42px; height: 22px; display: flex;
+            align-items: center; transition: background 0.3s; flex-shrink: 0;
+        }
+        .theme-toggle:hover { opacity: 0.8; }
+        .theme-toggle__knob {
+            width: 16px; height: 16px; border-radius: 50%; background: var(--toggle-knob);
+            transition: transform 0.3s, background 0.3s; margin: 0 3px;
+        }
+        [data-theme="dark"] .theme-toggle__knob { transform: translateX(20px); }
+
+        .lang-switcher { position: relative; z-index: 200; }
+        .lang-btn {
+            background: var(--toggle-bg); border: none; cursor: pointer;
+            padding: 6px 12px; border-radius: 8px; font-family: 'Unbounded', sans-serif;
+            font-size: 0.7rem; font-weight: 600; color: var(--text);
+            letter-spacing: 0.04em; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .lang-btn:hover { background: var(--surface-hover); }
+        .lang-btn .arrow { font-size: 0.5rem; transition: transform 0.2s; }
+        .lang-switcher.open .lang-btn .arrow { transform: rotate(180deg); }
+        .lang-dropdown {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 6px; min-width: 160px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4); display: none;
+        }
+        [data-theme="light"] .lang-dropdown { box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+        .lang-switcher.open .lang-dropdown { display: block; }
+        .lang-option {
+            display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-weight: 500;
+            color: var(--text-muted); transition: all 0.15s;
+            border: none; background: none; width: 100%;
+            font-family: 'Unbounded', sans-serif; text-align: left;
+        }
+        .lang-option:hover { background: var(--surface-hover); color: var(--text); }
+        .lang-option.active { color: var(--accent); background: var(--accent-glow); }
+        .lang-option .flag { font-size: 1rem; }
+
+        /* HEADER */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        [data-theme="dark"] .header { background: rgba(5,5,8,0.85); backdrop-filter: blur(12px); }
+        [data-theme="light"] .header { background: rgba(245,245,247,0.85); backdrop-filter: blur(12px); }
+        .header .back {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            letter-spacing: 0.02em;
+        }
+        .header .back:hover { color: var(--text); }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .glow-bg {
+            position: fixed;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(ellipse, rgba(167,139,250,0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        [data-theme="light"] .glow-bg {
+            background: radial-gradient(ellipse, rgba(124,92,224,0.06) 0%, transparent 70%);
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 120px 40px 100px;
+        }
+
+        /* HERO */
+        .hero { margin-bottom: 80px; position: relative; }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -80px; right: -120px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(244,114,182,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        [data-theme="light"] .hero::before {
+            background: radial-gradient(circle, rgba(217,70,168,0.04) 0%, transparent 70%);
+        }
+        .hero h1 {
+            font-size: 4.5rem; font-weight: 800;
+            letter-spacing: -0.04em; line-height: 1;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #a78bfa 50%, #f472b6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        [data-theme="light"] .hero h1 {
+            background: linear-gradient(135deg, #111118 0%, #7c5ce0 50%, #d946a8 100%);
+            -webkit-background-clip: text; background-clip: text;
+        }
+        .hero .tagline { font-size: 1.2rem; color: var(--text-muted); font-weight: 400; letter-spacing: 0.04em; }
+        .hero .desc { margin-top: 28px; font-size: 0.88rem; color: var(--text-muted); max-width: 600px; line-height: 1.9; font-weight: 300; }
+        .hero .links { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+        .hero .links a {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 24px; border-radius: 10px;
+            font-size: 0.82rem; font-weight: 600; text-decoration: none;
+            transition: all 0.3s ease; letter-spacing: 0.01em;
+        }
+        .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 0 30px var(--accent-glow); }
+        .btn-primary:hover { filter: brightness(1.15); box-shadow: 0 0 40px var(--accent-glow); transform: translateY(-1px); }
+        .btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+        .btn-ghost:hover { background: var(--surface-hover); border-color: var(--border); }
+
+        .section-label {
+            font-size: 0.68rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.12em;
+            color: var(--text-muted); margin-bottom: 18px;
+        }
+
+        .episode-banner {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 40px; margin-bottom: 64px;
+            position: relative; overflow: hidden;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        [data-theme="light"] .episode-banner { box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .episode-banner::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--pink), var(--amber));
+        }
+        .episode-banner::after {
+            content: ''; position: absolute; top: 0; right: 0; width: 300px; height: 100%;
+            background: radial-gradient(ellipse at right, rgba(167,139,250,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .episode-banner .badge {
+            display: inline-block; font-size: 0.65rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--amber); background: var(--amber-glow);
+            padding: 6px 14px; border-radius: 8px; margin-bottom: 18px;
+        }
+        .episode-banner h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+        .episode-banner p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 22px; font-weight: 300; }
+
+        .browse-block {
+            display: block; text-decoration: none; color: var(--text);
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 36px 40px; margin-bottom: 64px;
+            position: relative; overflow: hidden; transition: all 0.3s ease;
+        }
+        .browse-block:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 32px var(--card-shadow); }
+        .browse-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--pink), var(--amber)); }
+        .browse-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; position: relative; z-index: 1; }
+        .browse-left .browse-emoji { font-size: 2.2rem; margin-bottom: 12px; }
+        .browse-left h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+        .browse-left p { font-size: 0.78rem; color: var(--text-muted); font-weight: 300; max-width: 500px; line-height: 1.7; }
+        .browse-arrow {
+            width: 48px; height: 48px; border-radius: 14px; display: flex;
+            align-items: center; justify-content: center; font-size: 1.2rem;
+            background: rgba(167,139,250,0.08); color: var(--accent); flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        .browse-block:hover .browse-arrow { background: var(--accent); color: #fff; }
+
+        .warning {
+            background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.15);
+            border-radius: 14px; padding: 24px 28px; margin-bottom: 64px;
+            display: flex; gap: 16px; align-items: flex-start;
+        }
+        [data-theme="light"] .warning { background: rgba(239, 68, 68, 0.04); border-color: rgba(239, 68, 68, 0.2); }
+        .warning .icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+        .warning .text h4 { font-size: 0.82rem; font-weight: 700; color: #ef4444; margin-bottom: 6px; }
+        .warning .text p { font-size: 0.75rem; color: var(--text-muted); line-height: 1.8; font-weight: 300; }
+        .warning .text a { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+        .contact-block {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 36px 40px; margin-bottom: 64px; position: relative; overflow: hidden;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        [data-theme="light"] .contact-block { box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .contact-block::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--blue)); }
+        .contact-block::after { content: ''; position: absolute; top: 0; right: 0; width: 300px; height: 100%; background: radial-gradient(ellipse at right, rgba(96,165,250,0.05) 0%, transparent 70%); pointer-events: none; }
+        .contact-top { text-align: center; margin-bottom: 28px; position: relative; z-index: 1; }
+        .contact-top .contact-emoji { font-size: 2.2rem; margin-bottom: 14px; }
+        .contact-top h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+        .contact-top p { font-size: 0.78rem; color: var(--text-muted); font-weight: 300; max-width: 420px; margin: 0 auto; line-height: 1.7; }
+        .contact-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; position: relative; z-index: 1; }
+        .contact-card {
+            display: flex; align-items: center; gap: 14px; padding: 20px 22px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+            text-decoration: none; color: var(--text); transition: all 0.3s ease;
+        }
+        [data-theme="light"] .contact-card { background: var(--surface-hover); }
+        .contact-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px var(--card-shadow); }
+        .contact-card-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .contact-card-icon.blue { background: rgba(96,165,250,0.1); }
+        .contact-card-icon.purple { background: rgba(167,139,250,0.1); }
+        .contact-card-text { font-size: 0.82rem; font-weight: 600; margin-bottom: 3px; }
+        .contact-card-sub { font-size: 0.68rem; color: var(--text-muted); font-weight: 300; }
+
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 64px; }
+        .info-card { padding: 28px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; transition: all 0.3s ease; }
+        .info-card:hover { border-color: var(--border); transform: translateY(-2px); }
+        .info-card .emoji { font-size: 1.8rem; margin-bottom: 14px; }
+        .info-card h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 8px; }
+        .info-card p { font-size: 0.72rem; color: var(--text-muted); line-height: 1.7; font-weight: 300; }
+
+        .sticker-block {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 28px 32px; background: var(--surface);
+            border: 1px solid var(--border); border-radius: 14px;
+            margin-bottom: 64px; transition: all 0.3s ease;
+        }
+        .sticker-block:hover { border-color: var(--border); }
+        .sticker-block .left h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+        .sticker-block .left p { font-size: 0.75rem; color: var(--text-muted); font-weight: 300; }
+
+        .placeholder {
+            border-radius: 16px; display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 12px; padding: 60px 20px; margin-bottom: 64px;
+            position: relative; overflow: hidden; border: 1px solid var(--border);
+        }
+        .placeholder::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(167,139,250,0.04) 0%, rgba(244,114,182,0.04) 50%, rgba(251,191,36,0.04) 100%);
+        }
+        [data-theme="light"] .placeholder::before {
+            background: linear-gradient(135deg, rgba(124,92,224,0.03) 0%, rgba(217,70,168,0.03) 50%, rgba(212,153,10,0.03) 100%);
+        }
+        .placeholder .icon, .placeholder-sm .icon { opacity: 0.4; position: relative; z-index: 1; }
+        .placeholder .icon { font-size: 3rem; }
+        .placeholder .label, .placeholder-sm .label {
+            font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
+            letter-spacing: 0.08em; text-transform: uppercase; position: relative; z-index: 1;
+        }
+        .placeholder .sub, .placeholder-sm .sub { font-size: 0.65rem; color: #55556a; font-weight: 400; position: relative; z-index: 1; }
+        [data-theme="light"] .placeholder .sub, [data-theme="light"] .placeholder-sm .sub { color: #999; }
+
+        .placeholder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 64px; }
+        .placeholder-sm {
+            border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 10px; padding: 50px 20px;
+            border: 1px solid var(--border); position: relative; overflow: hidden;
+        }
+        .placeholder-sm::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(167,139,250,0.03) 0%, rgba(244,114,182,0.03) 100%);
+        }
+        [data-theme="light"] .placeholder-sm::before {
+            background: linear-gradient(135deg, rgba(124,92,224,0.02) 0%, rgba(217,70,168,0.02) 100%);
+        }
+        .placeholder-sm .icon { font-size: 2rem; }
+        .placeholder-sm .label { font-size: 0.65rem; letter-spacing: 0.06em; }
+        .placeholder-sm .sub { font-size: 0.58rem; }
+
+        .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 64px 0; }
+
+        .faq { margin-bottom: 64px; }
+        .faq-item { padding: 24px 0; border-bottom: 1px solid var(--border); }
+        .faq-item:first-child { padding-top: 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q { font-size: 0.88rem; font-weight: 700; margin-bottom: 10px; }
+        .faq-a { font-size: 0.8rem; color: var(--text-muted); line-height: 1.8; font-weight: 300; max-width: 700px; }
+        .faq-a a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .faq-a a:hover { text-decoration: underline; }
+
+        .footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); }
+        .footer p { font-size: 0.68rem; color: var(--text-muted); line-height: 2; font-weight: 300; }
+        .footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
+        .footer a:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+            .wrap { padding: 100px 20px 60px; }
+            .header { padding: 16px 20px; }
+            .hero h1 { font-size: 2.8rem; }
+            .hero .desc { font-size: 0.82rem; }
+            .hero .links { gap: 10px; }
+            .hero .links a { padding: 10px 18px; font-size: 0.76rem; }
+            .grid-3 { grid-template-columns: 1fr; }
+            .placeholder-grid { grid-template-columns: 1fr; }
+            .sticker-block { flex-direction: column; gap: 20px; text-align: center; }
+            .hero::before { display: none; }
+            .browse-block { padding: 28px 24px; }
+            .browse-inner { flex-direction: column; text-align: center; }
+            .browse-left p { max-width: 100%; }
+            .warning { flex-direction: column; gap: 10px; padding: 20px 22px; }
+            .contact-cards { grid-template-columns: 1fr; }
+            .contact-block { padding: 28px 24px; }
+            .contact-card { padding: 16px 18px; }
+            .faq-q { font-size: 0.82rem; }
+            .faq-a { font-size: 0.75rem; }
+            .episode-banner { padding: 28px; }
+            .placeholder { padding: 40px 16px; }
+            .placeholder-sm { padding: 36px 16px; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 2rem; }
+            .hero .tagline { font-size: 0.95rem; }
+            .hero .desc { font-size: 0.78rem; }
+            .hero .links { flex-direction: column; }
+            .hero .links a { width: 100%; justify-content: center; }
+            .episode-banner { padding: 20px; }
+            .episode-banner h3 { font-size: 1.1rem; }
+            .browse-block { padding: 22px 18px; }
+            .browse-left h3 { font-size: 0.95rem; }
+            .info-card { padding: 22px 18px; }
+            .info-card h4 { font-size: 0.76rem; }
+            .info-card p { font-size: 0.68rem; }
+            .sticker-block { padding: 22px 20px; }
+            .contact-block { padding: 22px 18px; }
+            .contact-card-icon { width: 38px; height: 38px; font-size: 1.1rem; }
+            .contact-card-text { font-size: 0.76rem; }
+            .contact-card-sub { font-size: 0.62rem; }
+            .faq-q { font-size: 0.78rem; }
+            .faq-a { font-size: 0.7rem; }
+            .footer p { font-size: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg"></div>
+
+    <div class="header">
+        <a href="https://doinwor.github.io/go-ecosystem/i-site/" class="back">← і. студия</a>
+        <div class="header-right">
+            <div class="lang-switcher" id="langSwitcher">
+                <button class="lang-btn" id="langBtn">
+                    <span id="currentLang">RU</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option active" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+                    <button class="lang-option" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+                    <button class="lang-option" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
+                    <button class="lang-option" data-lang="be"><span class="flag">🇧🇾</span> Беларуская</button>
+                    <button class="lang-option" data-lang="uk"><span class="flag">🇺🇦</span> Українська</button>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span class="theme-toggle__knob"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="wrap">
+
+        <div class="hero">
+            <h1 data-i18n="hero_title">Евлампия</h1>
+            <p class="tagline" data-i18n="hero_tagline">добрая и злая гадалка</p>
+            <p class="desc" data-i18n="hero_desc">Веб-сериал о гадалке Евлампии — предсказания, сезоны и архивные серии. Предсказывает будущее по шару, картам и телефону. Кто-то ей верит, кто-то смеётся, но равнодушным её не оставляет никто.</p>
+            <div class="links">
+                <a href="https://rutube.ru/channel/26017091/" class="btn-primary" target="_blank" data-i18n="btn_rutube">▶ Смотреть на RUTUBE</a>
+                <a href="https://t.me/evlampia1327" class="btn-ghost" target="_blank">Telegram</a>
+                <a href="https://sites.google.com/view/evlampia-org/" class="btn-ghost" target="_blank" data-i18n="btn_official">Официальный сайт</a>
+            </div>
+        </div>
+
+        <p class="section-label" data-i18n="label_new">Новые серии</p>
+        <div class="episode-banner">
+            <span class="badge" data-i18n="badge_new">Новинка</span>
+            <h3 data-i18n="episode_title">Новая серия — 15 апреля 2024</h3>
+            <p data-i18n="episode_desc">Свежий выпуск уже доступен на RUTUBE</p>
+            <a href="https://rutube.ru/video/c3390b6a11940ebc8a3c6f9bbae5111f/" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;padding:12px 28px;border-radius:10px;font-size:0.82rem;font-weight:600;text-decoration:none;" target="_blank" data-i18n="btn_watch">Смотреть →</a>
+        </div>
+
+        <a href="episodes.html" class="browse-block">
+            <div class="browse-inner">
+                <div class="browse-left">
+                    <div class="browse-emoji">📺</div>
+                    <h3 data-i18n="browse_title">Серии и сезоны</h3>
+                    <p data-i18n="browse_desc">Все классические серии — три сезона, архивные выпуски и интервью. 30+ серий оригинального формата с предсказаниями, картами и шаром</p>
+                </div>
+                <div class="browse-arrow">→</div>
+            </div>
+        </a>
+
+        <div class="warning">
+            <div class="icon">⚠️</div>
+            <div class="text">
+                <h4 data-i18n="warn_title">Серии временно недоступны</h4>
+                <p data-i18n="warn_desc">Часть серий скрыта для прохождения модерации в связи с требованиями Федерального закона №48-ФЗ. Отдельные сцены подлежат цензуре и будут удалены. Следите за обновлениями в <a href="https://t.me/evlampia1327">Telegram</a>.</p>
+            </div>
+        </div>
+
+        <p class="section-label" data-i18n="label_about">О проекте</p>
+        <div class="grid-3">
+            <div class="info-card">
+                <div class="emoji">🔮</div>
+                <h4 data-i18n="info1_title">Гадалка</h4>
+                <p data-i18n="info1_desc">Евлампия предсказывает будущее по шару, картам и телефону</p>
+            </div>
+            <div class="info-card">
+                <div class="emoji">📺</div>
+                <h4 data-i18n="info2_title">3 сезона</h4>
+                <p data-i18n="info2_desc">Все серии собраны в плейлистах на RUTUBE — основном канале</p>
+            </div>
+            <div class="info-card">
+                <div class="emoji">✈️</div>
+                <h4 data-i18n="info3_title">Telegram</h4>
+                <p data-i18n="info3_desc">Новыми выпусками и новостями делятся в Telegram-канале</p>
+            </div>
+        </div>
+
+        <div class="sticker-block">
+            <div class="left">
+                <h4 data-i18n="sticker_title">Стикеры для Telegram</h4>
+                <p data-i18n="sticker_desc">У Евлампии есть собственные стикеры</p>
+            </div>
+            <a href="https://t.me/addstickers/evlampiya1327" class="btn-ghost" target="_blank" data-i18n="btn_stickers">Получить →</a>
+        </div>
+
+        <p class="section-label" data-i18n="label_stickers">Стикеры</p>
+        <div class="placeholder">
+            <div class="icon">🎨</div>
+            <div class="label" data-i18n="placeholder_soon">Скоро появится</div>
+            <div class="sub" data-i18n="placeholder_stickers">Картинка со стикерами будет добавлена позже</div>
+        </div>
+
+        <p class="section-label" data-i18n="label_gallery">Галерея</p>
+        <div class="placeholder-grid">
+            <div class="placeholder-sm">
+                <div class="icon">🖼️</div>
+                <div class="label" data-i18n="placeholder_soon">Скоро появится</div>
+                <div class="sub" data-i18n="placeholder_img1">«Да, да Евлампия такая»</div>
+            </div>
+            <div class="placeholder-sm">
+                <div class="icon">📜</div>
+                <div class="label" data-i18n="placeholder_soon">Скоро появится</div>
+                <div class="sub" data-i18n="placeholder_img2">Сертификат гадалки</div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <p class="section-label" data-i18n="label_faq">Вопросы</p>
+        <div class="faq">
+            <div class="faq-item">
+                <div class="faq-q" data-i18n="faq1_q">Почему пропали серии?</div>
+                <div class="faq-a" data-i18n="faq1_a">Временно скрыли серии для проведения осмотра на предмет запрещённого контента. Как только уберём некоторые моменты, видео снова будут доступны. Следите за новостями в <a href="https://t.me/evlampia1327">Telegram</a>.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" data-i18n="faq2_q">Почему самой первой серии нет на RUTUBE?</div>
+                <div class="faq-a" data-i18n="faq2_a">Изначально хотели публиковать серии только на Дзен, но потом появился RUTUBE (сейчас это основной канал), а первую серию так и не перезалили.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q" data-i18n="faq3_q">Почему 2 сезон закончился не полностью?</div>
+                <div class="faq-a" data-i18n="faq3_a">Основной монтажёр ушёл в «отпуск» и пришлось актёру «выкручиваться» самому. Были смонтированы все 4 серии сезона. Позже вернулся основной монтажёр и сразу начался третий сезон.</div>
+            </div>
+        </div>
+
+        <p class="section-label" data-i18n="label_contact">Связь</p>
+        <div class="contact-block">
+            <div class="contact-top">
+                <div class="contact-emoji">✉️</div>
+                <h3 data-i18n="contact_title">Обратная связь</h3>
+                <p data-i18n="contact_desc">Проект создан студией і. По всем вопросам — пишите, ответим в течение дня</p>
+            </div>
+            <div class="contact-cards">
+                <a href="https://t.me/evlampia1327" class="contact-card" target="_blank">
+                    <div class="contact-card-icon blue">✈️</div>
+                    <div>
+                        <div class="contact-card-text">Telegram</div>
+                        <div class="contact-card-sub" data-i18n="contact_tg_sub">Пишите в канал проектов</div>
+                    </div>
+                </a>
+                <a href="https://doinwor.github.io/go-ecosystem/i-site/contacts.html" class="contact-card" target="_blank">
+                    <div class="contact-card-icon purple">і.</div>
+                    <div>
+                        <div class="contact-card-text" data-i18n="contact_studio">Студия і.</div>
+                        <div class="contact-card-sub" data-i18n="contact_studio_sub">Как с нами связаться</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p data-i18n="footer_disclaimer">Проект имеет пометку 18+. Все гадания и советы персонажа являются вымышленными и носят исключительно развлекательный характер.</p>
+            <p style="margin-top: 12px;" data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
+            <p style="margin-top: 4px;">Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+        </div>
+
+    </div>
+
+    <script>
+        const i18n = {
+            ru: {
+                hero_title: "Евлампия",
+                hero_tagline: "добрая и злая гадалка",
+                hero_desc: "Веб-сериал о гадалке Евлампии — предсказания, сезоны и архивные серии. Предсказывает будущее по шару, картам и телефону. Кто-то ей верит, кто-то смеётся, но равнодушным её не оставляет никто.",
+                btn_rutube: "▶ Смотреть на RUTUBE",
+                btn_official: "Официальный сайт",
+                label_new: "Новые серии",
+                badge_new: "Новинка",
+                episode_title: "Новая серия — 15 апреля 2024",
+                episode_desc: "Свежий выпуск уже доступен на RUTUBE",
+                btn_watch: "Смотреть →",
+                browse_title: "Серии и сезоны",
+                browse_desc: "Все классические серии — три сезона, архивные выпуски и интервью. 30+ серий оригинального формата с предсказаниями, картами и шаром",
+                label_about: "О проекте",
+                warn_title: "Серии временно недоступны",
+                warn_desc: "Часть серий скрыта для прохождения модерации в связи с требованиями Федерального закона №48-ФЗ. Отдельные сцены подлежат цензуре и будут удалены. Следите за обновлениями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                info1_title: "Гадалка",
+                info1_desc: "Евлампия предсказывает будущее по шару, картам и телефону",
+                info2_title: "3 сезона",
+                info2_desc: "Все серии собраны в плейлистах на RUTUBE — основном канале",
+                info3_title: "Telegram",
+                info3_desc: "Новыми выпусками и новостями делятся в Telegram-канале",
+                sticker_title: "Стикеры для Telegram",
+                sticker_desc: "У Евлампии есть собственные стикеры",
+                btn_stickers: "Получить →",
+                label_stickers: "Стикеры",
+                placeholder_soon: "Скоро появится",
+                placeholder_stickers: "Картинка со стикерами будет добавлена позже",
+                label_gallery: "Галерея",
+                placeholder_img1: "«Да, да Евлампия такая»",
+                placeholder_img2: "Сертификат гадалки",
+                label_faq: "Вопросы",
+                faq1_q: "Почему пропали серии?",
+                faq1_a: "Временно скрыли серии для проведения осмотра на предмет запрещённого контента. Как только уберём некоторые моменты, видео снова будут доступны. Следите за новостями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                faq2_q: "Почему самой первой серии нет на RUTUBE?",
+                faq2_a: "Изначально хотели публиковать серии только на Дзен, но потом появился RUTUBE (сейчас это основной канал), а первую серию так и не перезалили.",
+                faq3_q: "Почему 2 сезон закончился не полностью?",
+                faq3_a: "Основной монтажёр ушёл в «отпуск» и пришлось актёру «выкручиваться» самому. Были смонтированы все 4 серии сезона. Позже вернулся основной монтажёр и сразу начался третий сезон.",
+                label_contact: "Связь",
+                contact_title: "Обратная связь",
+                contact_desc: "Проект создан студией і. По всем вопросам — пишите, ответим в течение дня",
+                contact_tg_sub: "Пишите в ЛС канала Евлампии",
+                contact_studio: "Студия і.",
+                contact_studio_sub: "Как с нами связаться",
+                footer_disclaimer: "Проект имеет пометку 18+. Все гадания и советы персонажа являются вымышленными и носят исключительно развлекательный характер.",
+                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>"
+            },
+            en: {
+                hero_title: "Evlampia",
+                hero_tagline: "good and evil fortune teller",
+                hero_desc: "A web series about fortune teller Evlampia — predictions, seasons and archive episodes. She predicts the future with a ball, cards and phone. Some believe her, some laugh, but no one stays indifferent.",
+                btn_rutube: "▶ Watch on RUTUBE",
+                btn_official: "Official website",
+                label_new: "New episodes",
+                badge_new: "New",
+                episode_title: "New episode — April 15, 2024",
+                episode_desc: "Fresh episode already available on RUTUBE",
+                btn_watch: "Watch →",
+                browse_title: "Episodes & Seasons",
+                browse_desc: "All classic episodes — three seasons, archive releases and interviews. 30+ episodes of the original format with predictions, cards and crystal ball",
+                label_about: "About the project",
+                warn_title: "Episodes temporarily unavailable",
+                warn_desc: "Part of the episodes are hidden for moderation per Federal Law No. 48-FZ. Some scenes are subject to censorship and will be removed. Follow updates on <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                info1_title: "Fortune teller",
+                info1_desc: "Evlampia predicts the future with a ball, cards and phone",
+                info2_title: "3 seasons",
+                info2_desc: "All episodes are collected in playlists on RUTUBE — the main channel",
+                info3_title: "Telegram",
+                info3_desc: "New episodes and news are shared in the Telegram channel",
+                sticker_title: "Telegram stickers",
+                sticker_desc: "Evlampia has her own stickers",
+                btn_stickers: "Get →",
+                label_stickers: "Stickers",
+                placeholder_soon: "Coming soon",
+                placeholder_stickers: "Sticker image will be added later",
+                label_gallery: "Gallery",
+                placeholder_img1: "«Yes, yes Evlampia is like that»",
+                placeholder_img2: "Fortune teller certificate",
+                label_faq: "Questions",
+                faq1_q: "Why did the episodes disappear?",
+                faq1_a: "Episodes are temporarily hidden for moderation. Once some moments are removed, the videos will be available again. Follow the updates on <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                faq2_q: "Why is the first episode not on RUTUBE?",
+                faq2_a: "Initially we wanted to publish episodes only on Dzen, but then RUTUBE appeared (now it's the main channel), and we never re-uploaded the first episode.",
+                faq3_q: "Why was season 2 not completed?",
+                faq3_a: "The main editor went on \"vacation\" and the actor had to \"manage\" on his own. All 4 episodes of the season were edited. Later the main editor returned and immediately started the third season.",
+                label_contact: "Contact",
+                contact_title: "Get in touch",
+                contact_desc: "This project was created by studio і. For any questions — write to us, we'll respond within a day",
+                contact_tg_sub: "Write to Evlampia's channel DM",
+                contact_studio: "Studio і.",
+                contact_studio_sub: "How to reach us",
+                footer_disclaimer: "The project is rated 18+. All fortunes and advice from the character are fictional and exclusively for entertainment purposes.",
+                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>"
+            },
+            de: {
+                hero_title: "Evlampia",
+                hero_tagline: "gute und böse Hellseherin",
+                hero_desc: "Eine Web-Serie über die Hellseherin Evlampia — Vorhersagen, Staffeln und Archivfolgen. Sie sagt die Zukunft mit einer Kugel, Karten und Telefon vorher. Manche glauben ihr, manche lachen, aber niemand bleibt gleichgültig.",
+                btn_rutube: "▶ Auf RUTUBE ansehen",
+                btn_official: "Offizielle Webseite",
+                label_new: "Neue Folgen",
+                badge_new: "Neu",
+                episode_title: "Neue Folge — 15. April 2024",
+                episode_desc: "Neue Folge bereits auf RUTUBE verfügbar",
+                btn_watch: "Ansehen →",
+                browse_title: "Folgen & Staffeln",
+                browse_desc: "Alle klassischen Folgen — drei Staffeln, Archivfolgen und Interviews. 30+ Folgen im Originalformat mit Vorhersagen, Karten und Kristallkugel",
+                label_about: "Über das Projekt",
+                warn_title: "Folgen vorübergehend nicht verfügbar",
+                warn_desc: "Teil der Folgen wurde wegen Moderation gemäß Bundesgesetz Nr. 48-FZ ausgeblendet. Einige Szenen unterliegen der Zensur und werden entfernt. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                info1_title: "Hellseherin",
+                info1_desc: "Evlampia sagt die Zukunft mit einer Kugel, Karten und Telefon vorher",
+                info2_title: "3 Staffeln",
+                info2_desc: "Alle Folgen sind in Playlists auf RUTUBE — dem Hauptkanal gesammelt",
+                info3_title: "Telegram",
+                info3_desc: "Neue Folgen und Neuigkeiten werden im Telegram-Kanal geteilt",
+                sticker_title: "Telegram-Sticker",
+                sticker_desc: "Evlampia hat eigene Sticker",
+                btn_stickers: "Holen →",
+                label_stickers: "Sticker",
+                placeholder_soon: "Bald verfügbar",
+                placeholder_stickers: "Sticker-Bild wird später hinzugefügt",
+                label_gallery: "Galerie",
+                placeholder_img1: "«Ja, ja, Evlampia ist so»",
+                placeholder_img2: "Hellseherin-Zertifikat",
+                label_faq: "Fragen",
+                faq1_q: "Warum sind die Folgen verschwunden?",
+                faq1_a: "Folgen wurden vorübergehend für die Moderation ausgeblendet. Sobald einige Momente entfernt sind, werden die Videos wieder verfügbar sein. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                faq2_q: "Warum ist die erste Folge nicht auf RUTUBE?",
+                faq2_a: "Ursprünglich wollten wir die Folgen nur auf Dzen veröffentlichen, aber dann erschien RUTUBE (jetzt der Hauptkanal) und wir haben die erste Folge nie hochgeladen.",
+                faq3_q: "Warum wurde Staffel 2 nicht vollständig?",
+                faq3_a: "Der Haupteditor ging in den „Urlaub“ und der Schauspieler musste sich allein „helfen“. Alle 4 Folgen der Staffel wurden geschnitten. Später kehrte der Haupteditor zurück und startete sofort die dritte Staffel.",
+                label_contact: "Kontakt",
+                contact_title: "Kontaktieren Sie uns",
+                contact_desc: "Dieses Projekt wurde vom Studio і. erstellt. Bei Fragen — schreiben Sie uns, wir antworten innerhalb eines Tages",
+                contact_tg_sub: "Schreiben Sie per DM an den Evlampia-Kanal",
+                contact_studio: "Studio і.",
+                contact_studio_sub: "So erreichen Sie uns",
+                footer_disclaimer: "Das Projekt ist ab 18 Jahren. Alle Wahrsagungen und Ratschläge der Figur sind fiktiv und ausschließlich als Unterhaltung gedacht.",
+                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>"
+            },
+            be: {
+                hero_title: "Еўлампія",
+                hero_tagline: "добрая і злая гадалка",
+                hero_desc: "Вэб-серыял пра гадалку Еўлампію — прадказанні, сезоны і архіўныя серыі. Прадказвае будучыню па шары, картах і тэлефоне. Нхто ёй верыць, хтось смяецца, але раўнадушным яе не пакідае ніхто.",
+                btn_rutube: "▶ Глядзець на RUTUBE",
+                btn_official: "Афіцыйны сайт",
+                label_new: "Новыя серыі",
+                badge_new: "Навіна",
+                episode_title: "Новая серыя — 15 красавіка 2024",
+                episode_desc: "Свежы выпуск ужо даступны на RUTUBE",
+                btn_watch: "Глядзець →",
+                browse_title: "Серыі і сезоны",
+                browse_desc: "Усе класічныя серыі — тры сезоны, архіўныя выпускі і інтэрвью. 30+ серый арыгінальнага фармату з прадказаннямі, картамі і шарам",
+                label_about: "Пра праект",
+                warn_title: "Серыі часова недаступныя",
+                warn_desc: "Частка серый схавана для мадэрацыі паводле Федэральнага закона №48-ФЗ. Асобныя сцэны падлягаюць цэнзуры і будуць выдалены. Сачыце за абнаўленнямі ў <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                info1_title: "Гадалка",
+                info1_desc: "Еўлампія прадказвае будучыню па шары, картах і тэлефоне",
+                info2_title: "3 сезоны",
+                info2_desc: "Усе серыі сабраны ў плэйлістах на RUTUBE — асноўным канале",
+                info3_title: "Telegram",
+                info3_desc: "Новыя выпускі і навіны дзеляцца ў Telegram-канале",
+                sticker_title: "Сцікеры для Telegram",
+                sticker_desc: "У Еўлампіі ёсць уласныя сцікеры",
+                btn_stickers: "Атрымаць →",
+                label_stickers: "Сцікеры",
+                placeholder_soon: "Хутка з'явіцца",
+                placeholder_stickers: "Картынка са сцікерамі будзе дададзена пазней",
+                label_gallery: "Галерэя",
+                placeholder_img1: "«Так, так, Еўлампія такая»",
+                placeholder_img2: "Сертыфікат гадалкі",
+                label_faq: "Пытанні",
+                faq1_q: "Чаму зніклі серыі?",
+                faq1_a: "Часова схаваны серыі для правядзення мадэрацыі. Калі прыбярэм некаторыя моманты, відэа зноў будуць даступныя. Сачыце за навінамі ў <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                faq2_q: "Чаму самай першай серыі няма на RUTUBE?",
+                faq2_a: "Ізначальна хацелі публікаваць серыі толькі на Дзен, але потым з'явіўся RUTUBE (цяпер гэта асноўны канал), а першую серыю так і не перезалілі.",
+                faq3_q: "Чаму 2 сезон скончыўся не поўнасцю?",
+                faq3_a: "Асноўны мантажор пайшоў у «адпачынак» і прыйшлося акцёру «выкручвацца» самому. Былі сманціраваны ўсе 4 серыі сезона. Пазней вярнуўся асноўны мантажор і адразу пачаўся трэці сезон.",
+                label_contact: "Сувязь",
+                contact_title: "Зваротная сувязь",
+                contact_desc: "Праект створан студыяй і. Па ўсіх пытаннях — пішыце, адкажам на працягу дня",
+                contact_tg_sub: "Пішыце ў ЛС канала Еўлампіі",
+                contact_studio: "Студыя і.",
+                contact_studio_sub: "Як з намі звязацца",
+                footer_disclaimer: "Праект мае адзнаку 18+. Усе прадказанні і парады персанажа з'яўляюцца выдуманымі і носяць выключна забаўляльны характар.",
+                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>"
+            },
+            uk: {
+                hero_title: "Євлампія",
+                hero_tagline: "добра і зла ворожка",
+                hero_desc: "Веб-серіал про ворожку Євлампію — передбачення, сезони та архівні серії. Передбачає майбутнє по кулі, картах і телефону. Хтось їй вірить, хтось сміється, але байдужою її не залишає ніхто.",
+                btn_rutube: "▶ Дивитися на RUTUBE",
+                btn_official: "Офіційний сайт",
+                label_new: "Нові серії",
+                badge_new: "Новинка",
+                episode_title: "Нова серія — 15 квітня 2024",
+                episode_desc: "Свіжий випуск вже доступний на RUTUBE",
+                btn_watch: "Дивитися →",
+                browse_title: "Серії та сезони",
+                browse_desc: "Усі класичні серії — три сезони, архівні випуски та інтерв'ю. 30+ серій оригінального формату з передбаченнями, картами та кулею",
+                label_about: "Про проєкт",
+                warn_title: "Серії тимчасово недоступні",
+                warn_desc: "Частка серій приховано для модерації відповідно до Федерального закону №48-ФЗ. Окремі сцени підлягають цензурі та будуть видалені. Слідкуйте за оновленнями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                info1_title: "Ворожка",
+                info1_desc: "Євлампія передбачає майбутнє по кулі, картах і телефону",
+                info2_title: "3 сезони",
+                info2_desc: "Всі серії зібрані в плейлистах на RUTUBE — основному каналі",
+                info3_title: "Telegram",
+                info3_desc: "Новими випусками та новинами діляться в Telegram-каналі",
+                sticker_title: "Стикери для Telegram",
+                sticker_desc: "Євлампія має власні стикери",
+                btn_stickers: "Отримати →",
+                label_stickers: "Стикери",
+                placeholder_soon: "Незабаром з'явиться",
+                placeholder_stickers: "Картинка зі стикерами буде додана пізніше",
+                label_gallery: "Галерея",
+                placeholder_img1: "«Так, так, Євлампія така»",
+                placeholder_img2: "Сертифікат ворожки",
+                label_faq: "Питання",
+                faq1_q: "Чому зникли серії?",
+                faq1_a: "Тимчасово приховано серії для проведення модерації. Коли приберемо деякі моменти, відео знову будуть доступні. Слідкуйте за новинами в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                faq2_q: "Чому самої першої серії немає на RUTUBE?",
+                faq2_a: "Спочатку хотіли публікувати серії тільки на Дзен, але потім з'явився RUTUBE (зараз це основний канал), а першу серію так і не залили.",
+                faq3_q: "Чому 2 сезон закінчився не повністю?",
+                faq3_a: "Основний монтажер пішов у «відпустку» і довелося актору «викручуватися» самому. Були змонтовані всі 4 серії сезону. Пізніше повернувся основний монтажер і одразу почався третій сезон.",
+                label_contact: "Зв'язок",
+                contact_title: "Зворотний зв'язок",
+                contact_desc: "Проєкт створений студією і. З будь-яких питань — пишіть, відповімо протягом дня",
+                contact_tg_sub: "Пишіть в ЛС каналу Євлампії",
+                contact_studio: "Студія і.",
+                contact_studio_sub: "Як з нами зв'язатися",
+                footer_disclaimer: "Проєкт має позначку 18+. Усі ворожіння та поради персонажа є вигаданими і носять виключно розважальний характер.",
+                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>"
+            }
+        };
+
+        function setLang(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) {
+                    el.innerHTML = i18n[lang][key];
+                }
+            });
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+            document.documentElement.setAttribute('lang', lang);
+            localStorage.setItem('i-lang', lang);
+        }
+
+        const langSwitcher = document.getElementById('langSwitcher');
+        const langBtn = document.getElementById('langBtn');
+        const langDropdown = document.getElementById('langDropdown');
+
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langSwitcher.classList.toggle('open');
+        });
+
+        document.addEventListener('click', () => langSwitcher.classList.remove('open'));
+
+        langDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                setLang(opt.dataset.lang);
+                langSwitcher.classList.remove('open');
+            });
+        });
+
+        const savedLang = localStorage.getItem('i-lang') || 'ru';
+        setLang(savedLang);
+
+        /* THEME TOGGLE */
+        const toggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const stored = localStorage.getItem('i-theme');
+        if (stored) root.setAttribute('data-theme', stored);
+        toggle.addEventListener('click', () => {
+            const current = root.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('i-theme', next);
+        });
+    </script>
+</body>
+</html>

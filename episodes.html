@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Серии и сезоны — Евлампия</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
+    <script>try{var t=localStorage.getItem('i-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+    <style>
+        :root {
+            --bg: #050508; --surface: #0f0f14; --surface-hover: #1a1a24;
+            --border: #1e1e2a; --text: #f0f0f5; --text-muted: #8888a0;
+            --accent: #a78bfa; --accent-glow: rgba(167,139,250,0.25);
+            --pink: #f472b6; --amber: #fbbf24; --blue: #60a5fa;
+            --card-shadow: rgba(0,0,0,0.3); --toggle-bg: #1e1e2a; --toggle-knob: #050508;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f7; --surface: #ffffff; --surface-hover: #eaeaef;
+            --border: #dddde5; --text: #111118; --text-muted: #6b6b80;
+            --accent: #7c5ce0; --accent-glow: rgba(124,92,224,0.15);
+            --pink: #d946a8; --amber: #d4990a; --blue: #3b82f6;
+            --card-shadow: rgba(0,0,0,0.06); --toggle-bg: #dddde5; --toggle-knob: #f5f5f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Unbounded', sans-serif; background: var(--bg); color: var(--text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s;
+        }
+
+        .theme-toggle {
+            background: var(--toggle-bg); border: none; cursor: pointer; padding: 0;
+            border-radius: 100px; width: 42px; height: 22px; display: flex;
+            align-items: center; transition: background 0.3s; flex-shrink: 0;
+        }
+        .theme-toggle:hover { opacity: 0.8; }
+        .theme-toggle__knob {
+            width: 16px; height: 16px; border-radius: 50%; background: var(--toggle-knob);
+            transition: transform 0.3s, background 0.3s; margin: 0 3px;
+        }
+        [data-theme="dark"] .theme-toggle__knob { transform: translateX(20px); }
+
+        .lang-switcher { position: relative; z-index: 200; }
+        .lang-btn {
+            background: var(--toggle-bg); border: none; cursor: pointer;
+            padding: 6px 12px; border-radius: 8px; font-family: 'Unbounded', sans-serif;
+            font-size: 0.7rem; font-weight: 600; color: var(--text);
+            letter-spacing: 0.04em; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .lang-btn:hover { background: var(--surface-hover); }
+        .lang-btn .arrow { font-size: 0.5rem; transition: transform 0.2s; }
+        .lang-switcher.open .lang-btn .arrow { transform: rotate(180deg); }
+        .lang-dropdown {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 6px; min-width: 160px; display: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        [data-theme="light"] .lang-dropdown { box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+        .lang-switcher.open .lang-dropdown { display: block; }
+        .lang-option {
+            display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-weight: 500;
+            color: var(--text-muted); transition: all 0.15s; border: none; background: none;
+            width: 100%; font-family: 'Unbounded', sans-serif; text-align: left;
+        }
+        .lang-option:hover { background: var(--surface-hover); color: var(--text); }
+        .lang-option.active { color: var(--accent); background: var(--accent-glow); }
+        .lang-option .flag { font-size: 1rem; }
+
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+            backdrop-filter: blur(12px); background: rgba(5,5,8,0.6); border-bottom: 1px solid var(--border);
+        }
+        [data-theme="light"] .header { background: rgba(245,245,247,0.7); }
+        .header .back { color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 500; transition: color 0.2s; }
+        .header .back:hover { color: var(--text); }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+
+        .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 120px 40px 100px; }
+
+        .hero { margin-bottom: 50px; }
+        .hero h1 {
+            font-size: 3rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #a78bfa 50%, #f472b6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        [data-theme="light"] .hero h1 {
+            background: linear-gradient(135deg, #111118 0%, #7c5ce0 50%, #d946a8 100%);
+            -webkit-background-clip: text; background-clip: text;
+        }
+        .hero .tagline { font-size: 1rem; color: var(--text-muted); font-weight: 400; }
+
+        .section-label {
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 18px;
+        }
+
+        .section-block {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 36px; margin-bottom: 32px; position: relative; overflow: hidden;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .section-block::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        }
+        .section-block.classic::before { background: linear-gradient(90deg, var(--accent), var(--pink)); }
+        .section-block.new::before { background: linear-gradient(90deg, var(--amber), var(--blue)); }
+
+        .section-block h2 {
+            font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-block .sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 28px; font-weight: 300; }
+
+        .season { margin-bottom: 28px; }
+        .season:last-child { margin-bottom: 0; }
+        .season-header {
+            font-size: 0.85rem; font-weight: 700; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 10px; color: var(--text);
+        }
+        .season-header .s-badge {
+            font-size: 0.62rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+            text-transform: uppercase; letter-spacing: 0.06em;
+        }
+        .s-badge.purple { background: rgba(167,139,250,0.1); color: var(--accent); }
+        .s-badge.pink { background: rgba(244,114,182,0.1); color: var(--pink); }
+        .s-badge.amber { background: rgba(251,191,36,0.1); color: var(--amber); }
+
+        .ep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .ep-card {
+            display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+            text-decoration: none; color: var(--text); transition: all 0.25s;
+        }
+        [data-theme="light"] .ep-card { background: var(--surface-hover); }
+        .ep-card:hover {
+            border-color: var(--accent); transform: translateY(-1px);
+            box-shadow: 0 4px 16px var(--card-shadow);
+        }
+        .ep-num {
+            width: 32px; height: 32px; border-radius: 8px; display: flex;
+            align-items: center; justify-content: center; font-size: 0.7rem;
+            font-weight: 700; flex-shrink: 0;
+        }
+        .ep-num.purple { background: rgba(167,139,250,0.1); color: var(--accent); }
+        .ep-num.pink { background: rgba(244,114,182,0.1); color: var(--pink); }
+        .ep-num.amber { background: rgba(251,191,36,0.1); color: var(--amber); }
+        .ep-num.blue { background: rgba(96,165,250,0.1); color: var(--blue); }
+        .ep-info .ep-title { font-size: 0.75rem; font-weight: 600; line-height: 1.3; }
+        .ep-info .ep-meta { font-size: 0.62rem; color: var(--text-muted); margin-top: 2px; }
+
+        .ep-card.disabled {
+            opacity: 0.35; pointer-events: none;
+        }
+        .ep-card.disabled .ep-num { background: rgba(136,136,160,0.08); color: var(--text-muted); }
+
+        .warning {
+            background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.15);
+            border-radius: 14px; padding: 20px 24px; margin-bottom: 32px;
+            display: flex; gap: 14px; align-items: flex-start;
+        }
+        [data-theme="light"] .warning { background: rgba(239,68,68,0.04); border-color: rgba(239,68,68,0.2); }
+        .warning .w-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+        .warning .text h4 { font-size: 0.8rem; font-weight: 700; color: #ef4444; margin-bottom: 4px; }
+        .warning .text p { font-size: 0.72rem; color: var(--text-muted); line-height: 1.7; font-weight: 300; }
+        .warning .text a { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+        .beta-banner {
+            display: block; text-decoration: none; color: var(--text);
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 28px 32px; margin-bottom: 32px;
+            position: relative; overflow: hidden; transition: all 0.3s ease;
+        }
+        .beta-banner::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--amber), var(--blue));
+        }
+        .beta-banner::after {
+            content: ''; position: absolute; top: 0; right: 0; width: 300px; height: 100%;
+            background: radial-gradient(ellipse at right, rgba(96,165,250,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        [data-theme="light"] .beta-banner { box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .beta-banner:hover { border-color: var(--blue); transform: translateY(-2px); box-shadow: 0 8px 32px var(--card-shadow); }
+        .beta-badge {
+            display: inline-block; font-size: 0.6rem; font-weight: 700; position: relative; z-index: 1;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--blue); background: rgba(96,165,250,0.1);
+            padding: 5px 12px; border-radius: 7px; margin-bottom: 14px;
+        }
+        [data-theme="light"] .beta-badge { background: rgba(59,130,246,0.08); }
+        .beta-banner h3 {
+            font-size: 1rem; font-weight: 700; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 10px; position: relative; z-index: 1;
+        }
+        .beta-banner p {
+            font-size: 0.75rem; color: var(--text-muted); font-weight: 300;
+            line-height: 1.7; margin-bottom: 18px; position: relative; z-index: 1;
+        }
+        .beta-btn {
+            display: inline-flex; align-items: center; gap: 8px; position: relative; z-index: 1;
+            padding: 10px 22px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--amber), var(--blue));
+            color: #fff; font-size: 0.78rem; font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .beta-banner:hover .beta-btn { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(96,165,250,0.35); }
+
+        .coming-soon {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 60px 20px; border-radius: 16px; position: relative; overflow: hidden;
+            border: 1px dashed var(--border); background: var(--bg);
+        }
+        .coming-soon::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(251,191,36,0.04) 0%, rgba(96,165,250,0.04) 100%);
+        }
+        [data-theme="light"] .coming-soon::before {
+            background: linear-gradient(135deg, rgba(212,153,10,0.03) 0%, rgba(59,130,246,0.03) 100%);
+        }
+        .coming-soon .cs-icon { font-size: 2.5rem; margin-bottom: 16px; opacity: 0.5; position: relative; z-index: 1; }
+        .coming-soon h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; position: relative; z-index: 1; }
+        .coming-soon p { font-size: 0.75rem; color: var(--text-muted); text-align: center; max-width: 450px; line-height: 1.8; font-weight: 300; position: relative; z-index: 1; }
+
+        .roulette-section {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 32px 0; margin-bottom: 32px; position: relative; overflow: hidden;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        [data-theme="light"] .roulette-section { box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .roulette-section::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--pink), var(--accent), var(--amber));
+            z-index: 2;
+        }
+        .roulette-header { text-align: center; padding: 0 32px 24px; position: relative; z-index: 1; }
+        .roulette-header h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+        .roulette-header p { font-size: 0.78rem; color: var(--text-muted); font-weight: 300; }
+        .roulette-wrap {
+            position: relative; width: 100%; height: 140px; overflow: hidden; margin-bottom: 24px;
+        }
+        .roulette-pointer {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; z-index: 10;
+            border-left: 12px solid transparent; border-right: 12px solid transparent;
+            border-top: 18px solid var(--accent);
+            filter: drop-shadow(0 2px 8px rgba(167,139,250,0.6));
+        }
+        .roulette-pointer::after {
+            content: ''; position: absolute; top: 18px; left: -1px;
+            width: 2px; height: 122px; background: var(--accent); opacity: 0.3;
+        }
+        .roulette-line {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 2px; height: 100%; background: var(--accent); opacity: 0.12; z-index: 5;
+        }
+        .roulette-gradient-left, .roulette-gradient-right {
+            position: absolute; top: 0; bottom: 0; width: 120px; z-index: 6; pointer-events: none;
+        }
+        .roulette-gradient-left { left: 0; background: linear-gradient(to right, var(--surface), transparent); }
+        .roulette-gradient-right { right: 0; background: linear-gradient(to left, var(--surface), transparent); }
+        [data-theme="light"] .roulette-gradient-left { background: linear-gradient(to right, #ffffff, transparent); }
+        [data-theme="light"] .roulette-gradient-right { background: linear-gradient(to left, #ffffff, transparent); }
+        .roulette-track {
+            display: flex; gap: 10px; position: absolute; top: 50%; left: 0;
+            transform: translateY(-50%);
+        }
+        .roulette-card {
+            width: 110px; height: 120px; border-radius: 12px; flex-shrink: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 12px 8px; border: 1px solid var(--border);
+            background: var(--bg); transition: border-color 0.3s;
+            gap: 6px;
+        }
+        [data-theme="light"] .roulette-card { background: var(--surface-hover); }
+        .roulette-card .rc-season {
+            font-size: 0.5rem; font-weight: 700; letter-spacing: 0.08em;
+            text-transform: uppercase; text-align: center;
+        }
+        .roulette-card .rc-num { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+        .roulette-card .rc-title { font-size: 0.58rem; color: var(--text-muted); text-align: center; font-weight: 400; }
+        .roulette-card.winner { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+
+        .roulette-center { text-align: center; padding: 0 32px; position: relative; z-index: 1; }
+        .roulette-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 36px; border-radius: 14px;
+            background: linear-gradient(135deg, var(--pink), var(--accent));
+            color: #fff; border: none; cursor: pointer;
+            font-family: inherit; font-size: 0.88rem; font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(167,139,250,0.3);
+        }
+        .roulette-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(167,139,250,0.5); }
+        .roulette-btn:active { transform: scale(0.97); }
+        .roulette-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .roulette-result {
+            margin-top: 16px; display: none; text-align: center;
+        }
+        .roulette-result.visible { display: block; animation: rrFade 0.4s ease; }
+        @keyframes rrFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .roulette-result a {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 24px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--pink), var(--accent));
+            color: #fff; text-decoration: none; font-size: 0.8rem; font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .roulette-result a:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(167,139,250,0.3); }
+
+        .footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); }
+        .footer p { font-size: 0.68rem; color: var(--text-muted); line-height: 2; font-weight: 300; }
+        .footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
+        .footer a:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+            .wrap { padding: 100px 20px 60px; }
+            .header { padding: 16px 20px; }
+            .hero h1 { font-size: 2rem; }
+            .ep-grid { grid-template-columns: 1fr; }
+            .section-block { padding: 24px; }
+            .roulette-wrap { height: 120px; }
+            .roulette-card { width: 90px; height: 100px; }
+            .roulette-card .rc-num { font-size: 1.3rem; }
+            .roulette-card .rc-title { font-size: 0.5rem; }
+            .roulette-card .rc-season { font-size: 0.44rem; }
+            .roulette-gradient-left, .roulette-gradient-right { width: 60px; }
+            .roulette-btn { padding: 12px 28px; font-size: 0.82rem; }
+            .roulette-result a { padding: 10px 20px; font-size: 0.75rem; }
+            .coming-soon { padding: 40px 16px; }
+            .coming-soon .cs-icon { font-size: 2rem; }
+            .coming-soon h3 { font-size: 0.82rem; }
+            .coming-soon p { font-size: 0.7rem; }
+            .warning { flex-direction: column; gap: 10px; padding: 18px 20px; }
+            .season-header { font-size: 0.78rem; }
+            .beta-banner { padding: 24px; }
+            .beta-banner h3 { font-size: 0.9rem; }
+            .ep-card { padding: 12px 14px; }
+            .ep-info .ep-title { font-size: 0.7rem; }
+            .ep-info .ep-meta { font-size: 0.58rem; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.6rem; }
+            .hero .tagline { font-size: 0.85rem; }
+            .section-block { padding: 18px; }
+            .section-block h2 { font-size: 0.95rem; }
+            .roulette-wrap { height: 105px; }
+            .roulette-card { width: 76px; height: 88px; padding: 8px 6px; gap: 4px; }
+            .roulette-card .rc-num { font-size: 1.1rem; }
+            .roulette-card .rc-title { font-size: 0.46rem; }
+            .roulette-card .rc-season { font-size: 0.4rem; }
+            .roulette-gradient-left, .roulette-gradient-right { width: 40px; }
+            .roulette-header h3 { font-size: 0.95rem; }
+            .roulette-header p { font-size: 0.7rem; }
+            .roulette-btn { padding: 10px 22px; font-size: 0.78rem; border-radius: 12px; }
+            .coming-soon { padding: 32px 14px; border-radius: 12px; }
+            .coming-soon h3 { font-size: 0.75rem; }
+            .coming-soon p { font-size: 0.65rem; }
+            .ep-card { padding: 10px 12px; gap: 10px; }
+            .ep-num { width: 28px; height: 28px; font-size: 0.62rem; }
+            .ep-info .ep-title { font-size: 0.65rem; }
+            .footer p { font-size: 0.6rem; }
+            .beta-banner { padding: 20px 18px; border-radius: 16px; margin-bottom: 24px; }
+            .beta-banner h3 { font-size: 0.85rem; }
+            .beta-banner p { font-size: 0.7rem; }
+            .beta-btn { padding: 9px 18px; font-size: 0.74rem; }
+            .beta-badge { font-size: 0.56rem; padding: 4px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="evlampia.html" class="back">← Евлампия</a>
+        <div class="header-right">
+            <div class="lang-switcher" id="langSwitcher">
+                <button class="lang-btn" id="langBtn">
+                    <span id="currentLang">RU</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option active" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+                    <button class="lang-option" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+                    <button class="lang-option" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
+                    <button class="lang-option" data-lang="be"><span class="flag">🇧🇾</span> Беларуская</button>
+                    <button class="lang-option" data-lang="uk"><span class="flag">🇺🇦</span> Українська</button>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span class="theme-toggle__knob"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <div class="hero">
+            <h1 data-i18n="ep_title">Серии и сезоны</h1>
+            <p class="tagline" data-i18n="ep_tagline">Все выпуски Евлампии в одном месте</p>
+        </div>
+
+        <a href="player.html" class="beta-banner">
+            <span class="beta-badge" data-i18n="beta_badge">Бета-тест</span>
+            <h3>▶ <span data-i18n="beta_title">Новая технология студії і. — «Плеер»</span></h3>
+            <p data-i18n="beta_desc">Смотри серии прямо на сайте: новый плеер студии і. воспроизводит видео из репозитория проекта. Функция в бета-тесте — о багах сообщайте в Telegram.</p>
+            <span class="beta-btn" data-i18n="beta_btn">Попробовать →</span>
+        </a>
+
+        <div class="warning">
+            <div class="w-icon">⚠️</div>
+            <div class="text">
+                <h4 data-i18n="warn_title">Серии временно недоступны</h4>
+                <p data-i18n="warn_desc">Часть серий скрыта для прохождения модерации в связи с требованиями Федерального закона №48-ФЗ. Следите за обновлениями в <a href="https://t.me/evlampia1327">Telegram</a>.</p>
+            </div>
+        </div>
+
+        <div class="roulette-section">
+            <div class="roulette-header">
+                <h3 data-i18n="roulette_title">Рулетка серий</h3>
+                <p data-i18n="roulette_desc">Не можете выбрать? Крутите — Евлампия решит за вас</p>
+            </div>
+            <div class="roulette-wrap" id="rouletteWrap">
+                <div class="roulette-pointer"></div>
+                <div class="roulette-line"></div>
+                <div class="roulette-gradient-left"></div>
+                <div class="roulette-gradient-right"></div>
+                <div class="roulette-track" id="rouletteTrack"></div>
+            </div>
+            <div class="roulette-center">
+                <button class="roulette-btn" id="rouletteBtn" data-i18n="roulette_btn">🎲 Крутить</button>
+                <div class="roulette-result" id="rouletteResult">
+                    <a id="rouletteLink" href="#" target="_blank" data-i18n="roulette_watch">Смотреть на RUTUBE →</a>
+                </div>
+            </div>
+        </div>
+
+        <p class="section-label" data-i18n="label_classic">Обычные серии</p>
+        <div class="section-block classic">
+            <h2>🔮 <span data-i18n="classic_title">Классические серии</span></h2>
+            <p class="sub" data-i18n="classic_sub">Оригинальный формат — предсказания, карты, шар и телефон</p>
+
+            <div class="season">
+                <div class="season-header">
+                    <span class="s-badge amber" data-i18n="s0_badge">Пролог</span>
+                    <span data-i18n="s0_title">Самая первая серия</span>
+                </div>
+                <div class="ep-grid">
+                    <a href="https://dzen.ru/video/watch/625c5363ec82197fe4eee8fe" class="ep-card" target="_blank">
+                        <div class="ep-num amber">✦</div>
+                        <div class="ep-info">
+                            <div class="ep-title" data-i18n="ep_first">Самая первая серия</div>
+                            <div class="ep-meta">Дзен</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="season">
+                <div class="season-header">
+                    <span class="s-badge purple">01</span>
+                    <span data-i18n="s1_title">Первый сезон</span>
+                </div>
+                <div class="ep-grid">
+                    <div class="ep-card disabled"><div class="ep-num purple">01</div><div class="ep-info"><div class="ep-title" data-i18n="s1e1">Серия 1</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num purple">02</div><div class="ep-info"><div class="ep-title" data-i18n="s1e2">Серия 2</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num purple">03</div><div class="ep-info"><div class="ep-title" data-i18n="s1e3">Серия 3</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num purple">04</div><div class="ep-info"><div class="ep-title" data-i18n="s1e4">Серия 4</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num purple">05</div><div class="ep-info"><div class="ep-title" data-i18n="s1e5">Серия 5</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num purple">06</div><div class="ep-info"><div class="ep-title" data-i18n="s1e6">Серия 6</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num purple">07</div><div class="ep-info"><div class="ep-title" data-i18n="s1e7">Серия 7</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num purple">08</div><div class="ep-info"><div class="ep-title" data-i18n="s1e8">Серия 8</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num purple">09</div><div class="ep-info"><div class="ep-title" data-i18n="s1e9">Серия 9</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num purple">10</div><div class="ep-info"><div class="ep-title" data-i18n="s1e10">Серия 10</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                </div>
+                <div style="margin-top:12px">
+                    <a href="https://rutube.ru/plst/162465" class="ep-card" target="_blank" style="display:inline-flex;">
+                        <div class="ep-num purple">▶</div>
+                        <div class="ep-info"><div class="ep-title" data-i18n="open_playlist">Открыть плейлист</div><div class="ep-meta">RUTUBE</div></div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="season">
+                <div class="season-header">
+                    <span class="s-badge purple">02</span>
+                    <span data-i18n="s2_title">Второй сезон</span>
+                </div>
+                <div class="ep-grid">
+                    <div class="ep-card disabled"><div class="ep-num pink">01</div><div class="ep-info"><div class="ep-title" data-i18n="s2e1">Серия 1</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num pink">02</div><div class="ep-info"><div class="ep-title" data-i18n="s2e2">Серия 2</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num pink">03</div><div class="ep-info"><div class="ep-title" data-i18n="s2e3">Серия 3</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num pink">04</div><div class="ep-info"><div class="ep-title" data-i18n="s2e4">Серия 4</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num pink">05</div><div class="ep-info"><div class="ep-title" data-i18n="s2e5">Серия 5</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num pink">06</div><div class="ep-info"><div class="ep-title" data-i18n="s2e6">Серия 6</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num pink">07</div><div class="ep-info"><div class="ep-title" data-i18n="s2e7">Серия 7</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num pink">08</div><div class="ep-info"><div class="ep-title" data-i18n="s2e8">Серия 8</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num pink">09</div><div class="ep-info"><div class="ep-title" data-i18n="s2e9">Серия 9</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num pink">10</div><div class="ep-info"><div class="ep-title" data-i18n="s2e10">Серия 10</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                </div>
+                <div style="margin-top:12px">
+                    <a href="https://rutube.ru/plst/179152" class="ep-card" target="_blank" style="display:inline-flex;">
+                        <div class="ep-num purple">▶</div>
+                        <div class="ep-info"><div class="ep-title" data-i18n="open_playlist">Открыть плейлист</div><div class="ep-meta">RUTUBE</div></div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="season">
+                <div class="season-header">
+                    <span class="s-badge purple">03</span>
+                    <span data-i18n="s3_title">Третий сезон</span>
+                </div>
+                <div class="ep-grid">
+                    <div class="ep-card disabled"><div class="ep-num blue">01</div><div class="ep-info"><div class="ep-title" data-i18n="s3e1">Серия 1</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num blue">02</div><div class="ep-info"><div class="ep-title" data-i18n="s3e2">Серия 2</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num blue">03</div><div class="ep-info"><div class="ep-title" data-i18n="s3e3">Серия 3</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num blue">04</div><div class="ep-info"><div class="ep-title" data-i18n="s3e4">Серия 4</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num blue">05</div><div class="ep-info"><div class="ep-title" data-i18n="s3e5">Серия 5</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num blue">06</div><div class="ep-info"><div class="ep-title" data-i18n="s3e6">Серия 6</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num blue">07</div><div class="ep-info"><div class="ep-title" data-i18n="s3e7">Серия 7</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num blue">08</div><div class="ep-info"><div class="ep-title" data-i18n="s3e8">Серия 8</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num blue">09</div><div class="ep-info"><div class="ep-title" data-i18n="s3e9">Серия 9</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                    <div class="ep-card disabled"><div class="ep-num blue">10</div><div class="ep-info"><div class="ep-title" data-i18n="s3e10">Серия 10</div><div class="ep-meta" data-i18n="hidden">Скрыта</div></div></div>
+                </div>
+                <div style="margin-top:12px">
+                    <a href="https://rutube.ru/plst/261930" class="ep-card" target="_blank" style="display:inline-flex;">
+                        <div class="ep-num purple">▶</div>
+                        <div class="ep-info"><div class="ep-title" data-i18n="open_playlist">Открыть плейлист</div><div class="ep-meta">RUTUBE</div></div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="season">
+                <div class="season-header">
+                    <span class="s-badge amber" data-i18n="archive_badge">Архив</span>
+                    <span data-i18n="archive_title">Дополнительные видео</span>
+                </div>
+                <div class="ep-grid">
+                    <a href="https://rutube.ru/video/dd0419842e39e0ab37986b06e9ca99ed/" class="ep-card" target="_blank">
+                        <div class="ep-num pink">◀</div>
+                        <div class="ep-info">
+                            <div class="ep-title" data-i18n="ep_archive">Архивная серия</div>
+                            <div class="ep-meta">RUTUBE</div>
+                        </div>
+                    </a>
+                    <a href="https://rutube.ru/video/c6499e8c662f093905a1564516fdee3b/" class="ep-card" target="_blank">
+                        <div class="ep-num blue">🎤</div>
+                        <div class="ep-info">
+                            <div class="ep-title" data-i18n="ep_interview">Архивное интервью</div>
+                            <div class="ep-meta">RUTUBE</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <p class="section-label" data-i18n="label_newformat">Новые форматы</p>
+        <div class="section-block new">
+            <h2>🎬 <span data-i18n="new_title">Другие видео</span></h2>
+            <p class="sub" data-i18n="new_sub">Не только гадания — другие форматы и жанры</p>
+            <div class="coming-soon">
+                <div class="cs-icon">🎥</div>
+                <h3 data-i18n="cs_title">Скоро появится</h3>
+                <p data-i18n="cs_desc">Мы работаем и снимаем новое для вас. Здесь всё появится, когда мы выложим. Следите за обновлениями в <a href="https://t.me/evlampia1327" style="color:var(--accent);font-weight:500;">Telegram</a>.</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
+            <p>Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+        </div>
+    </div>
+
+    <script>
+        const i18n = {
+            ru: {
+                ep_title: "Серии и сезоны", ep_tagline: "Все выпуски Евлампии в одном месте",
+                warn_title: "Серии временно недоступны", warn_desc: "Часть серий скрыта для прохождения модерации в связи с требованиями Федерального закона №48-ФЗ. Следите за обновлениями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_classic: "Обычные серии", classic_title: "Классические серии", classic_sub: "Оригинальный формат — предсказания, карты, шар и телефон",
+                s0_badge: "Пролог", s0_title: "Самая первая серия",
+                ep_first: "Самая первая серия",
+                s1_title: "Первый сезон", s2_title: "Второй сезон", s3_title: "Третий сезон",
+                hidden: "Скрыта",
+                s1e1:"Серия 1",s1e2:"Серия 2",s1e3:"Серия 3",s1e4:"Серия 4",s1e5:"Серия 5",
+                s1e6:"Серия 6",s1e7:"Серия 7",s1e8:"Серия 8",s1e9:"Серия 9",s1e10:"Серия 10",
+                s2e1:"Серия 1",s2e2:"Серия 2",s2e3:"Серия 3",s2e4:"Серия 4",s2e5:"Серия 5",
+                s2e6:"Серия 6",s2e7:"Серия 7",s2e8:"Серия 8",s2e9:"Серия 9",s2e10:"Серия 10",
+                s3e1:"Серия 1",s3e2:"Серия 2",s3e3:"Серия 3",s3e4:"Серия 4",s3e5:"Серия 5",
+                s3e6:"Серия 6",s3e7:"Серия 7",s3e8:"Серия 8",s3e9:"Серия 9",s3e10:"Серия 10",
+                open_playlist: "Открыть плейлист",
+                archive_badge: "Архив", archive_title: "Дополнительные видео",
+                ep_archive: "Архивная серия", ep_interview: "Архивное интервью",
+                label_newformat: "Новые форматы", new_title: "Другие видео", new_sub: "Не только гадания — другие форматы и жанры",
+                cs_title: "Скоро появится", cs_desc: "Мы работаем и снимаем новое для вас. Здесь всё появится, когда мы выложим. Следите за обновлениями в <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a>.",
+                beta_badge: "Бета-тест",
+                beta_title: "Новая технология студии і. — «Плеер»",
+                beta_desc: "Смотри серии прямо на сайте: новый плеер студии і. воспроизводит видео из репозитория проекта. Функция в бета-тесте — о багах сообщайте в Telegram.",
+                beta_btn: "Попробовать →",
+                roulette_title: "Рулетка серий", roulette_desc: "Не можете выбрать? Крутите — Евлампия решит за вас",
+                roulette_btn: "🎲 Крутить", roulette_watch: "Смотреть на RUTUBE →",
+                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>"
+            },
+            en: {
+                ep_title: "Episodes & Seasons", ep_tagline: "All Evlampia episodes in one place",
+                warn_title: "Episodes temporarily unavailable", warn_desc: "Part of the episodes are hidden for moderation per Federal Law No. 48-FZ. Follow updates on <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_classic: "Regular episodes", classic_title: "Classic episodes", classic_sub: "Original format — predictions, cards, ball and phone",
+                s0_badge: "Prologue", s0_title: "The very first episode",
+                ep_first: "The very first episode",
+                s1_title: "Season 1", s2_title: "Season 2", s3_title: "Season 3",
+                hidden: "Hidden",
+                s1e1:"Episode 1",s1e2:"Episode 2",s1e3:"Episode 3",s1e4:"Episode 4",s1e5:"Episode 5",
+                s1e6:"Episode 6",s1e7:"Episode 7",s1e8:"Episode 8",s1e9:"Episode 9",s1e10:"Episode 10",
+                s2e1:"Episode 1",s2e2:"Episode 2",s2e3:"Episode 3",s2e4:"Episode 4",s2e5:"Episode 5",
+                s2e6:"Episode 6",s2e7:"Episode 7",s2e8:"Episode 8",s2e9:"Episode 9",s2e10:"Episode 10",
+                s3e1:"Episode 1",s3e2:"Episode 2",s3e3:"Episode 3",s3e4:"Episode 4",s3e5:"Episode 5",
+                s3e6:"Episode 6",s3e7:"Episode 7",s3e8:"Episode 8",s3e9:"Episode 9",s3e10:"Episode 10",
+                open_playlist: "Open playlist",
+                archive_badge: "Archive", archive_title: "Additional videos",
+                ep_archive: "Archive episode", ep_interview: "Archive interview",
+                label_newformat: "New formats", new_title: "Other videos", new_sub: "Not just fortune telling — other formats and genres",
+                cs_title: "Coming soon", cs_desc: "We are working and filming new content for you. Everything will appear here when we release it. Follow updates on <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a>.",
+                beta_badge: "Beta test",
+                beta_title: "New studio і. technology — “Player”",
+                beta_desc: "Watch episodes right on the website: the new studio і. player streams videos straight from the project repository. The feature is in beta — report bugs on Telegram.",
+                beta_btn: "Try it →",
+                roulette_title: "Episode Roulette", roulette_desc: "Can't choose? Spin it — Evlampia will decide for you",
+                roulette_btn: "🎲 Spin", roulette_watch: "Watch on RUTUBE →",
+                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>"
+            },
+            de: {
+                ep_title: "Folgen & Staffeln", ep_tagline: "Alle Evlampia-Folgen an einem Ort",
+                warn_title: "Folgen vorübergehend nicht verfügbar", warn_desc: "Teil der Folgen wurde wegen Moderation gemäß Bundesgesetz Nr. 48-FZ ausgeblendet. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_classic: "Reguläre Folgen", classic_title: "Klassische Folgen", classic_sub: "Originalformat — Vorhersagen, Karten, Kugel und Telefon",
+                s0_badge: "Prolog", s0_title: "Die allererste Folge",
+                ep_first: "Die allererste Folge",
+                s1_title: "Staffel 1", s2_title: "Staffel 2", s3_title: "Staffel 3",
+                hidden: "Ausgeblendet",
+                s1e1:"Folge 1",s1e2:"Folge 2",s1e3:"Folge 3",s1e4:"Folge 4",s1e5:"Folge 5",
+                s1e6:"Folge 6",s1e7:"Folge 7",s1e8:"Folge 8",s1e9:"Folge 9",s1e10:"Folge 10",
+                s2e1:"Folge 1",s2e2:"Folge 2",s2e3:"Folge 3",s2e4:"Folge 4",s2e5:"Folge 5",
+                s2e6:"Folge 6",s2e7:"Folge 7",s2e8:"Folge 8",s2e9:"Folge 9",s2e10:"Folge 10",
+                s3e1:"Folge 1",s3e2:"Folge 2",s3e3:"Folge 3",s3e4:"Folge 4",s3e5:"Folge 5",
+                s3e6:"Folge 6",s3e7:"Folge 7",s3e8:"Folge 8",s3e9:"Folge 9",s3e10:"Folge 10",
+                open_playlist: "Playlist öffnen",
+                archive_badge: "Archiv", archive_title: "Zusätzliche Videos",
+                ep_archive: "Archivfolge", ep_interview: "Archiv-Interview",
+                label_newformat: "Neue Formate", new_title: "Andere Videos", new_sub: "Nicht nur Wahrsagen — andere Formate und Genres",
+                cs_title: "Bald verfügbar", cs_desc: "Wir arbeiten und drehen Neues für euch. Alles erscheint hier, wenn wir es veröffentlichen. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a>.",
+                beta_badge: "Beta-Test",
+                beta_title: "Neue Technologie des Studios і. — „Player“",
+                beta_desc: "Sieh dir die Folgen direkt auf der Website an: der neue Player des Studios і. spielt die Videos direkt aus dem Projekt-Repository ab. Die Funktion befindet sich im Beta-Test — Fehler bitte in Telegram melden.",
+                beta_btn: "Ausprobieren →",
+                roulette_title: "Folgen-Roulette", roulette_desc: "Können Sie sich nicht entscheiden? Drehen Sie — Evlampia entscheidet für Sie",
+                roulette_btn: "🎲 Drehen", roulette_watch: "Auf RUTUBE ansehen →",
+                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>"
+            },
+            be: {
+                ep_title: "Серыі і сезоны", ep_tagline: "Усе выпускі Еўлампіі ў адным месцы",
+                warn_title: "Серыі часова недаступныя", warn_desc: "Частка серый схавана для мадэрацыі паводле Федэральнага закона №48-ФЗ. Сачыце за абнаўленнямі ў <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_classic: "Звычайныя серыі", classic_title: "Класічныя серыі", classic_sub: "Арыгінальны фармат — прадказанні, карты, шар і тэлефон",
+                s0_badge: "Пралог", s0_title: "Самая першая серыя",
+                ep_first: "Самая першая серыя",
+                s1_title: "Першы сезон", s2_title: "Другі сезон", s3_title: "Трэці сезон",
+                hidden: "Схавана",
+                s1e1:"Серыя 1",s1e2:"Серыя 2",s1e3:"Серыя 3",s1e4:"Серыя 4",s1e5:"Серыя 5",
+                s1e6:"Серыя 6",s1e7:"Серыя 7",s1e8:"Серыя 8",s1e9:"Серыя 9",s1e10:"Серыя 10",
+                s2e1:"Серыя 1",s2e2:"Серыя 2",s2e3:"Серыя 3",s2e4:"Серыя 4",s2e5:"Серыя 5",
+                s2e6:"Серыя 6",s2e7:"Серыя 7",s2e8:"Серыя 8",s2e9:"Серыя 9",s2e10:"Серыя 10",
+                s3e1:"Серыя 1",s3e2:"Серыя 2",s3e3:"Серыя 3",s3e4:"Серыя 4",s3e5:"Серыя 5",
+                s3e6:"Серыя 6",s3e7:"Серыя 7",s3e8:"Серыя 8",s3e9:"Серыя 9",s3e10:"Серыя 10",
+                open_playlist: "Адкрыць плэйліст",
+                archive_badge: "Архіў", archive_title: "Дадатковыя відэа",
+                ep_archive: "Архіўная серыя", ep_interview: "Архіўнае інтэрвью",
+                label_newformat: "Новыя фарматы", new_title: "Іншыя відэа", new_sub: "Не толькі гаданне — іншыя фарматы і жанры",
+                cs_title: "Хутка з'явіцца", cs_desc: "Мы працуем і здымаем новае для вас. Тут усё з'явіцца, калі мы выкладзем. Сачыце за абнаўленнямі ў <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a>.",
+                beta_badge: "Бэта-тест",
+                beta_title: "Новая тэхналогія студыі і. — «Плеер»",
+                beta_desc: "Глядзі серыі проста на сайце: новы плеер студыі і. прайграе відэа з рэпазітара праекта. Функцыя ў бэта-тэсце — пра памылкі паведамляй у Telegram.",
+                beta_btn: "Паспрабаваць →",
+                roulette_title: "Рулетка серый", roulette_desc: "Не можаце выбраць? Круціце — Еўлампія вырашыць за вас",
+                roulette_btn: "🎲 Круціць", roulette_watch: "Глядзець на RUTUBE →",
+                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>"
+            },
+            uk: {
+                ep_title: "Серії та сезони", ep_tagline: "Усі випуски Євлампії в одному місці",
+                warn_title: "Серії тимчасово недоступні", warn_desc: "Частка серій приховано для модерації відповідно до Федерального закону №48-ФЗ. Слідкуйте за оновленнями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
+                label_classic: "Звичайні серії", classic_title: "Класичні серії", classic_sub: "Оригінальний формат — передбачення, карти, куля і телефон",
+                s0_badge: "Пролог", s0_title: "Сама перша серія",
+                ep_first: "Сама перша серія",
+                s1_title: "Перший сезон", s2_title: "Другий сезон", s3_title: "Третій сезон",
+                hidden: "Приховано",
+                s1e1:"Серія 1",s1e2:"Серія 2",s1e3:"Серія 3",s1e4:"Серія 4",s1e5:"Серія 5",
+                s1e6:"Серія 6",s1e7:"Серія 7",s1e8:"Серія 8",s1e9:"Серія 9",s1e10:"Серія 10",
+                s2e1:"Серія 1",s2e2:"Серія 2",s2e3:"Серія 3",s2e4:"Серія 4",s2e5:"Серія 5",
+                s2e6:"Серія 6",s2e7:"Серія 7",s2e8:"Серія 8",s2e9:"Серія 9",s2e10:"Серія 10",
+                s3e1:"Серія 1",s3e2:"Серія 2",s3e3:"Серія 3",s3e4:"Серія 4",s3e5:"Серія 5",
+                s3e6:"Серія 6",s3e7:"Серія 7",s3e8:"Серія 8",s3e9:"Серія 9",s3e10:"Серія 10",
+                open_playlist: "Відкрити плейлист",
+                archive_badge: "Архів", archive_title: "Додаткові відео",
+                ep_archive: "Архівна серія", ep_interview: "Архівне інтерв'ю",
+                label_newformat: "Нові формати", new_title: "Інші відео", new_sub: "Не лише ворожіння — інші формати та жанри",
+                cs_title: "Незабаром з'явиться", cs_desc: "Ми працюємо та знімаємо нове для вас. Тут все з'явиться, коли ми викладемо. Слідкуйте за оновленнями в <a href=\"https://t.me/evlampia1327\" style=\"color:var(--accent);font-weight:500;\">Telegram</a>.",
+                beta_badge: "Бета-тест",
+                beta_title: "Нова технологія студії і. — «Плеєр»",
+                beta_desc: "Дивись серії просто на сайті: новий плеєр студії і. відтворює відео з репозиторію проєкту. Функція в бета-тесті — про помилки повідомляйте в Telegram.",
+                beta_btn: "Спробувати →",
+                roulette_title: "Рулетка серій", roulette_desc: "Не можете обрати? Крутіть — Євлампія вирішить за вас",
+                roulette_btn: "🎲 Крутити", roulette_watch: "Дивитися на RUTUBE →",
+                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>"
+            }
+        };
+
+        function setLang(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) el.innerHTML = i18n[lang][key];
+            });
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+            document.documentElement.setAttribute('lang', lang);
+            localStorage.setItem('i-lang', lang);
+        }
+
+        document.getElementById('langBtn').addEventListener('click', e => {
+            e.stopPropagation();
+            document.getElementById('langSwitcher').classList.toggle('open');
+        });
+        document.addEventListener('click', () => document.getElementById('langSwitcher').classList.remove('open'));
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', e => {
+                e.stopPropagation();
+                setLang(opt.dataset.lang);
+                document.getElementById('langSwitcher').classList.remove('open');
+            });
+        });
+        setLang(localStorage.getItem('i-lang') || 'ru');
+
+        const toggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const stored = localStorage.getItem('i-theme');
+        if (stored) root.setAttribute('data-theme', stored);
+        toggle.addEventListener('click', () => {
+            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('i-theme', next);
+        });
+
+        /* ROULETTE - CS STYLE */
+        const episodes = [
+            { season: 'Пролог', num: '✦', title: 'Первая серия', url: 'https://dzen.ru/video/watch/625c5363ec82197fe4eee8fe', color: '#fbbf24' },
+            { season: 'Сезон 1', num: '01', title: 'Серия 1', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 1', num: '02', title: 'Серия 2', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 1', num: '03', title: 'Серия 3', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 1', num: '04', title: 'Серия 4', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 1', num: '05', title: 'Серия 5', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 1', num: '06', title: 'Серия 6', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 1', num: '07', title: 'Серия 7', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 1', num: '08', title: 'Серия 8', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 1', num: '09', title: 'Серия 9', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 1', num: '10', title: 'Серия 10', url: 'https://rutube.ru/plst/162465', color: '#a78bfa' },
+            { season: 'Сезон 2', num: '01', title: 'Серия 1', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 2', num: '02', title: 'Серия 2', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 2', num: '03', title: 'Серия 3', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 2', num: '04', title: 'Серия 4', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 2', num: '05', title: 'Серия 5', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 2', num: '06', title: 'Серия 6', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 2', num: '07', title: 'Серия 7', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 2', num: '08', title: 'Серия 8', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 2', num: '09', title: 'Серия 9', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 2', num: '10', title: 'Серия 10', url: 'https://rutube.ru/plst/179152', color: '#f472b6' },
+            { season: 'Сезон 3', num: '01', title: 'Серия 1', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { season: 'Сезон 3', num: '02', title: 'Серия 2', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { season: 'Сезон 3', num: '03', title: 'Серия 3', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { season: 'Сезон 3', num: '04', title: 'Серия 4', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { season: 'Сезон 3', num: '05', title: 'Серия 5', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { season: 'Сезон 3', num: '06', title: 'Серия 6', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { season: 'Сезон 3', num: '07', title: 'Серия 7', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { season: 'Сезон 3', num: '08', title: 'Серия 8', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { season: 'Сезон 3', num: '09', title: 'Серия 9', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+            { season: 'Сезон 3', num: '10', title: 'Серия 10', url: 'https://rutube.ru/plst/261930', color: '#60a5fa' },
+        ];
+
+        const track = document.getElementById('rouletteTrack');
+        const btn = document.getElementById('rouletteBtn');
+        const result = document.getElementById('rouletteResult');
+        const link = document.getElementById('rouletteLink');
+        const wrap = document.getElementById('rouletteWrap');
+        const COPIES = 6;
+
+        function getCardWidth() {
+            const card = track.querySelector('.roulette-card');
+            if (!card) return 120;
+            return card.offsetWidth + 10;
+        }
+
+        function buildTrack() {
+            const seq = [];
+            for (let c = 0; c < COPIES; c++) {
+                for (let i = 0; i < episodes.length; i++) {
+                    seq.push(episodes[i]);
+                }
+            }
+            track.innerHTML = '';
+            seq.forEach(ep => {
+                const card = document.createElement('div');
+                card.className = 'roulette-card';
+                card.innerHTML = '<div class="rc-season" style="color:' + ep.color + '">' + ep.season + '</div><div class="rc-num" style="color:' + ep.color + '">' + ep.num + '</div><div class="rc-title">' + ep.title + '</div>';
+                track.appendChild(card);
+            });
+            return seq;
+        }
+        let seq = buildTrack();
+        let currentPos = 0;
+
+        btn.addEventListener('click', () => {
+            btn.disabled = true;
+            result.classList.remove('visible');
+            document.querySelectorAll('.roulette-card.winner').forEach(c => c.classList.remove('winner'));
+
+            seq = buildTrack();
+            const CARD_W = getCardWidth();
+            const LEN = episodes.length * CARD_W;
+
+            // лента периодична (COPIES одинаковых наборов), поэтому сдвиг
+            // на LEN влево ничего не меняет визуально — держим позицию
+            // в безопасной зоне, чтобы карточки не улетали за экран
+            const norm = ((currentPos % LEN) + LEN) % LEN;
+            currentPos = -2 * LEN + norm;
+
+            const winnerIdx = Math.floor(Math.random() * episodes.length);
+            const targetInSeq = 3 * episodes.length + winnerIdx;
+            const wrapCenter = wrap.offsetWidth / 2;
+            const targetX = wrapCenter - (targetInSeq * CARD_W + CARD_W / 2);
+
+            const duration = 3000 + Math.random() * 1500;
+
+            track.style.transition = 'none';
+            track.style.transform = 'translateY(-50%) translateX(' + currentPos + 'px)';
+            void track.offsetHeight;
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    track.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.08, 0.70, 0.18, 1.0)';
+                    track.style.transform = 'translateY(-50%) translateX(' + targetX + 'px)';
+
+                    setTimeout(() => {
+                        const winnerCard = track.children[targetInSeq];
+                        if (winnerCard) winnerCard.classList.add('winner');
+                        link.href = episodes[winnerIdx].url;
+                        result.classList.add('visible');
+                        currentPos = targetX;
+                        btn.disabled = false;
+                    }, duration + 300);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
