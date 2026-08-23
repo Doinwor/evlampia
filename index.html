@@ -299,6 +299,57 @@
         .contact-card-text { font-size: 0.82rem; font-weight: 600; margin-bottom: 3px; }
         .contact-card-sub { font-size: 0.68rem; color: var(--text-muted); font-weight: 300; }
 
+.archive-card {
+    max-width: 640px; margin: 0 auto; text-align: center;
+    padding: 34px 28px 30px; border-radius: 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+}
+[data-theme="light"] .archive-card { box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+.archive-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    opacity: 0.7;
+}
+.archive-btn-wrap { display: flex; justify-content: center; width: 100%; }
+.archive-btn {
+    display: inline-block; border-radius: 14px; text-decoration: none;
+    position: relative; left: 14px;
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+.archive-btn img {
+    display: block; width: min(400px, 100%); height: auto;
+    border-radius: 12px;
+}
+.archive-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.06) drop-shadow(0 10px 26px var(--accent-glow));
+}
+.archive-title { font-size: 0.95rem; font-weight: 700; margin: 18px 0 6px; }
+.archive-note {
+    font-size: 0.72rem; color: var(--text-muted); font-weight: 300;
+    line-height: 1.9; max-width: 470px; margin: 0 auto;
+}
+
+.gallery-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+}
+.gallery-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 18px; overflow: hidden; margin: 0;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.gallery-card:hover {
+    transform: translateY(-3px); border-color: var(--accent);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+}
+[data-theme="light"] .gallery-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.gallery-card img { display: block; width: 100%; height: auto; }
+.gallery-card figcaption {
+    padding: 15px 18px; font-size: 0.73rem; color: var(--text-muted);
+    font-weight: 500; text-align: center; line-height: 1.6;
+}
+
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 64px; }
         .info-card { padding: 28px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; transition: all 0.3s ease; }
         .info-card:hover { border-color: var(--border); transform: translateY(-2px); }
@@ -308,6 +359,7 @@
 
         .sticker-block {
             display: flex; align-items: center; justify-content: space-between;
+            gap: 24px;
             padding: 28px 32px; background: var(--surface);
             border: 1px solid var(--border); border-radius: 14px;
             margin-bottom: 64px; transition: all 0.3s ease;
@@ -315,44 +367,14 @@
         .sticker-block:hover { border-color: var(--border); }
         .sticker-block .left h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
         .sticker-block .left p { font-size: 0.75rem; color: var(--text-muted); font-weight: 300; }
+        .sticker-pic {
+            height: 150px; width: auto; border-radius: 14px;
+            border: 1px solid var(--border); flex-shrink: 0;
+            transition: transform 0.25s ease;
+        }
+        .sticker-block:hover .sticker-pic { transform: scale(1.04) rotate(-1deg); }
 
-        .placeholder {
-            border-radius: 16px; display: flex; align-items: center; justify-content: center;
-            flex-direction: column; gap: 12px; padding: 60px 20px; margin-bottom: 64px;
-            position: relative; overflow: hidden; border: 1px solid var(--border);
-        }
-        .placeholder::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(167,139,250,0.04) 0%, rgba(244,114,182,0.04) 50%, rgba(251,191,36,0.04) 100%);
-        }
-        [data-theme="light"] .placeholder::before {
-            background: linear-gradient(135deg, rgba(124,92,224,0.03) 0%, rgba(217,70,168,0.03) 50%, rgba(212,153,10,0.03) 100%);
-        }
-        .placeholder .icon, .placeholder-sm .icon { opacity: 0.4; position: relative; z-index: 1; }
-        .placeholder .icon { font-size: 3rem; }
-        .placeholder .label, .placeholder-sm .label {
-            font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
-            letter-spacing: 0.08em; text-transform: uppercase; position: relative; z-index: 1;
-        }
-        .placeholder .sub, .placeholder-sm .sub { font-size: 0.65rem; color: #55556a; font-weight: 400; position: relative; z-index: 1; }
-        [data-theme="light"] .placeholder .sub, [data-theme="light"] .placeholder-sm .sub { color: #999; }
-
-        .placeholder-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 64px; }
-        .placeholder-sm {
-            border-radius: 14px; display: flex; align-items: center; justify-content: center;
-            flex-direction: column; gap: 10px; padding: 50px 20px;
-            border: 1px solid var(--border); position: relative; overflow: hidden;
-        }
-        .placeholder-sm::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(167,139,250,0.03) 0%, rgba(244,114,182,0.03) 100%);
-        }
-        [data-theme="light"] .placeholder-sm::before {
-            background: linear-gradient(135deg, rgba(124,92,224,0.02) 0%, rgba(217,70,168,0.02) 100%);
-        }
-        .placeholder-sm .icon { font-size: 2rem; }
-        .placeholder-sm .label { font-size: 0.65rem; letter-spacing: 0.06em; }
-        .placeholder-sm .sub { font-size: 0.58rem; }
+        
 
         .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 64px 0; }
 
@@ -378,10 +400,11 @@
             .hero .links { gap: 10px; }
             .hero .links a { padding: 10px 18px; font-size: 0.76rem; }
             .grid-3 { grid-template-columns: 1fr; }
-            .placeholder-grid { grid-template-columns: 1fr; }
             .sticker-block { flex-direction: column; gap: 20px; text-align: center; }
+            .sticker-pic { height: 120px; }
             .hero::before { display: none; }
             .browse-row { grid-template-columns: 1fr; gap: 14px; }
+.gallery-row { grid-template-columns: 1fr; }
             .browse-block { padding: 28px 24px; }
             .browse-inner { flex-direction: column; text-align: center; }
             .browse-left p { max-width: 100%; }
@@ -392,8 +415,6 @@
             .faq-q { font-size: 0.82rem; }
             .faq-a { font-size: 0.75rem; }
             .episode-banner { padding: 28px; }
-            .placeholder { padding: 40px 16px; }
-            .placeholder-sm { padding: 36px 16px; }
         }
         @media (max-width: 480px) {
             .hero h1 { font-size: 2rem; }
@@ -532,28 +553,20 @@
                 <h4 data-i18n="sticker_title">Стикеры для Telegram</h4>
                 <p data-i18n="sticker_desc">У Евлампии есть собственные стикеры</p>
             </div>
+            <img src="img/stickers-preview.jpg" alt="Стикеры Евлампии" class="sticker-pic" loading="lazy">
             <a href="https://t.me/addstickers/evlampiya1327" class="btn-ghost" target="_blank" data-i18n="btn_stickers">Получить →</a>
         </div>
 
-        <p class="section-label" data-i18n="label_stickers">Стикеры</p>
-        <div class="placeholder">
-            <div class="icon">🎨</div>
-            <div class="label" data-i18n="placeholder_soon">Скоро появится</div>
-            <div class="sub" data-i18n="placeholder_stickers">Картинка со стикерами будет добавлена позже</div>
-        </div>
-
         <p class="section-label" data-i18n="label_gallery">Галерея</p>
-        <div class="placeholder-grid">
-            <div class="placeholder-sm">
-                <div class="icon">🖼️</div>
-                <div class="label" data-i18n="placeholder_soon">Скоро появится</div>
-                <div class="sub" data-i18n="placeholder_img1">«Да, да Евлампия такая»</div>
-            </div>
-            <div class="placeholder-sm">
-                <div class="icon">📜</div>
-                <div class="label" data-i18n="placeholder_soon">Скоро появится</div>
-                <div class="sub" data-i18n="placeholder_img2">Сертификат гадалки</div>
-            </div>
+        <div class="gallery-row">
+            <figure class="gallery-card">
+                <img src="img/gallery-certificate.png" alt="Сертификат гадалки" loading="lazy">
+                <figcaption data-i18n="gal_cert">ЕВЛАМПИЯ — официальная гадалка</figcaption>
+            </figure>
+            <figure class="gallery-card">
+                <img src="img/gallery-evlampia.jpg" alt="Да, да, Евлампия такая!!!" loading="lazy">
+                <figcaption data-i18n="gal_yes">Да, да, Евлампия такая!!!</figcaption>
+            </figure>
         </div>
 
         <div class="divider"></div>
@@ -572,6 +585,17 @@
                 <div class="faq-q" data-i18n="faq3_q">Почему 2 сезон закончился не полностью?</div>
                 <div class="faq-a" data-i18n="faq3_a">Основной монтажёр ушёл в «отпуск» и пришлось актёру «выкручиваться» самому. Были смонтированы все 4 серии сезона. Позже вернулся основной монтажёр и сразу начался третий сезон.</div>
             </div>
+        </div>
+
+        <p class="section-label" data-i18n="label_archive">Архив</p>
+        <div class="archive-card">
+            <div class="archive-btn-wrap">
+                <a href="https://sites.google.com/view/evlampia-org/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0?read_current=1" class="archive-btn" target="_blank" rel="noopener">
+                    <img src="img/archive-btn-web.png" alt="Старый сайт Евлампии — архив">
+                </a>
+            </div>
+            <h3 class="archive-title" data-i18n="arc_title">Старая версия сайта</h3>
+            <p class="archive-note" data-i18n="arc_note">Сайт-первенец больше не обновляется и остался здесь только на память. Можно зайти, всё посмотреть и изучить… может быть, даже найти пасхалку 👀</p>
         </div>
 
         <p class="section-label" data-i18n="label_contact">Связь</p>
@@ -636,12 +660,7 @@
                 sticker_title: "Стикеры для Telegram",
                 sticker_desc: "У Евлампии есть собственные стикеры",
                 btn_stickers: "Получить →",
-                label_stickers: "Стикеры",
-                placeholder_soon: "Скоро появится",
-                placeholder_stickers: "Картинка со стикерами будет добавлена позже",
                 label_gallery: "Галерея",
-                placeholder_img1: "«Да, да Евлампия такая»",
-                placeholder_img2: "Сертификат гадалки",
                 label_faq: "Вопросы",
                 faq1_q: "Почему пропали серии?",
                 faq1_a: "Временно скрыли серии для проведения осмотра на предмет запрещённого контента. Как только уберём некоторые моменты, видео снова будут доступны. Следите за новостями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
@@ -658,7 +677,9 @@
                 mu_block_title: "Музей Евлампии",
                 mu_block_desc: "Виртуальная коллекция артефактов из сериала. У музея есть и реальный фонд в Санкт-Петербурге — чисто теоретически, по договорённости, можно попасть на личный показ предметов",
                 footer_disclaimer: "Проект имеет пометку 18+. Все гадания и советы персонажа являются вымышленными и носят исключительно развлекательный характер.",
-                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>",
+                label_archive: "Архив", arc_title: "Старая версия сайта",
+        arc_note: "Сайт-первенец больше не обновляется и остался здесь только на память. Можно зайти, всё посмотреть и изучить… может быть, даже найти пасхалку 👀",
+        footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>",
                 lang_more: "Ещё языки"
             },
             en: {
@@ -690,12 +711,7 @@
                 sticker_title: "Telegram stickers",
                 sticker_desc: "Evlampia has her own stickers",
                 btn_stickers: "Get →",
-                label_stickers: "Stickers",
-                placeholder_soon: "Coming soon",
-                placeholder_stickers: "Sticker image will be added later",
                 label_gallery: "Gallery",
-                placeholder_img1: "«Yes, yes Evlampia is like that»",
-                placeholder_img2: "Fortune teller certificate",
                 label_faq: "Questions",
                 faq1_q: "Why did the episodes disappear?",
                 faq1_a: "Episodes are temporarily hidden for moderation. Once some moments are removed, the videos will be available again. Follow the updates on <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
@@ -710,7 +726,9 @@
                 contact_studio: "Studio і.",
                 contact_studio_sub: "How to reach us",
                 footer_disclaimer: "The project is rated 18+. All fortunes and advice from the character are fictional and exclusively for entertainment purposes.",
-                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>",
+                label_archive: "Archive", arc_title: "The old version of the site",
+        arc_note: "Our first site is no longer updated and stays here for the memories. Feel free to go in, look around and explore… you might even find an easter egg 👀",
+        footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>",
                 lang_more: "More languages"
             },
             de: {
@@ -742,12 +760,7 @@
                 sticker_title: "Telegram-Sticker",
                 sticker_desc: "Evlampia hat eigene Sticker",
                 btn_stickers: "Holen →",
-                label_stickers: "Sticker",
-                placeholder_soon: "Bald verfügbar",
-                placeholder_stickers: "Sticker-Bild wird später hinzugefügt",
                 label_gallery: "Galerie",
-                placeholder_img1: "«Ja, ja, Evlampia ist so»",
-                placeholder_img2: "Hellseherin-Zertifikat",
                 label_faq: "Fragen",
                 faq1_q: "Warum sind die Folgen verschwunden?",
                 faq1_a: "Folgen wurden vorübergehend für die Moderation ausgeblendet. Sobald einige Momente entfernt sind, werden die Videos wieder verfügbar sein. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
@@ -762,7 +775,9 @@
                 contact_studio: "Studio і.",
                 contact_studio_sub: "So erreichen Sie uns",
                 footer_disclaimer: "Das Projekt ist ab 18 Jahren. Alle Wahrsagungen und Ratschläge der Figur sind fiktiv und ausschließlich als Unterhaltung gedacht.",
-                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>",
+                label_archive: "Archiv", arc_title: "Die alte Version der Website",
+        arc_note: "Unsere erste Website wird nicht mehr aktualisiert und bleibt als Erinnerung hier. Schau ruhig rein und stöbere dich durch… vielleicht findest du ja ein Easter Egg 👀",
+        footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>",
                 lang_more: "Weitere Sprachen"
             },
             be: {
@@ -794,12 +809,7 @@
                 sticker_title: "Сцікеры для Telegram",
                 sticker_desc: "У Еўлампіі ёсць уласныя сцікеры",
                 btn_stickers: "Атрымаць →",
-                label_stickers: "Сцікеры",
-                placeholder_soon: "Хутка з'явіцца",
-                placeholder_stickers: "Картынка са сцікерамі будзе дададзена пазней",
                 label_gallery: "Галерэя",
-                placeholder_img1: "«Так, так, Еўлампія такая»",
-                placeholder_img2: "Сертыфікат гадалкі",
                 label_faq: "Пытанні",
                 faq1_q: "Чаму зніклі серыі?",
                 faq1_a: "Часова схаваны серыі для правядзення мадэрацыі. Калі прыбярэм некаторыя моманты, відэа зноў будуць даступныя. Сачыце за навінамі ў <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
@@ -814,7 +824,9 @@
                 contact_studio: "Студыя і.",
                 contact_studio_sub: "Як з намі звязацца",
                 footer_disclaimer: "Праект мае адзнаку 18+. Усе прадказанні і парады персанажа з'яўляюцца выдуманымі і носяць выключна забаўляльны характар.",
-                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>",
+                label_archive: "Архіў", arc_title: "Старая версія сайта",
+        arc_note: "Першы сайт больш не абнаўляецца і застаўся тут на памяць. Можна зайсці, усё паглядзець і вывучыць… можа быць, нават знайсці пісанку 👀",
+        footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>",
                 lang_more: "Большэй моваў"
             },
             uk: {
@@ -846,12 +858,7 @@
                 sticker_title: "Стикери для Telegram",
                 sticker_desc: "Євлампія має власні стикери",
                 btn_stickers: "Отримати →",
-                label_stickers: "Стикери",
-                placeholder_soon: "Незабаром з'явиться",
-                placeholder_stickers: "Картинка зі стикерами буде додана пізніше",
                 label_gallery: "Галерея",
-                placeholder_img1: "«Так, так, Євлампія така»",
-                placeholder_img2: "Сертифікат ворожки",
                 label_faq: "Питання",
                 faq1_q: "Чому зникли серії?",
                 faq1_a: "Тимчасово приховано серії для проведення модерації. Коли приберемо деякі моменти, відео знову будуть доступні. Слідкуйте за новинами в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
@@ -866,7 +873,9 @@
                 contact_studio: "Студія і.",
                 contact_studio_sub: "Як з нами зв'язатися",
                 footer_disclaimer: "Проєкт має позначку 18+. Усі ворожіння та поради персонажа є вигаданими і носять виключно розважальний характер.",
-                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>",
+                label_archive: "Архів", arc_title: "Стара версія сайту",
+        arc_note: "Наш перший сайт більше не оновлюється й лишився тут на память. Можна зайти, все подивитись і розвідати… можливо, навіть знайдете пасхалку 👀",
+        footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>",
                 lang_more: "Більше мов"
             },
             zh: {
@@ -898,11 +907,6 @@
                 sticker_title: "Telegram 贴纸",
                 sticker_desc: "叶芙兰皮娅有自己的贴纸包",
                 btn_stickers: "获取 →",
-                label_stickers: "贴纸",
-                placeholder_soon: "即将推出",
-                placeholder_stickers: "贴纸图片稍后会添加",
-                placeholder_img1: "「是的，叶芙兰皮娅就是这样」",
-                placeholder_img2: "占卜师证书",
                 label_gallery: "图库",
                 label_faq: "常见问题",
                 faq1_q: "为什么剧集消失了？",
@@ -918,7 +922,9 @@
                 contact_studio: "і. 工作室",
                 contact_studio_sub: "如何与我们联系",
                 footer_disclaimer: "本项目含18+内容。角色的所有占卜和建议均为虚构，纯属娱乐性质。",
-                footer_collab: "项目与<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. 工作室</a>及<a href=\"#\">Lokiq</a>合作创建",
+                label_archive: "存档", arc_title: "网站旧版",
+        arc_note: "初代网站已不再更新，仅作纪念保留于此。欢迎进去逛逛、好好研究一番……说不定还能找到彩蛋 👀",
+        footer_collab: "项目与<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. 工作室</a>及<a href=\"#\">Lokiq</a>合作创建",
                 lang_more: "更多语言"
             },
             es: {
@@ -950,11 +956,6 @@
                 sticker_title: "Stickers para Telegram",
                 sticker_desc: "Evlampia tiene sus propios stickers",
                 btn_stickers: "Conseguir →",
-                label_stickers: "Stickers",
-                placeholder_soon: "Próximamente",
-                placeholder_stickers: "La imagen de los stickers se añadirá más tarde",
-                placeholder_img1: "«Sí, sí, Evlampia es así»",
-                placeholder_img2: "Certificado de adivina",
                 label_gallery: "Galería",
                 label_faq: "Preguntas",
                 faq1_q: "¿Por qué desaparecieron los episodios?",
@@ -970,7 +971,9 @@
                 contact_studio: "Estudio і.",
                 contact_studio_sub: "Cómo contactarnos",
                 footer_disclaimer: "El proyecto contiene contenido para mayores de 18 años. Todos los rituales y consejos del personaje son ficticios y tienen un carácter exclusivamente entretenido.",
-                footer_collab: "Proyecto creado junto al <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estudio і.</a> y <a href=\"#\">Lokiq</a>",
+                label_archive: "Archivo", arc_title: "La versión antigua del sitio",
+        arc_note: "Nuestro primer sitio ya no se actualiza y se queda aquí como recuerdo. Entra, míralo todo y explóralo… quizá hasta encuentres un huevo de pascua 👀",
+        footer_collab: "Proyecto creado junto al <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estudio і.</a> y <a href=\"#\">Lokiq</a>",
                 lang_more: "Más idiomas"
             },
             ja: {
@@ -1002,11 +1005,6 @@
                 sticker_title: "Telegramスタンプ",
                 sticker_desc: "エヴランピヤには専用スタンプがあります",
                 btn_stickers: "入手 →",
-                label_stickers: "スタンプ",
-                placeholder_soon: "近日公開",
-                placeholder_stickers: "スタンプの画像は後日追加されます",
-                placeholder_img1: "「そう、エヴランピヤはそんな奴」",
-                placeholder_img2: "占い師の証明書",
                 label_gallery: "ギャラリー",
                 label_faq: "よくある質問",
                 faq1_q: "なぜエピソードが消えたの？",
@@ -1022,7 +1020,9 @@
                 contact_studio: "і. スタジオ",
                 contact_studio_sub: "連絡方法",
                 footer_disclaimer: "本プロジェクトには18歳以上向けのコンテンツが含まれます。キャラクターのすべての占いと助言は架空のもので、娯楽目的に限られます。",
-                footer_collab: "プロジェクトは<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. スタジオ</a>および<a href=\"#\">Lokiq</a>との共同制作です",
+                label_archive: "アーカイブ", arc_title: "旧バージョンのサイト",
+        arc_note: "最初のサイトは更新を終え、思い出としてここに残っています。ぜひ覗いて、じっくり探検してみてください……イースターエッグが見つかるかも 👀",
+        footer_collab: "プロジェクトは<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. スタジオ</a>および<a href=\"#\">Lokiq</a>との共同制作です",
                 lang_more: "その他の言語"
             },
             fr: {
@@ -1054,11 +1054,6 @@
                 sticker_title: "Stickers pour Telegram",
                 sticker_desc: "Evlampia a ses propres stickers",
                 btn_stickers: "Obtenir →",
-                label_stickers: "Stickers",
-                placeholder_soon: "Bientôt disponible",
-                placeholder_stickers: "L'image des stickers sera ajoutée plus tard",
-                placeholder_img1: "« Oui, oui, Evlampia est comme ça »",
-                placeholder_img2: "Certificat de voyante",
                 label_gallery: "Galerie",
                 label_faq: "Questions",
                 faq1_q: "Pourquoi les épisodes ont-ils disparu ?",
@@ -1074,7 +1069,9 @@
                 contact_studio: "Studio і.",
                 contact_studio_sub: "Comment nous contacter",
                 footer_disclaimer: "Le projet est marqué 18+. Tous les rituels et conseils du personnage sont fictifs et purement divertissants.",
-                footer_collab: "Projet créé en collaboration avec le <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> et <a href=\"#\">Lokiq</a>",
+                label_archive: "Archives", arc_title: "L'ancienne version du site",
+        arc_note: "Notre tout premier site n'est plus mis à jour et reste ici pour la mémoire. Entrez, regardez tout, explorez… vous trouverez peut-être même un œuf de Pâques 👀",
+        footer_collab: "Projet créé en collaboration avec le <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> et <a href=\"#\">Lokiq</a>",
                 lang_more: "Plus de langues"
             },
             pt: {
@@ -1106,11 +1103,6 @@
                 sticker_title: "Figurinhas para Telegram",
                 sticker_desc: "A Evlampia tem suas próprias figurinhas",
                 btn_stickers: "Pegar →",
-                label_stickers: "Figurinhas",
-                placeholder_soon: "Em breve",
-                placeholder_stickers: "A imagem das figurinhas será adicionada mais tarde",
-                placeholder_img1: "«Sim, sim, a Evlampia é assim»",
-                placeholder_img2: "Certificado de vidente",
                 label_gallery: "Galeria",
                 label_faq: "Perguntas",
                 faq1_q: "Por que os episódios sumiram?",
@@ -1126,7 +1118,9 @@
                 contact_studio: "Estúdio і.",
                 contact_studio_sub: "Como falar conosco",
                 footer_disclaimer: "O projeto possui classificação 18+. Todas as adivinhações e conselhos da personagem são fictícios e têm caráter exclusivamente recreativo.",
-                footer_collab: "Projeto criado junto com o <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estúdio і.</a> e <a href=\"#\">Lokiq</a>",
+                label_archive: "Arquivo", arc_title: "A versão antiga do site",
+        arc_note: "Nosso primeiro site não é mais atualizado e fica aqui de lembrança. Entre, veja tudo e explore… talvez até encontre um ovo de páscoa 👀",
+        footer_collab: "Projeto criado junto com o <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estúdio і.</a> e <a href=\"#\">Lokiq</a>",
                 lang_more: "Mais idiomas"
             },
             pl: {
@@ -1158,12 +1152,7 @@
                 sticker_title: "Naklejki do Telegrama",
                 sticker_desc: "Evlampia ma własne naklejki",
                 btn_stickers: "Pobierz →",
-                label_stickers: "Naklejki",
-                placeholder_soon: "Wkrótce",
-                placeholder_stickers: "Obrazek z naklejkami pojawi się później",
                 label_gallery: "Galeria",
-                placeholder_img1: "„Tak, tak, taka jest Evlampia”",
-                placeholder_img2: "Certyfikat wróżbity",
                 label_faq: "Pytania",
                 faq1_q: "Dlaczego zniknęły odcinki?",
                 faq1_a: "Tymczasowo ukryliśmy odcinki do czasu sprawdzenia pod kątem zakazanych treści. Gdy usuniemy niektóre momenty, filmy znów będą dostępne. Śledź wiadomości na <a href=\"https://t.me/evlampia1327\">Telegramie</a>.",
@@ -1178,7 +1167,9 @@
                 contact_studio: "Studio і.",
                 contact_studio_sub: "Jak się z nami skontaktować",
                 footer_disclaimer: "Projekt ma oznaczenie 18+. Wszystkie wróżby i porady postaci są fikcyjne i mają charakter wyłącznie rozrywkowy.",
-                footer_collab: "Projekt stworzony we współpracy ze <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studiem і.</a> i <a href=\"#\">Lokiq</a>",
+                label_archive: "Archiwum", arc_title: "Stara wersja strony",
+        arc_note: "Nasza pierwsza strona nie jest już aktualizowana i została tutaj dla pamięci. Wejdź, zobacz wszystko i przeszukaj ją dobrze… może nawet trafisz na easter egga 👀",
+        footer_collab: "Projekt stworzony we współpracy ze <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studiem і.</a> i <a href=\"#\">Lokiq</a>",
                 lang_more: "Więcej języków"
             }
         };

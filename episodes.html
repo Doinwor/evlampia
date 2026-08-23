@@ -385,7 +385,7 @@
 </head>
 <body>
     <div class="header">
-        <a href="index.html" class="back">← Евлампия</a>
+        <a href="index.html" class="back" onclick="if(history.length>1){history.back();return false;}">← Евлампия</a>
         <div class="header-right">
             <div class="lang-switcher" id="langSwitcher">
                 <button class="lang-btn" id="langBtn">
@@ -421,7 +421,7 @@
             <p class="tagline" data-i18n="ep_tagline">Все выпуски Евлампии в одном месте</p>
         </div>
 
-        <a href="player.html" class="beta-banner">
+        <a href="videos.html" class="beta-banner">
             <span class="beta-badge" data-i18n="beta_badge">Бета-тест</span>
             <h3>▶ <span data-i18n="beta_title">Новая технология студії і. — «Плеер»</span></h3>
             <p data-i18n="beta_desc">Смотри серии прямо на сайте: новый плеер студии і. воспроизводит видео из репозитория проекта. Функция в бета-тесте — о багах сообщайте в Telegram.</p>

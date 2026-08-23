@@ -321,7 +321,7 @@
     <div class="glow-bg"></div>
 
     <div class="header">
-        <a href="episodes.html" class="back">← Евлампия</a>
+        <a href="videos.html" class="back" onclick="if(history.length>1){history.back();return false;}">← Все видео</a>
         <div class="header-right">
             <div class="lang-switcher" id="langSwitcher">
                 <button class="lang-btn" id="langBtn">
@@ -638,8 +638,16 @@
             $('plLoading').style.display = 'none';
             if (list.length) {
                 $('playerArea').style.display = 'block';
+                let start = 0;
+                try {
+                    const want = (new URLSearchParams(location.search).get('v') || '').toLowerCase().replace(/\.mp4$/, '');
+                    if (want) {
+                        const k = list.findIndex(it => ((it.id || String(it.file || '').replace(/\.[^.]+$/, '')) + '').toLowerCase() === want);
+                        if (k >= 0) start = k;
+                    }
+                } catch (e) {}
                 buildPlaylist();
-                select(0, false);
+                select(start, false);
             } else {
                 $('npTitle').textContent = i18n[LANG].pl_title;
                 $('plEmpty').classList.add('show');
@@ -651,6 +659,11 @@
         function vTitle(it) { return (it.titles && it.titles[LANG]) || it.title || it.file; }
         function vDesc(it) { return (it.descs && it.descs[LANG]) || it.desc || ''; }
 
+        function applyDocTitle() {
+            const it = list[cur >= 0 ? cur : 0];
+            if (it && i18n[LANG]) document.title = vTitle(it) + ' · ' + i18n[LANG].doc_title;
+        }
+
         function refreshTexts() {
             if (!list.length) return;
             buildPlaylist();
@@ -660,6 +673,7 @@
             const nd = $('npDesc');
             nd.textContent = d;
             nd.style.display = d ? 'block' : 'none';
+            applyDocTitle();
         }
 
         function buildPlaylist() {
@@ -687,6 +701,7 @@
             $('npDesc').textContent = d;
             $('npDesc').style.display = d ? 'block' : 'none';
             document.querySelectorAll('#plList .ep-card').forEach((c, ci) => c.classList.toggle('active', ci === i));
+            applyDocTitle();
             seek.value = 0;
             seek.max = 0;
             timeEl.textContent = '0:00 / 0:00';

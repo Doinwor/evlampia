@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>і. Плеер — Евлампия</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
+    <script>try{var t=localStorage.getItem('i-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+    <style>
+        :root {
+            --bg: #050508; --surface: #0f0f14; --surface-hover: #1a1a24;
+            --border: #1e1e2a; --text: #f0f0f5; --text-muted: #8888a0;
+            --accent: #a78bfa; --accent-glow: rgba(167,139,250,0.25);
+            --pink: #f472b6; --amber: #fbbf24; --blue: #60a5fa;
+            --card-shadow: rgba(0,0,0,0.3); --toggle-bg: #1e1e2a; --toggle-knob: #050508;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f7; --surface: #ffffff; --surface-hover: #eaeaef;
+            --border: #dddde5; --text: #111118; --text-muted: #6b6b80;
+            --accent: #7c5ce0; --accent-glow: rgba(124,92,224,0.15);
+            --pink: #d946a8; --amber: #d4990a; --blue: #3b82f6;
+            --card-shadow: rgba(0,0,0,0.06); --toggle-bg: #dddde5; --toggle-knob: #f5f5f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Unbounded', sans-serif; background: var(--bg); color: var(--text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s;
+        }
+
+        .glow-bg {
+            position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 600px;
+            background: radial-gradient(ellipse, rgba(96,165,250,0.07) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        [data-theme="light"] .glow-bg {
+            background: radial-gradient(ellipse, rgba(59,130,246,0.05) 0%, transparent 70%);
+        }
+
+        .theme-toggle {
+            background: var(--toggle-bg); border: none; cursor: pointer; padding: 0;
+            border-radius: 100px; width: 42px; height: 22px; display: flex;
+            align-items: center; transition: background 0.3s; flex-shrink: 0;
+        }
+        .theme-toggle:hover { opacity: 0.8; }
+        .theme-toggle__knob {
+            width: 16px; height: 16px; border-radius: 50%; background: var(--toggle-knob);
+            transition: transform 0.3s, background 0.3s; margin: 0 3px;
+        }
+        [data-theme="dark"] .theme-toggle__knob { transform: translateX(20px); }
+
+        .lang-switcher { position: relative; z-index: 200; }
+        .lang-btn {
+            background: var(--toggle-bg); border: none; cursor: pointer;
+            padding: 6px 12px; border-radius: 8px; font-family: 'Unbounded', sans-serif;
+            font-size: 0.7rem; font-weight: 600; color: var(--text);
+            letter-spacing: 0.04em; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .lang-btn:hover { background: var(--surface-hover); }
+        .lang-btn .arrow { font-size: 0.5rem; transition: transform 0.2s; }
+        .lang-switcher.open .lang-btn .arrow { transform: rotate(180deg); }
+        .lang-dropdown {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 6px; min-width: 160px; display: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        [data-theme="light"] .lang-dropdown { box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+        .lang-switcher.open .lang-dropdown { display: block; }
+        .lang-option {
+            display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-weight: 500;
+            color: var(--text-muted); transition: all 0.15s; border: none; background: none;
+            width: 100%; font-family: 'Unbounded', sans-serif; text-align: left;
+        }
+        .lang-option:hover { background: var(--surface-hover); color: var(--text); }
+        .lang-option.active { color: var(--accent); background: var(--accent-glow); }
+        .lang-option .flag { font-size: 1rem; }
+        .lang-more {
+            width: 100%; margin-top: 5px; padding: 8px 0 2px;
+            background: none; border: none; border-top: 1px solid var(--border);
+            color: var(--text-muted); font-family: 'Unbounded', sans-serif;
+            font-size: 0.58rem; font-weight: 600; letter-spacing: 0.05em;
+            cursor: pointer; transition: color 0.15s; text-align: center;
+        }
+        .lang-more:hover { color: var(--accent); }
+        .lang-more .arrow { font-size: 0.5rem; display: inline-block; transition: transform 0.2s; }
+        .lang-switcher.more-open .lang-more .arrow { transform: rotate(180deg); }
+        .lang-extra { display: none; }
+        .lang-switcher.more-open .lang-extra { display: block; }
+
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+            backdrop-filter: blur(12px); background: rgba(5,5,8,0.6); border-bottom: 1px solid var(--border);
+        }
+        [data-theme="light"] .header { background: rgba(245,245,247,0.7); }
+        .header .back { color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 500; transition: color 0.2s; }
+        .header .back:hover { color: var(--text); }
+        .brand-logo {
+            display: inline-flex; align-items: center; gap: 8px;
+            text-decoration: none; color: var(--text);
+            font-size: 0.82rem; font-weight: 700; letter-spacing: -0.01em;
+            transition: opacity 0.2s;
+        }
+        .brand-logo:hover { opacity: 0.75; }
+        .brand-logo .dim { color: var(--text-muted); font-weight: 500; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+
+        .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 120px 40px 100px; }
+
+        .brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .brand-name {
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+            text-transform: uppercase; color: var(--text-muted);
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .beta-pill {
+            display: inline-block; font-size: 0.58rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--blue); background: rgba(96,165,250,0.1);
+            padding: 4px 11px; border-radius: 7px;
+        }
+        [data-theme="light"] .beta-pill { background: rgba(59,130,246,0.08); }
+
+        .page-title {
+            font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.25;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff 0%, #60a5fa 55%, #fbbf24 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        [data-theme="light"] .page-title {
+            background: linear-gradient(135deg, #111118 0%, #3b82f6 55%, #d4990a 100%);
+            -webkit-background-clip: text; background-clip: text;
+        }
+        .page-sub {
+            font-size: 0.76rem; color: var(--text-muted); font-weight: 300;
+            margin-bottom: 36px; max-width: 560px; line-height: 1.8;
+        }
+
+        .vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+        .vcard {
+            display: block; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden; text-decoration: none; color: var(--text);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .vcard:hover {
+            transform: translateY(-3px); border-color: var(--accent);
+            box-shadow: 0 12px 32px var(--card-shadow);
+        }
+        .vthumb {
+            position: relative; aspect-ratio: 16 / 9; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(244,114,182,0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 80%, rgba(96,165,250,0.16) 0%, transparent 55%),
+                linear-gradient(135deg, #14141f 0%, #0b0b12 100%);
+        }
+        [data-theme="light"] .vthumb {
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(217,70,168,0.10) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 80%, rgba(59,130,246,0.10) 0%, transparent 55%),
+                linear-gradient(135deg, #ececf2 0%, #dcdce6 100%);
+        }
+        .vthumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+        .play-badge {
+            position: relative; z-index: 2;
+            width: 52px; height: 52px; border-radius: 15px;
+            background: rgba(10,10,16,0.55);
+            -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+            border: 1px solid rgba(167,139,250,0.45);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.05rem; color: #fff; padding-left: 4px;
+            transition: all 0.25s ease;
+        }
+        .vcard:hover .play-badge {
+            transform: scale(1.1);
+            border-color: rgba(167,139,250,0.9);
+            box-shadow: 0 0 26px rgba(167,139,250,0.45);
+        }
+        .vmeta { padding: 13px 16px 15px; }
+        .vtitle { font-size: 0.75rem; font-weight: 600; line-height: 1.4; }
+        .vext { font-size: 0.6rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 0.04em; }
+
+        .footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); }
+        .footer p { font-size: 0.68rem; color: var(--text-muted); line-height: 2; font-weight: 300; }
+        .footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
+        .footer a:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+            .wrap { padding: 100px 20px 60px; }
+            .header { padding: 16px 20px; }
+            .page-title { font-size: 1.35rem; }
+            .vgrid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+        }
+        @media (max-width: 480px) {
+            .page-title { font-size: 1.15rem; }
+            .vgrid { grid-template-columns: 1fr; }
+            .footer p { font-size: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg"></div>
+
+    <div class="header">
+        <a href="index.html" class="brand-logo">▶ і.&nbsp;Плеер<span class="dim"> — Евлампия</span></a>
+        <div class="header-right">
+            <div class="lang-switcher" id="langSwitcher">
+                <button class="lang-btn" id="langBtn">
+                    <span id="currentLang">RU</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option active" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+                    <button class="lang-option" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+                    <button class="lang-option" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
+                    <button class="lang-option" data-lang="be"><span class="flag">🇧🇾</span> Беларуская</button>
+                    <button class="lang-option" data-lang="uk"><span class="flag">🇺🇦</span> Українська</button>
+                    <button class="lang-more" id="langMore"><span data-i18n="lang_more">Ещё языки</span> <span class="arrow">▾</span></button>
+                    <div class="lang-extra">
+                        <button class="lang-option" data-lang="zh"><span class="flag">🇨🇳</span> 中文</button>
+                        <button class="lang-option" data-lang="es"><span class="flag">🇪🇸</span> Español</button>
+                        <button class="lang-option" data-lang="ja"><span class="flag">🇯🇵</span> 日本語</button>
+                        <button class="lang-option" data-lang="fr"><span class="flag">🇫🇷</span> Français</button>
+                        <button class="lang-option" data-lang="pt"><span class="flag">🇵🇹</span> Português</button>
+                        <button class="lang-option" data-lang="pl"><span class="flag">🇵🇱</span> Polski</button>
+                    </div>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span class="theme-toggle__knob"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <div class="brand-row">
+            <span class="brand-name">▶ <span data-i18n="vg_brand">і. Плеер</span></span>
+            <span class="beta-pill">BETA</span>
+        </div>
+
+        <h1 class="page-title" data-i18n="vg_series">Евлампия</h1>
+        <p class="page-sub" data-i18n="vg_sub">Все доступные видео веб-сериала — смотрите прямо на сайте</p>
+
+        <div class="loading-block" id="vgLoading" style="text-align:center;padding:70px 20px;color:var(--text-muted);font-size:0.78rem;">…</div>
+        <div class="vgrid" id="vGrid"></div>
+
+        <div class="footer">
+            <p data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
+            <p style="margin-top: 4px;" data-i18n="footer_eco">Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+        </div>
+    </div>
+
+    <script src="videos/manifest.js"></script>
+    <script>
+        const i18n = {
+            ru: {
+                doc_title: "і. Плеер — Евлампия",
+                vg_brand: "і. Плеер", vg_series: "Евлампия",
+                vg_sub: "Все доступные видео веб-сериала — смотрите прямо на сайте",
+                footer_eco: "Проект экосистемы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>",
+                lang_more: "Ещё языки"
+            },
+            en: {
+                doc_title: "і. Player — Evlampia",
+                vg_brand: "і. Player", vg_series: "Evlampia",
+                vg_sub: "All videos of the web series — watch right on the site",
+                footer_eco: "A project of the <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> ecosystem · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>",
+                lang_more: "More languages"
+            },
+            de: {
+                doc_title: "і. Player — Evlampia",
+                vg_brand: "і. Player", vg_series: "Evlampia",
+                vg_sub: "Alle Videos der Webserie — direkt auf der Website ansehen",
+                footer_eco: "Ein Projekt des <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a>-Ökosystems · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>",
+                lang_more: "Weitere Sprachen"
+            },
+            be: {
+                doc_title: "і. Плеер — Еўлампія",
+                vg_brand: "і. Плеер", vg_series: "Еўлампія",
+                vg_sub: "Усё відэа вэб-серыяла — глядзіце непасрэдна на сайце",
+                footer_eco: "Праект экасістэмы <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>",
+                lang_more: "Большэй моваў"
+            },
+            uk: {
+                doc_title: "і. Плеєр — Євлампія",
+                vg_brand: "і. Плеєр", vg_series: "Євлампія",
+                vg_sub: "Усі відео веб-серіалу — дивіться просто на сайті",
+                footer_eco: "Проєкт екосистеми <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>",
+                lang_more: "Більше мов"
+            },
+            zh: {
+                doc_title: "і. 播放器 — 叶芙兰皮娅",
+                vg_brand: "і. 播放器", vg_series: "叶芙兰皮娅",
+                vg_sub: "网络剧的全部视频——直接在网站上观看",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> 生态系统项目 · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "项目与<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. 工作室</a>及<a href=\"#\">Lokiq</a>合作创建",
+                lang_more: "更多语言"
+            },
+            es: {
+                doc_title: "і. Reproductor — Evlampia",
+                vg_brand: "і. Reproductor", vg_series: "Evlampia",
+                vg_sub: "Todos los vídeos de la webserie: míralos aquí mismo",
+                footer_eco: "Un proyecto del ecosistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "Proyecto creado junto al <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estudio і.</a> y <a href=\"#\">Lokiq</a>",
+                lang_more: "Más idiomas"
+            },
+            ja: {
+                doc_title: "і. プレイヤー — エヴランピヤ",
+                vg_brand: "і. プレイヤー", vg_series: "エヴランピヤ",
+                vg_sub: "ウェブシリーズの動画はすべて、サイト上で直接視聴できます",
+                footer_eco: "<a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> エコシステムのプロジェクト · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "プロジェクトは<a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і. スタジオ</a>および<a href=\"#\">Lokiq</a>との共同制作です",
+                lang_more: "その他の言語"
+            },
+            fr: {
+                doc_title: "і. Lecteur — Evlampia",
+                vg_brand: "і. Lecteur", vg_series: "Evlampia",
+                vg_sub: "Toutes les vidéos de la web-série — à regarder directement sur le site",
+                footer_eco: "Un projet de l'écosystème <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "Projet créé en collaboration avec le <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> et <a href=\"#\">Lokiq</a>",
+                lang_more: "Plus de langues"
+            },
+            pt: {
+                doc_title: "і. Reprodutor — Evlampia",
+                vg_brand: "і. Reprodutor", vg_series: "Evlampia",
+                vg_sub: "Todos os vídeos da websérie — assista aqui mesmo no site",
+                footer_eco: "Um projeto do ecossistema <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "Projeto criado junto com o <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">estúdio і.</a> e <a href=\"#\">Lokiq</a>",
+                lang_more: "Mais idiomas"
+            },
+            pl: {
+                doc_title: "і. Odtwarzacz — Evlampia",
+                vg_brand: "і. Odtwarzacz", vg_series: "Evlampia",
+                vg_sub: "Wszystkie odcinki serialu internetowego — oglądaj bezpośrednio na stronie",
+                footer_eco: "Projekt ekosystemy <a href=\"https://doinwor.github.io/go-ecosystem/\">GO</a> · <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">і.</a> · 2026",
+                footer_collab: "Projekt stworzony we współpracy ze <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studiem і.</a> i <a href=\"#\">Lokiq</a>",
+                lang_more: "Więcej języków"
+            }
+        };
+
+        let LANG = localStorage.getItem('i-lang') || 'ru';
+
+        function setLang(lang) {
+            if (!i18n[lang]) return;
+            LANG = lang;
+            try { localStorage.setItem('i-lang', lang); } catch(e){}
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) el.innerHTML = i18n[lang][key];
+            });
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+            document.documentElement.setAttribute('lang', lang);
+            if (i18n[lang].doc_title) document.title = i18n[lang].doc_title;
+            buildGrid();
+        }
+
+        document.getElementById('langBtn').addEventListener('click', e => {
+            e.stopPropagation();
+            document.getElementById('langSwitcher').classList.toggle('open');
+        });
+        document.getElementById('langMore').addEventListener('click', e => {
+            e.stopPropagation();
+            document.getElementById('langSwitcher').classList.toggle('more-open');
+        });
+        document.addEventListener('click', () => document.getElementById('langSwitcher').classList.remove('open'));
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', e => {
+                e.stopPropagation();
+                setLang(opt.dataset.lang);
+                document.getElementById('langSwitcher').classList.remove('open');
+            });
+        });
+
+        const toggleBtn = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const storedTheme = localStorage.getItem('i-theme');
+        if (storedTheme) root.setAttribute('data-theme', storedTheme);
+        toggleBtn.addEventListener('click', () => {
+            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('i-theme', next);
+        });
+
+        function vId(it) { return it.id || String(it.file || '').replace(/\.[^.]+$/, ''); }
+        function vTitle(it) { return (it.titles && it.titles[LANG]) || it.title || it.file; }
+
+        function buildGrid() {
+            let data = null;
+            try { data = window.EVLAMPIA_VIDEOS; } catch (e) {}
+            const list = Array.isArray(data) ? data.filter(v => v && v.file) : [];
+            document.getElementById('vgLoading').style.display = 'none';
+            const grid = document.getElementById('vGrid');
+            grid.innerHTML = '';
+            list.forEach(item => {
+                const a = document.createElement('a');
+                a.className = 'vcard';
+                a.href = 'player.html?v=' + encodeURIComponent(vId(item));
+                const thumb = document.createElement('div');
+                thumb.className = 'vthumb';
+                if (item.thumb) {
+                    const img = document.createElement('img');
+                    img.src = item.thumb;
+                    img.alt = '';
+                    img.loading = 'lazy';
+                    thumb.appendChild(img);
+                }
+                const badge = document.createElement('div');
+                badge.className = 'play-badge';
+                badge.textContent = '▶';
+                thumb.appendChild(badge);
+                const meta = document.createElement('div');
+                meta.className = 'vmeta';
+                const t = document.createElement('div');
+                t.className = 'vtitle';
+                t.textContent = vTitle(item);
+                const ext = document.createElement('div');
+                ext.className = 'vext';
+                ext.textContent = (String(item.file).split('.').pop() || '').toUpperCase() + ' · і.';
+                meta.appendChild(t);
+                meta.appendChild(ext);
+                a.appendChild(thumb);
+                a.appendChild(meta);
+                grid.appendChild(a);
+            });
+        }
+
+        setLang(LANG);
+    </script>
+</body>
+</html>
