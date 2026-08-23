@@ -223,7 +223,7 @@
         .browse-block {
             display: block; text-decoration: none; color: var(--text);
             background: var(--surface); border: 1px solid var(--border);
-            border-radius: 20px; padding: 36px 40px; margin-bottom: 64px;
+            border-radius: 20px; padding: 30px 30px; margin-bottom: 64px;
             position: relative; overflow: hidden; transition: all 0.3s ease;
         }
         .browse-block:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 32px var(--card-shadow); }
@@ -239,6 +239,12 @@
             transition: all 0.3s ease;
         }
         .browse-block:hover .browse-arrow { background: var(--accent); color: #fff; }
+
+        .browse-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+            margin-bottom: 64px;
+        }
+        .browse-row .browse-block { margin-bottom: 0; height: 100%; }
 
         .warning {
             background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.15);
@@ -363,6 +369,7 @@
             .placeholder-grid { grid-template-columns: 1fr; }
             .sticker-block { flex-direction: column; gap: 20px; text-align: center; }
             .hero::before { display: none; }
+            .browse-row { grid-template-columns: 1fr; gap: 14px; }
             .browse-block { padding: 28px 24px; }
             .browse-inner { flex-direction: column; text-align: center; }
             .browse-left p { max-width: 100%; }
@@ -446,6 +453,8 @@
             <a href="https://rutube.ru/video/c3390b6a11940ebc8a3c6f9bbae5111f/" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;padding:12px 28px;border-radius:10px;font-size:0.82rem;font-weight:600;text-decoration:none;" target="_blank" data-i18n="btn_watch">Смотреть →</a>
         </div>
 
+        <div class="browse-row">
+
         <a href="episodes.html" class="browse-block">
             <div class="browse-inner">
                 <div class="browse-left">
@@ -456,6 +465,19 @@
                 <div class="browse-arrow">→</div>
             </div>
         </a>
+
+        <a href="museum.html" class="browse-block">
+            <div class="browse-inner">
+                <div class="browse-left">
+                    <div class="browse-emoji">🏛️</div>
+                    <h3 data-i18n="mu_block_title">Музей Евлампии</h3>
+                    <p data-i18n="mu_block_desc">Виртуальная коллекция артефактов из серий. У музея есть и реальный фонд в Санкт-Петербурге — чисто теоретически, по договорённости, можно попасть на личный показ предметов</p>
+                </div>
+                <div class="browse-arrow">→</div>
+            </div>
+        </a>
+
+        </div>
 
         <div class="warning">
             <div class="icon">⚠️</div>
@@ -626,6 +648,8 @@
                 btn_watch: "Watch →",
                 browse_title: "Episodes & Seasons",
                 browse_desc: "All classic episodes — three seasons, archive releases and interviews. 30+ episodes of the original format with predictions, cards and crystal ball",
+                mu_block_title: "Evlampia Museum",
+                mu_block_desc: "A virtual collection of artifacts from the series. The museum also has a real fund in Saint Petersburg — purely theoretically, by arrangement, you can visit a personal showing of the items",
                 label_about: "About the project",
                 warn_title: "Episodes temporarily unavailable",
                 warn_desc: "Part of the episodes are hidden for moderation per Federal Law No. 48-FZ. Some scenes are subject to censorship and will be removed. Follow updates on <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
@@ -673,6 +697,8 @@
                 btn_watch: "Ansehen →",
                 browse_title: "Folgen & Staffeln",
                 browse_desc: "Alle klassischen Folgen — drei Staffeln, Archivfolgen und Interviews. 30+ Folgen im Originalformat mit Vorhersagen, Karten und Kristallkugel",
+                mu_block_title: "Evlampia-Museum",
+                mu_block_desc: "Eine virtuelle Sammlung von Artefakten aus der Serie. Das Museum hat auch einen echten Fond in Sankt Petersburg — rein theoretisch, nach Vereinbarung, ist eine persönliche Besichtigung der Exponate möglich",
                 label_about: "Über das Projekt",
                 warn_title: "Folgen vorübergehend nicht verfügbar",
                 warn_desc: "Teil der Folgen wurde wegen Moderation gemäß Bundesgesetz Nr. 48-FZ ausgeblendet. Einige Szenen unterliegen der Zensur und werden entfernt. Folgen Sie den Updates in <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
@@ -720,6 +746,8 @@
                 btn_watch: "Глядзець →",
                 browse_title: "Серыі і сезоны",
                 browse_desc: "Усе класічныя серыі — тры сезоны, архіўныя выпускі і інтэрвью. 30+ серый арыгінальнага фармату з прадказаннямі, картамі і шарам",
+                mu_block_title: "Музей Еўлампіі",
+                mu_block_desc: "Віртуальная калекцыя артэфактаў з серыяла. У музея ёсць і рэальны фонд у Санкт-Пецербургу — чыста тэарэтычна, па дамоўленасці, можна трапіць на асабісты паказ прадметаў",
                 label_about: "Пра праект",
                 warn_title: "Серыі часова недаступныя",
                 warn_desc: "Частка серый схавана для мадэрацыі паводле Федэральнага закона №48-ФЗ. Асобныя сцэны падлягаюць цэнзуры і будуць выдалены. Сачыце за абнаўленнямі ў <a href=\"https://t.me/evlampia1327\">Telegram</a>.",
@@ -767,6 +795,8 @@
                 btn_watch: "Дивитися →",
                 browse_title: "Серії та сезони",
                 browse_desc: "Усі класичні серії — три сезони, архівні випуски та інтерв'ю. 30+ серій оригінального формату з передбаченнями, картами та кулею",
+                mu_block_title: "Музей Євлампії",
+                mu_block_desc: "Віртуальна колекція артефактів із серіалу. У музею є й реальний фонд у Санкт-Петербурзі — суто теоретично, за домовленістю, можна потрапити на особистий показ предметів",
                 label_about: "Про проєкт",
                 warn_title: "Серії тимчасово недоступні",
                 warn_desc: "Частка серій приховано для модерації відповідно до Федерального закону №48-ФЗ. Окремі сцени підлягають цензурі та будуть видалені. Слідкуйте за оновленнями в <a href=\"https://t.me/evlampia1327\">Telegram</a>.",

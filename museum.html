@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Музей Евлампии</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
+    <script>try{var t=localStorage.getItem('i-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+    <style>
+        :root {
+            --bg: #050508; --surface: #0f0f14; --surface-hover: #1a1a24;
+            --border: #1e1e2a; --text: #f0f0f5; --text-muted: #8888a0;
+            --accent: #a78bfa; --accent-glow: rgba(167,139,250,0.25);
+            --pink: #f472b6; --amber: #fbbf24; --blue: #60a5fa;
+            --card-shadow: rgba(0,0,0,0.3); --toggle-bg: #1e1e2a; --toggle-knob: #050508;
+        }
+        [data-theme="light"] {
+            --bg: #f5f5f7; --surface: #ffffff; --surface-hover: #eaeaef;
+            --border: #dddde5; --text: #111118; --text-muted: #6b6b80;
+            --accent: #7c5ce0; --accent-glow: rgba(124,92,224,0.15);
+            --pink: #d946a8; --amber: #d4990a; --blue: #3b82f6;
+            --card-shadow: rgba(0,0,0,0.06); --toggle-bg: #dddde5; --toggle-knob: #f5f5f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Unbounded', sans-serif; background: var(--bg); color: var(--text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s;
+        }
+
+        .glow-bg {
+            position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+            width: 800px; height: 600px;
+            background: radial-gradient(ellipse, rgba(251,191,36,0.06) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        [data-theme="light"] .glow-bg {
+            background: radial-gradient(ellipse, rgba(212,153,10,0.05) 0%, transparent 70%);
+        }
+
+        /* TOGGLE */
+        .theme-toggle {
+            background: var(--toggle-bg); border: none; cursor: pointer; padding: 0;
+            border-radius: 100px; width: 42px; height: 22px; display: flex;
+            align-items: center; transition: background 0.3s; flex-shrink: 0;
+        }
+        .theme-toggle:hover { opacity: 0.8; }
+        .theme-toggle__knob {
+            width: 16px; height: 16px; border-radius: 50%; background: var(--toggle-knob);
+            transition: transform 0.3s, background 0.3s; margin: 0 3px;
+        }
+        [data-theme="dark"] .theme-toggle__knob { transform: translateX(20px); }
+
+        /* LANG */
+        .lang-switcher { position: relative; z-index: 200; }
+        .lang-btn {
+            background: var(--toggle-bg); border: none; cursor: pointer;
+            padding: 6px 12px; border-radius: 8px; font-family: 'Unbounded', sans-serif;
+            font-size: 0.7rem; font-weight: 600; color: var(--text);
+            letter-spacing: 0.04em; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .lang-btn:hover { background: var(--surface-hover); }
+        .lang-btn .arrow { font-size: 0.5rem; transition: transform 0.2s; }
+        .lang-switcher.open .lang-btn .arrow { transform: rotate(180deg); }
+        .lang-dropdown {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 6px; min-width: 160px; display: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        [data-theme="light"] .lang-dropdown { box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+        .lang-switcher.open .lang-dropdown { display: block; }
+        .lang-option {
+            display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-weight: 500;
+            color: var(--text-muted); transition: all 0.15s; border: none; background: none;
+            width: 100%; font-family: 'Unbounded', sans-serif; text-align: left;
+        }
+        .lang-option:hover { background: var(--surface-hover); color: var(--text); }
+        .lang-option.active { color: var(--accent); background: var(--accent-glow); }
+        .lang-option .flag { font-size: 1rem; }
+
+        /* HEADER */
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 20px 40px; display: flex; align-items: center; justify-content: space-between;
+            backdrop-filter: blur(12px); background: rgba(5,5,8,0.6); border-bottom: 1px solid var(--border);
+        }
+        [data-theme="light"] .header { background: rgba(245,245,247,0.7); }
+        .header .back { color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 500; transition: color 0.2s; }
+        .header .back:hover { color: var(--text); }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+
+        .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 120px 40px 100px; }
+
+        /* HERO */
+        .hero { text-align: center; margin-bottom: 26px; }
+        .hero h1 {
+            font-size: 3rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #fbbf24 55%, #f472b6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        [data-theme="light"] .hero h1 {
+            background: linear-gradient(135deg, #111118 0%, #d4990a 55%, #d946a8 100%);
+            -webkit-background-clip: text; background-clip: text;
+        }
+        .hero .tagline { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; }
+        .hero .est {
+            display: inline-flex; align-items: center; gap: 10px; margin-top: 18px;
+            font-size: 0.58rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber);
+        }
+        .hero .est::before, .hero .est::after { content: ''; width: 44px; height: 1px; background: linear-gradient(90deg, transparent, var(--amber)); }
+        .hero .est::after { background: linear-gradient(90deg, var(--amber), transparent); }
+
+        /* PLAQUE */
+        .plaque {
+            max-width: 700px; margin: 0 auto 60px; text-align: center;
+            padding: 30px 24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        .plaque::before, .plaque::after {
+            content: ''; position: absolute; top: -1px; width: 46px; height: 1px; background: var(--amber);
+        }
+        .plaque::before { left: 0; } .plaque::after { right: 0; }
+        .plaque .q-mark { color: var(--amber); font-size: 1.5rem; line-height: 1; display: block; margin-bottom: 12px; }
+        .plaque p { font-size: 0.84rem; font-weight: 500; line-height: 1.9; }
+        .plaque .q-src {
+            margin-top: 12px; font-size: 0.58rem; font-weight: 600;
+            letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted);
+        }
+
+        /* HALLS */
+        .hall-head { display: flex; align-items: baseline; gap: 16px; margin: 56px 0 8px; }
+        .hall-head:first-of-type { margin-top: 0; }
+        .hall-no {
+            font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--amber); white-space: nowrap;
+        }
+        .hall-title { font-size: 1.05rem; font-weight: 700; white-space: nowrap; }
+        .hall-rule { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); align-self: center; }
+        .hall-sub { font-size: 0.72rem; color: var(--text-muted); font-weight: 300; margin-bottom: 24px; }
+
+        .ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(225px, 1fr)); gap: 16px; }
+
+        .exhibit { margin: 0; }
+        .frame {
+            position: relative; background: var(--surface);
+            border: 1px solid var(--border); border-radius: 16px; padding: 10px;
+            transition: all 0.3s ease;
+        }
+        .frame::before {
+            content: ''; position: absolute; inset: 5px; border-radius: 12px;
+            box-shadow: inset 0 0 0 1px var(--border); pointer-events: none; opacity: 0.55;
+        }
+        .exhibit:hover .frame {
+            transform: translateY(-3px); border-color: var(--accent);
+            box-shadow: 0 10px 32px var(--card-shadow);
+        }
+        .no {
+            position: absolute; top: 17px; left: 17px; z-index: 2;
+            font-size: 0.54rem; font-weight: 700; letter-spacing: 0.08em;
+            color: var(--amber); background: rgba(251,191,36,0.12);
+            padding: 4px 9px; border-radius: 7px;
+            -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+        }
+        [data-theme="light"] .no { background: rgba(212,153,10,0.13); }
+        .ph {
+            aspect-ratio: 4 / 3; border: 1px dashed var(--border); border-radius: 10px;
+            background: var(--bg); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 8px;
+            color: var(--text-muted); overflow: hidden;
+        }
+        .ph .ico { font-size: 2.1rem; opacity: 0.75; }
+        .ph .lbl { font-size: 0.52rem; letter-spacing: 0.12em; text-transform: uppercase; }
+        .frame img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; display: block; }
+        .exhibit figcaption { padding: 13px 5px 0; }
+        .exhibit h4 { font-size: 0.76rem; font-weight: 700; margin-bottom: 4px; }
+        .exhibit figcaption p { font-size: 0.64rem; color: var(--text-muted); line-height: 1.65; font-weight: 300; }
+
+        /* FUND */
+        .fund {
+            display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: center;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 32px 36px; margin-top: 64px; position: relative; overflow: hidden;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .fund::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--amber));
+        }
+        [data-theme="light"] .fund { box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .fund-label {
+            display: inline-block; font-size: 0.58rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.12em;
+            color: var(--amber); background: rgba(251,191,36,0.1);
+            padding: 5px 12px; border-radius: 7px; margin-bottom: 14px;
+        }
+        [data-theme="light"] .fund-label { background: rgba(212,153,10,0.1); }
+        .fund h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+        .fund .fund-text { font-size: 0.74rem; color: var(--text-muted); line-height: 1.8; font-weight: 300; max-width: 560px; }
+        .mail-box { display: flex; flex-direction: column; gap: 10px; align-items: stretch; min-width: 250px; }
+        .mail-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+            padding: 13px 26px; border-radius: 12px; text-decoration: none;
+            background: linear-gradient(135deg, var(--pink), var(--accent));
+            color: #fff; font-size: 0.78rem; font-weight: 700; font-family: 'Unbounded', sans-serif;
+            transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(167,139,250,0.3);
+        }
+        .mail-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(167,139,250,0.5); filter: brightness(1.08); }
+        .mail-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+            padding: 8px 8px 8px 14px;
+        }
+        [data-theme="light"] .mail-row { background: var(--surface-hover); }
+        .mail-row span { font-size: 0.66rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .copy-btn {
+            background: var(--surface-hover); border: 1px solid var(--border); color: var(--text);
+            border-radius: 8px; padding: 6px 12px; cursor: pointer; flex-shrink: 0;
+            font-family: 'Unbounded', sans-serif; font-size: 0.58rem; font-weight: 600; transition: all 0.2s;
+        }
+        .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .fund-note { font-size: 0.6rem; color: var(--text-muted); text-align: center; font-weight: 300; }
+
+        .footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--border); margin-top: 64px; }
+        .footer p { font-size: 0.68rem; color: var(--text-muted); line-height: 2; font-weight: 300; }
+        .footer a { color: var(--text-muted); text-decoration: none; font-weight: 500; }
+        .footer a:hover { color: var(--text); }
+
+        @media (max-width: 768px) {
+            .wrap { padding: 100px 20px 60px; }
+            .header { padding: 16px 20px; }
+            .hero h1 { font-size: 2rem; }
+            .ex-grid { grid-template-columns: 1fr 1fr; }
+            .fund { grid-template-columns: 1fr; padding: 26px 24px; }
+            .hall-head { gap: 10px; flex-wrap: wrap; }
+            .hall-rule { display: none; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.55rem; }
+            .hero .tagline { font-size: 0.72rem; }
+            .plaque { padding: 24px 14px; }
+            .plaque p { font-size: 0.76rem; }
+            .ex-grid { grid-template-columns: 1fr; }
+            .hall-title { font-size: 0.92rem; }
+            .exhibit h4 { font-size: 0.72rem; }
+            .mail-btn { width: 100%; }
+            .footer p { font-size: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow-bg"></div>
+
+    <div class="header">
+        <a href="evlampia.html" class="back">← Евлампия</a>
+        <div class="header-right">
+            <div class="lang-switcher" id="langSwitcher">
+                <button class="lang-btn" id="langBtn">
+                    <span id="currentLang">RU</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <div class="lang-dropdown" id="langDropdown">
+                    <button class="lang-option active" data-lang="ru"><span class="flag">🇷🇺</span> Русский</button>
+                    <button class="lang-option" data-lang="en"><span class="flag">🇬🇧</span> English</button>
+                    <button class="lang-option" data-lang="de"><span class="flag">🇩🇪</span> Deutsch</button>
+                    <button class="lang-option" data-lang="be"><span class="flag">🇧🇾</span> Беларуская</button>
+                    <button class="lang-option" data-lang="uk"><span class="flag">🇺🇦</span> Українська</button>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span class="theme-toggle__knob"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <div class="hero">
+            <h1 data-i18n="mu_title">Музей Евлампии</h1>
+            <p class="tagline" data-i18n="mu_tagline">виртуальная коллекция артефактов веб-сериала</p>
+            <span class="est">Санкт-Петербург · осн. 2026</span>
+        </div>
+
+        <div class="plaque">
+            <span class="q-mark">❝</span>
+            <p data-i18n="q_text">Вещи помнят то, что забыли люди.</p>
+            <p class="q-src" data-i18n="q_src">из инвентарной книги фонда</p>
+        </div>
+
+        <!-- ФОТО ЭКСПОНАТА: замени <div class="ph">…</div> внутри .frame на
+             <img src="photos/имя-файла.jpg" alt="">  (файлы клади в папку photos) -->
+
+        <div class="hall-head">
+            <span class="hall-no" data-i18n="h1_no">Зал 01</span>
+            <span class="hall-title" data-i18n="h1_title">Реквизит гадалки</span>
+            <span class="hall-rule"></span>
+        </div>
+        <p class="hall-sub" data-i18n="h1_sub">Предметы, участвовавшие в съёмках сериала</p>
+        <div class="ex-grid">
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 01</span>
+                    <div class="ph"><span class="ico">🔮</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e1t">Хрустальный шар</h4>
+                    <p data-i18n="e1d">Главное орудие предсказаний. Через него Евлампия видела будущее всех своих клиентов.</p>
+                </figcaption>
+            </figure>
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 02</span>
+                    <div class="ph"><span class="ico">🃏</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e2t">Карты судьбы</h4>
+                    <p data-i18n="e2d">Колода, отвечающая на самые смелые вопросы. Тасуется строго против часовой стрелки.</p>
+                </figcaption>
+            </figure>
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 03</span>
+                    <div class="ph"><span class="ico">☎️</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e3t">Телефон доверия</h4>
+                    <p data-i18n="e3d">По нему звонили за предсказанием. Гудки слышны до сих пор.</p>
+                </figcaption>
+            </figure>
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 04</span>
+                    <div class="ph"><span class="ico">🕯️</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e4t">Ритуальная свеча</h4>
+                    <p data-i18n="e4d">Зажигается только при полной луне и только для особенных клиентов.</p>
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="hall-head">
+            <span class="hall-no" data-i18n="h2_no">Зал 02</span>
+            <span class="hall-title" data-i18n="h2_title">Документы и архив</span>
+            <span class="hall-rule"></span>
+        </div>
+        <p class="hall-sub" data-i18n="h2_sub">Бумаги, подтверждающие легендарность</p>
+        <div class="ex-grid">
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 05</span>
+                    <div class="ph"><span class="ico">📜</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e5t">Сертификат гадалки</h4>
+                    <p data-i18n="e5d">Официальный документ установленного образца. Подлинность не проверяли — побоялись.</p>
+                </figcaption>
+            </figure>
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 06</span>
+                    <div class="ph"><span class="ico">🎞️</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e6t">Афиша первого сезона</h4>
+                    <p data-i18n="e6d">Постер, с которого всё началось. Отдирать запрещено — приклеен намертво.</p>
+                </figcaption>
+            </figure>
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 07</span>
+                    <div class="ph"><span class="ico">📖</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e7t">Инвентарная книга фонда</h4>
+                    <p data-i18n="e7d">Сюда вписан каждый экспонат. И пара записей, которые никто не смог расшифровать.</p>
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="hall-head">
+            <span class="hall-no" data-i18n="h3_no">Зал 03</span>
+            <span class="hall-title" data-i18n="h3_title">Артефакты и курьёзы</span>
+            <span class="hall-rule"></span>
+        </div>
+        <p class="hall-sub" data-i18n="h3_sub">Странные предметы с непростой историей</p>
+        <div class="ex-grid">
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 08</span>
+                    <div class="ph"><span class="ico">🐋</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e8t">Хвост кита</h4>
+                    <p data-i18n="e8d">Напоминание о том дне, когда Евлампия стала китом. Экспонат слегка влажный.</p>
+                </figcaption>
+            </figure>
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 09</span>
+                    <div class="ph"><span class="ico">💬</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e9t">Стикерпак «Евлампия»</h4>
+                    <p data-i18n="e9d">Цифровые артефакты, материализованные в Telegram. Первый экспонат такого рода.</p>
+                </figcaption>
+            </figure>
+            <figure class="exhibit">
+                <div class="frame">
+                    <span class="no">№ 10</span>
+                    <div class="ph"><span class="ico">🧣</span><span class="lbl">фото скоро</span></div>
+                </div>
+                <figcaption>
+                    <h4 data-i18n="e10t">Платок Евлампии</h4>
+                    <p data-i18n="e10d">Тот самый. Появляется в каждой второй серии — как тень.</p>
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="fund">
+            <div class="fund-info">
+                <span class="fund-label" data-i18n="f_label">Реальный фонд</span>
+                <h3 data-i18n="f_title">Записаться в фонд музея</h3>
+                <p class="fund-text" data-i18n="f_text">Музей существует не только онлайн. В Санкт-Петербурге работает настоящий фонд — напишите нам, чтобы передать предметы с историей Евлампии. А для вас лично, по договорённости, можем организовать показ этих предметов. Пока что — только в Санкт-Петербурге.</p>
+            </div>
+            <div class="mail-box">
+                <a href="mailto:olehmudruk@yandex.by" class="mail-btn">✉ <span data-i18n="f_btn">Написать в фонд</span></a>
+                <div class="mail-row">
+                    <span>olehmudruk@yandex.by</span>
+                    <button class="copy-btn" id="copyBtn" data-i18n="f_copy">копировать</button>
+                </div>
+                <p class="fund-note" data-i18n="f_note">Отвечаем лично, обычно в течение дня</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
+            <p>Проект экосистемы <a href="https://doinwor.github.io/go-ecosystem/">GO</a> · <a href="https://doinwor.github.io/go-ecosystem/i-site/">і.</a> · 2026</p>
+        </div>
+    </div>
+
+    <script src="videos/manifest.js"></script>
+    <script>
+        const i18n = {
+            ru: {
+                mu_title: "Музей Евлампии",
+                mu_tagline: "виртуальная коллекция артефактов веб-сериала",
+                q_text: "Вещи помнят то, что забыли люди.",
+                q_src: "из инвентарной книги фонда",
+                h1_no: "Зал 01", h1_title: "Реквизит гадалки", h1_sub: "Предметы, участвовавшие в съёмках сериала",
+                h2_no: "Зал 02", h2_title: "Документы и архив", h2_sub: "Бумаги, подтверждающие легендарность",
+                h3_no: "Зал 03", h3_title: "Артефакты и курьёзы", h3_sub: "Странные предметы с непростой историей",
+                e1t: "Хрустальный шар", e1d: "Главное орудие предсказаний. Через него Евлампия видела будущее всех своих клиентов.",
+                e2t: "Карты судьбы", e2d: "Колода, отвечающая на самые смелые вопросы. Тасуется строго против часовой стрелки.",
+                e3t: "Телефон доверия", e3d: "По нему звонили за предсказанием. Гудки слышны до сих пор.",
+                e4t: "Ритуальная свеча", e4d: "Зажигается только при полной луне и только для особенных клиентов.",
+                e5t: "Сертификат гадалки", e5d: "Официальный документ установленного образца. Подлинность не проверяли — побоялись.",
+                e6t: "Афиша первого сезона", e6d: "Постер, с которого всё началось. Отдирать запрещено — приклеен намертво.",
+                e7t: "Инвентарная книга фонда", e7d: "Сюда вписан каждый экспонат. И пара записей, которые никто не смог расшифровать.",
+                e8t: "Хвост кита", e8d: "Напоминание о том дне, когда Евлампия стала китом. Экспонат слегка влажный.",
+                e9t: "Стикерпак «Евлампия»", e9d: "Цифровые артефакты, материализованные в Telegram. Первый экспонат такого рода.",
+                e10t: "Платок Евлампии", e10d: "Тот самый. Появляется в каждой второй серии — как тень.",
+                f_label: "Реальный фонд", f_title: "Записаться в фонд музея",
+                f_text: "Музей существует не только онлайн. В Санкт-Петербурге работает настоящий фонд — напишите нам, чтобы передать предметы с историей Евлампии. А для вас лично, по договорённости, можем организовать показ этих предметов. Пока что — только в Санкт-Петербурге.",
+                f_btn: "Написать в фонд", f_copy: "копировать", f_note: "Отвечаем лично, обычно в течение дня",
+                footer_collab: "Проект создан совместно со <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студией і.</a> и <a href=\"#\">Lokiq</a>"
+            },
+            en: {
+                mu_title: "Evlampia Museum",
+                mu_tagline: "a virtual collection of artifacts from the web series",
+                q_text: "Things remember what people forget.",
+                q_src: "from the inventory book of the fund",
+                h1_no: "Hall 01", h1_title: "Fortune teller's props", h1_sub: "Items used in filming the series",
+                h2_no: "Hall 02", h2_title: "Documents & archive", h2_sub: "Papers proving the legend",
+                h3_no: "Hall 03", h3_title: "Artifacts & curiosities", h3_sub: "Strange items with a complicated history",
+                e1t: "Crystal ball", e1d: "The main tool of predictions. Through it, Evlampia saw the future of every client.",
+                e2t: "Cards of fate", e2d: "The deck that answers the boldest questions. Shuffled strictly counterclockwise.",
+                e3t: "Hotline phone", e3d: "People called it for predictions. The dial tone can still be heard.",
+                e4t: "Ritual candle", e4d: "Lit only during a full moon — and only for special clients.",
+                e5t: "Fortune teller's certificate", e5d: "An official document of the established form. Its authenticity was never verified — out of fear.",
+                e6t: "Season one poster", e6d: "The poster where it all began. Forbidden to peel off — glued on for good.",
+                e7t: "Inventory book", e7d: "Every exhibit is recorded here. Plus a few entries no one could ever decipher.",
+                e8t: "Whale tail", e8d: "A reminder of the day Evlampia became a whale. The exhibit is slightly damp.",
+                e9t: "Evlampia sticker pack", e9d: "Digital artifacts materialized in Telegram. The first exhibit of its kind.",
+                e10t: "Evlampia's scarf", e10d: "The very one. Appears in every other episode — like a shadow.",
+                f_label: "Real fund", f_title: "Join the museum fund",
+                f_text: "The museum doesn't exist only online. A real fund operates in Saint Petersburg — write to us to donate items connected to Evlampia's story. And just for you, by arrangement, we can organize a personal showing of these items. For now — in Saint Petersburg only.",
+                f_btn: "Write to the fund", f_copy: "copy", f_note: "We answer personally, usually within a day",
+                footer_collab: "Project created in collaboration with <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">studio і.</a> and <a href=\"#\">Lokiq</a>"
+            },
+            de: {
+                mu_title: "Evlampia-Museum",
+                mu_tagline: "eine virtuelle Sammlung von Artefakten der Webserie",
+                q_text: "Dinge erinnern sich an das, was Menschen vergessen.",
+                q_src: "aus dem Inventarbuch des Fonds",
+                h1_no: "Saal 01", h1_title: "Requisiten der Hellseherin", h1_sub: "Gegenstände, die bei den Dreharbeiten der Serie dabei waren",
+                h2_no: "Saal 02", h2_title: "Dokumente & Archiv", h2_sub: "Papiere, die die Legende bestätigen",
+                h3_no: "Saal 03", h3_title: "Artefakte & Kuriositäten", h3_sub: "Seltsame Gegenstände mit bewegter Geschichte",
+                e1t: "Kristallkugel", e1d: "Das wichtigste Werkzeug der Vorhersagen. Durch sie sah Evlampia die Zukunft eines jeden Kunden.",
+                e2t: "Schicksalskarten", e2d: "Das Deck, das die kühnsten Fragen beantwortet. Wird strikt gegen den Uhrzeigersinn gemischt.",
+                e3t: "Vertrauenstelefon", e3d: "Hier rief man für Vorhersagen an. Das Freizeichen ist bis heute zu hören.",
+                e4t: "Ritualkerze", e4d: "Wird nur bei Vollmond angezündet — und nur für besondere Kunden.",
+                e5t: "Hellseherin-Zertifikat", e5d: "Ein offizielles Dokument. Seine Echtheit hat man nie geprüft — aus Angst.",
+                e6t: "Plakat der ersten Staffel", e6d: "Das Poster, mit dem alles begann. Abreißen verboten — für immer geklebt.",
+                e7t: "Inventarbuch des Fonds", e7d: "Jeder Gegenstand ist hier eingetragen. Und ein paar Einträge, die niemand entziffern konnte.",
+                e8t: "Walfluke", e8d: "Eine Erinnerung an den Tag, als Evlampia zum Wal wurde. Das Exponat ist leicht feucht.",
+                e9t: "Evlampia-Stickerpack", e9d: "Digitale Artefakte, materialisiert in Telegram. Das erste Exponat dieser Art.",
+                e10t: "Evlampias Tuch", e10d: "Das eine, echte. Erscheint in jeder zweiten Folge — wie ein Schatten.",
+                f_label: "Echter Fond", f_title: "Beim Museumsfond anmelden",
+                f_text: "Das Museum existiert nicht nur online. In Sankt Petersburg gibt es einen echten Fond — schreiben Sie uns, um Gegenstände rund um Evlampieas Geschichte zu übergeben. Und persönlich, nach Vereinbarung, organisieren wir Ihnen gern eine Vorführung dieser Exponate. Vorerst — nur in Sankt Petersburg.",
+                f_btn: "Dem Fond schreiben", f_copy: "kopieren", f_note: "Wir antworten persönlich, meist innerhalb eines Tages",
+                footer_collab: "Projekt erstellt in Zusammenarbeit mit <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">Studio і.</a> und <a href=\"#\">Lokiq</a>"
+            },
+            be: {
+                mu_title: "Музей Еўлампіі",
+                mu_tagline: "віртуальная калекцыя артэфактаў вэб-серыяла",
+                q_text: "Рэчы памятаюць тое, што забылі людзі.",
+                q_src: "з інвентарнай кнігі фонду",
+                h1_no: "Зала 01", h1_title: "Рэквізіт гадалкі", h1_sub: "Прадметы, якія ўдзельнічалі ў здымках серыяла",
+                h2_no: "Зала 02", h2_title: "Дакументы і архіў", h2_sub: "Паперы, якія пацвярджаюць легендарнасць",
+                h3_no: "Зала 03", h3_title: "Артэфакты і цікавасці", h3_sub: "Дзіўныя прадметы з няпростай гісторыяй",
+                e1t: "Крыштальны шар", e1d: "Галоўная прылада прадказанняў. Праз яго Еўлампія бачыла будучыню ўсіх сваіх кліентаў.",
+                e2t: "Карты лёсу", e2d: "Калода, якая адказвае на самыя смелыя пытанні. Тасуецца строга супраць гадзіннікавай стрэлкі.",
+                e3t: "Тэлефон даверу", e3d: "Па ім званілі за прадказаннем. Гудкі чутны дагэтуль.",
+                e4t: "Рытуальная свечка", e4d: "Запальваецца толькі пры поўным месяцы — і толькі для асаблівых кліентаў.",
+                e5t: "Сертыфікат гадалкі", e5d: "Афіцыйны дакумент усталяванага ўзору. Сапраўднасць не правяралі — пасмяяліся і пашкадавалі.",
+                e6t: "Афіша першага сезона", e6d: "Постэр, з якога ўсё пачалося. Аддзяржаць забаронена — прыклеены намертва.",
+                e7t: "Інвентарная кніга фонду", e7d: "Сюды запісаны кожны экспанат. І некалькі запісаў, якія ніхто не змог расшыфраваць.",
+                e8t: "Хвост кіта", e8d: "Напамін пра той дзень, калі Еўлампія стала кітам. Экспанат крыху вільготны.",
+                e9t: "Стыкер-пак «Еўлампія»", e9d: "Лічбавыя артэфакты, матэрыялізаваныя ў Telegram. Першы экспанат такога кшталту.",
+                e10t: "Хустка Еўлампіі", e10d: "Той самы. З'яўляецца ў кожнай другой серыі — як цень.",
+                f_label: "Рэальны фонд", f_title: "Запісацца ў фонд музея",
+                f_text: "Музей існуе не толькі анлайн. У Санкт-Пецербургу працуе сапраўдны фонд — напішыце нам, каб перадаць прадметы з гісторыяй Еўлампіі. А для вас асабіста, па дамоўленасці, можам арганізаваць паказ гэтых прадметаў. Пакуль што — толькі ў Санкт-Пецербургу.",
+                f_btn: "Напісаць у фонд", f_copy: "скапіяваць", f_note: "Адказваем асабіста, звычайна на працягу дня",
+                footer_collab: "Праект створаны сумесна з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студыяй і.</a> і <a href=\"#\">Lokiq</a>"
+            },
+            uk: {
+                mu_title: "Музей Євлампії",
+                mu_tagline: "віртуальна колекція артефактів веб-серіалу",
+                q_text: "Речі пам'ятають те, що забули люди.",
+                q_src: "з інвентарної книги фонду",
+                h1_no: "Зала 01", h1_title: "Реквізит ворожки", h1_sub: "Предмети, що брали участь у зйомках серіалу",
+                h2_no: "Зала 02", h2_title: "Документи та архів", h2_sub: "Папери, що підтверджують легендарність",
+                h3_no: "Зала 03", h3_title: "Артефакти та курйози", h3_sub: "Дивні предмети з непростою історією",
+                e1t: "Кришталева куля", e1d: "Головний інструмент передбачень. Через неї Євлампія бачила майбутнє всіх своїх клієнтів.",
+                e2t: "Карти долі", e2d: "Колода, що відповідає на найсміливіші питання. Тасується строго проти годинникової стрілки.",
+                e3t: "Телефон довіри", e3d: "За ним дзвонили за передбаченням. Гудки чутні донині.",
+                e4t: "Ритуальна свічка", e4d: "Запалюється лише при повному місяці — і лише для особливих клієнтів.",
+                e5t: "Сертифікат ворожки", e5d: "Офіційний документ встановленого зразка. Справжність не перевіряли — побоялися.",
+                e6t: "Афіша першого сезону", e6d: "Постер, з якого все почалося. Відклеювати заборонено — приклеєний намертво.",
+                e7t: "Інвентарна книга фонду", e7d: "Сюди записано кожен експонат. І кілька записів, які ніхто не зміг розшифрувати.",
+                e8t: "Хвіст кита", e8d: "Нагадування про той день, коли Євлампія стала китом. Експонат трохи вологий.",
+                e9t: "Стікерпак «Євлампія»", e9d: "Цифрові артефакти, матеріалізовані в Telegram. Перший експонат такого роду.",
+                e10t: "Хустка Євлампії", e10d: "Той самий. З'являється в кожній другій серії — як тінь.",
+                f_label: "Реальний фонд", f_title: "Записатися до фонду музею",
+                f_text: "Музей існує не лише онлайн. У Санкт-Петербурзі працює справжній фонд — напишіть нам, щоб передати предмети з історією Євлампії. А для вас особисто, за домовленістю, можемо організувати показ цих предметів. Поки що — лише в Санкт-Петербурзі.",
+                f_btn: "Написати до фонду", f_copy: "копіювати", f_note: "Відповідаємо особисто, зазвичай протягом дня",
+                footer_collab: "Проєкт створений спільно з <a href=\"https://doinwor.github.io/go-ecosystem/i-site/\">студією і.</a> та <a href=\"#\">Lokiq</a>"
+            }
+        };
+
+        function setLang(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) el.innerHTML = i18n[lang][key];
+            });
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+            document.documentElement.setAttribute('lang', lang);
+            localStorage.setItem('i-lang', lang);
+        }
+
+        document.getElementById('langBtn').addEventListener('click', e => {
+            e.stopPropagation();
+            document.getElementById('langSwitcher').classList.toggle('open');
+        });
+        document.addEventListener('click', () => document.getElementById('langSwitcher').classList.remove('open'));
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', e => {
+                e.stopPropagation();
+                setLang(opt.dataset.lang);
+                document.getElementById('langSwitcher').classList.remove('open');
+            });
+        });
+        setLang(localStorage.getItem('i-lang') || 'ru');
+
+        const themeToggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        const storedTheme = localStorage.getItem('i-theme');
+        if (storedTheme) root.setAttribute('data-theme', storedTheme);
+        themeToggle.addEventListener('click', () => {
+            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('i-theme', next);
+        });
+
+        const MAIL = 'olehmudruk@yandex.by';
+        const copyBtn = document.getElementById('copyBtn');
+        const origLabel = () => (i18n[localStorage.getItem('i-lang') || 'ru'] || {}).f_copy || 'copy';
+        copyBtn.addEventListener('click', () => {
+            const done = () => {
+                copyBtn.textContent = '✓';
+                setTimeout(() => { copyBtn.textContent = origLabel(); }, 1400);
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(MAIL).then(done).catch(() => fallback());
+            } else fallback();
+            function fallback() {
+                const ta = document.createElement('textarea');
+                ta.value = MAIL;
+                ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); done(); } catch (e) {}
+                document.body.removeChild(ta);
+            }
+        });
+    </script>
+</body>
+</html>
