@@ -3,6 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Веб-сериал о гадалке Евлампии — предсказания, сезоны, архивные серии. Предсказывает будущее по шару, картам и телефону.">
+    <meta property="og:site_name" content="Евлампия">
+    <meta property="og:title" content="Евлампия — добрые и злые предсказания">
+    <meta property="og:description" content="Веб-сериал о гадалке Евлампии — предсказания, сезоны, архивные серии. Предсказывает будущее по шару, картам и телефону.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://doinwor.github.io/evlampia/index.html">
+    <meta property="og:image" content="https://doinwor.github.io/evlampia/img/og-cover.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Евлампия — добрые и злые предсказания">
+    <meta name="twitter:description" content="Веб-сериал о гадалке Евлампии — предсказания, сезоны, архивные серии. Предсказывает будущее по шару, картам и телефону.">
+    <meta name="twitter:image" content="https://doinwor.github.io/evlampia/img/og-cover.jpg">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
     <title>Евлампия — добрая и злая гадалка</title>
@@ -478,7 +491,7 @@
 
     <div class="wrap">
 
-        <div class="hero">
+        <div class="hero" data-reveal>
             <h1 data-i18n="hero_title">Евлампия</h1>
             <p class="tagline" data-i18n="hero_tagline">добрая и злая гадалка</p>
             <p class="desc" data-i18n="hero_desc">Веб-сериал о гадалке Евлампии — предсказания, сезоны и архивные серии. Предсказывает будущее по шару, картам и телефону. Кто-то ей верит, кто-то смеётся, но равнодушным её не оставляет никто.</p>
@@ -532,9 +545,9 @@
         </div>
 
         <p class="section-label" data-i18n="label_about">О проекте</p>
-        <div class="grid-3">
+        <div class="grid-3" data-reveal>
             <div class="info-card">
-                <div class="emoji">🔮</div>
+                <div class="emoji" style="cursor:pointer" ondblclick="location.href='secret.html'" title="...">🔮</div>
                 <h4 data-i18n="info1_title">Гадалка</h4>
                 <p data-i18n="info1_desc">Евлампия предсказывает будущее по шару, картам и телефону</p>
             </div>
@@ -550,7 +563,7 @@
             </div>
         </div>
 
-        <div class="sticker-block">
+        <div class="sticker-block" data-reveal>
             <div class="left">
                 <h4 data-i18n="sticker_title">Стикеры для Telegram</h4>
                 <p data-i18n="sticker_desc">У Евлампии есть собственные стикеры</p>
@@ -560,7 +573,7 @@
         </div>
 
         <p class="section-label" data-i18n="label_gallery">Галерея</p>
-        <div class="gallery-row">
+        <div class="gallery-row" data-reveal>
             <figure class="gallery-card">
                 <img src="img/gallery-certificate.png" alt="Сертификат гадалки" loading="lazy">
                 <figcaption data-i18n="gal_cert">ЕВЛАМПИЯ — официальная гадалка</figcaption>
@@ -574,7 +587,7 @@
         <div class="divider"></div>
 
         <p class="section-label" data-i18n="label_faq">Вопросы</p>
-        <div class="faq">
+        <div class="faq" data-reveal>
             <div class="faq-item">
                 <div class="faq-q" data-i18n="faq1_q">Почему пропали серии?</div>
                 <div class="faq-a" data-i18n="faq1_a">Временно скрыли серии для проведения осмотра на предмет запрещённого контента. Как только уберём некоторые моменты, видео снова будут доступны. Следите за новостями в <a href="https://t.me/evlampia1327">Telegram</a>.</div>
@@ -590,7 +603,7 @@
         </div>
 
         <p class="section-label" data-i18n="label_archive">Архив</p>
-        <div class="archive-card">
+        <div class="archive-card" data-reveal>
             <div class="archive-btn-wrap">
                 <a href="https://sites.google.com/view/evlampia-org/%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F-%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0?read_current=1" class="archive-btn" target="_blank" rel="noopener">
                     <img src="img/archive-btn-web.png" alt="Старый сайт Евлампии — архив">
@@ -601,7 +614,7 @@
         </div>
 
         <p class="section-label" data-i18n="label_contact">Связь</p>
-        <div class="contact-block">
+        <div class="contact-block" data-reveal>
             <div class="contact-top">
                 <div class="contact-emoji">✉️</div>
                 <h3 data-i18n="contact_title">Обратная связь</h3>
@@ -1235,5 +1248,14 @@
             localStorage.setItem('i-theme', next);
         });
     </script>
+<style>
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;will-change:opacity,transform}
+[data-reveal].is-visible{opacity:1;transform:none}
+</style>
+<script>
+(function(){var els=document.querySelectorAll('[data-reveal]');if(!els.length||!("IntersectionObserver" in window)){els.forEach(function(e){e.classList.add("is-visible")});return}
+var io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add("is-visible");io.unobserve(en.target)}})},{threshold:0.12,rootMargin:"0px 0px -40px 0px"})
+els.forEach(function(e){io.observe(e)})})();
+</script>
 </body>
 </html>

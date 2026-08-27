@@ -3,6 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Все видео веб-сериала «Евлампия» — смотрите прямо на сайте.">
+    <meta property="og:site_name" content="Евлампия">
+    <meta property="og:title" content="Плеер — смотри серии онлайн">
+    <meta property="og:description" content="Все видео веб-сериала «Евлампия» — смотрите прямо на сайте.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://doinwor.github.io/evlampia/videos.html">
+    <meta property="og:image" content="https://doinwor.github.io/evlampia/img/og-cover.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Плеер — смотри серии онлайн">
+    <meta name="twitter:description" content="Все видео веб-сериала «Евлампия» — смотрите прямо на сайте.">
+    <meta name="twitter:image" content="https://doinwor.github.io/evlampia/img/og-cover.jpg">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
     <title>і. Плеер — Евлампия</title>
@@ -239,7 +252,7 @@
     </div>
 
     <div class="wrap">
-        <div class="brand-row">
+        <div class="brand-row" data-reveal>
             <span class="brand-name">▶ <span data-i18n="vg_brand">і. Плеер</span></span>
             <span class="beta-pill">BETA</span>
         </div>
@@ -248,7 +261,7 @@
         <p class="page-sub" data-i18n="vg_sub">Все доступные видео веб-сериала — смотрите прямо на сайте</p>
 
         <div class="loading-block" id="vgLoading" style="text-align:center;padding:70px 20px;color:var(--text-muted);font-size:0.78rem;">…</div>
-        <div class="vgrid" id="vGrid"></div>
+        <div class="vgrid" id="vGrid" data-reveal></div>
 
         <div class="footer">
             <p data-i18n="footer_collab">Проект создан совместно со <a href="https://doinwor.github.io/go-ecosystem/i-site/">студией і.</a> и <a href="#">Lokiq</a></p>
@@ -440,5 +453,14 @@
 
         setLang(LANG);
     </script>
+<style>
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;will-change:opacity,transform}
+[data-reveal].is-visible{opacity:1;transform:none}
+</style>
+<script>
+(function(){var els=document.querySelectorAll('[data-reveal]');if(!els.length||!("IntersectionObserver" in window)){els.forEach(function(e){e.classList.add("is-visible")});return}
+var io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add("is-visible");io.unobserve(en.target)}})},{threshold:0.12,rootMargin:"0px 0px -40px 0px"})
+els.forEach(function(e){io.observe(e)})})();
+</script>
 </body>
 </html>

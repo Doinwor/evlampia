@@ -3,6 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Все серии веб-сериала «Евлампия» — три сезона, архивные выпуски.">
+    <meta property="og:site_name" content="Евлампия">
+    <meta property="og:title" content="Серии — Евлампия">
+    <meta property="og:description" content="Все серии веб-сериала «Евлампия» — три сезона, архивные выпуски.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://doinwor.github.io/evlampia/episodes.html">
+    <meta property="og:image" content="https://doinwor.github.io/evlampia/img/og-cover.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Серии — Евлампия">
+    <meta name="twitter:description" content="Все серии веб-сериала «Евлампия» — три сезона, архивные выпуски.">
+    <meta name="twitter:image" content="https://doinwor.github.io/evlampia/img/og-cover.jpg">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
     <title>Серии и сезоны — Евлампия</title>
@@ -418,7 +431,7 @@
     </div>
 
     <div class="wrap">
-        <div class="hero">
+        <div class="hero" data-reveal>
             <h1 data-i18n="ep_title">Серии и сезоны</h1>
             <p class="tagline" data-i18n="ep_tagline">Все выпуски Евлампии в одном месте</p>
         </div>
@@ -438,7 +451,7 @@
             </div>
         </div>
 
-        <div class="roulette-section">
+        <div class="roulette-section" data-reveal>
             <div class="roulette-header">
                 <h3 data-i18n="roulette_title">Рулетка серий</h3>
                 <p data-i18n="roulette_desc">Не можете выбрать? Крутите — Евлампия решит за вас</p>
@@ -463,7 +476,7 @@
             <h2>🔮 <span data-i18n="classic_title">Классические серии</span></h2>
             <p class="sub" data-i18n="classic_sub">Оригинальный формат — предсказания, карты, шар и телефон</p>
 
-            <div class="season">
+            <div class="season" data-reveal>
                 <div class="season-header">
                     <span class="s-badge amber" data-i18n="s0_badge">Пролог</span>
                     <span data-i18n="s0_title">Самая первая серия</span>
@@ -479,7 +492,7 @@
                 </div>
             </div>
 
-            <div class="season">
+            <div class="season" data-reveal>
                 <div class="season-header">
                     <span class="s-badge purple">01</span>
                     <span data-i18n="s1_title">Первый сезон</span>
@@ -504,7 +517,7 @@
                 </div>
             </div>
 
-            <div class="season">
+            <div class="season" data-reveal>
                 <div class="season-header">
                     <span class="s-badge purple">02</span>
                     <span data-i18n="s2_title">Второй сезон</span>
@@ -529,7 +542,7 @@
                 </div>
             </div>
 
-            <div class="season">
+            <div class="season" data-reveal>
                 <div class="season-header">
                     <span class="s-badge purple">03</span>
                     <span data-i18n="s3_title">Третий сезон</span>
@@ -554,7 +567,7 @@
                 </div>
             </div>
 
-            <div class="season">
+            <div class="season" data-reveal>
                 <div class="season-header">
                     <span class="s-badge amber" data-i18n="archive_badge">Архив</span>
                     <span data-i18n="archive_title">Дополнительные видео</span>
@@ -1113,5 +1126,14 @@
 
         setLang(localStorage.getItem('i-lang') || 'ru');
     </script>
+<style>
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;will-change:opacity,transform}
+[data-reveal].is-visible{opacity:1;transform:none}
+</style>
+<script>
+(function(){var els=document.querySelectorAll('[data-reveal]');if(!els.length||!("IntersectionObserver" in window)){els.forEach(function(e){e.classList.add("is-visible")});return}
+var io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add("is-visible");io.unobserve(en.target)}})},{threshold:0.12,rootMargin:"0px 0px -40px 0px"})
+els.forEach(function(e){io.observe(e)})})();
+</script>
 </body>
 </html>
